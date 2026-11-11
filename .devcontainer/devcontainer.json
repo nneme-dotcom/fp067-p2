@@ -1,0 +1,5 @@
+{
+  "name": "VBE Eagles Echternach · Drills",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:24",
+  "forwardPorts": [4200]
+}

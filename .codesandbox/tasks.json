@@ -1,0 +1,11 @@
+{
+  "setupTasks": [{ "name": "Instalar dependencias", "command": "npm install" }],
+  "tasks": {
+    "start": {
+      "name": "Angular dev server",
+      "command": "npm run start:csb",
+      "runAtStart": true,
+      "preview": { "port": 4200 }
+    }
+  }
+}
