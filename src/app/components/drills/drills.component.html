@@ -1,0 +1,100 @@
+<!-- Filtramos la lista una sola vez y usamos el resultado en el contador y en la lista -->
+@let all = drills() ?? [];
+@let filtered = all | drillFilter: search() : space();
+
+<section class="card shadow-sm h-100 drills" aria-labelledby="drills-title">
+  <div class="card-header border-0 pt-3 pb-0">
+    <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
+      <h2 id="drills-title" class="section-title mb-0">Drills</h2>
+      <button type="button" class="btn btn-eagles btn-touch" (click)="newClicked.emit()">
+        <i class="bi bi-plus-lg me-1" aria-hidden="true"></i>New drill
+      </button>
+    </div>
+
+    <!-- Los dos filtros: buscar por texto y elegir el espacio -->
+    <form class="filters" role="search" (submit)="$event.preventDefault()">
+      <label for="search" class="visually-hidden">Search by name or objective</label>
+      <div class="search-field">
+        <i class="bi bi-search" aria-hidden="true"></i>
+        <input
+          id="search"
+          name="search"
+          type="search"
+          class="form-control form-control-sm"
+          placeholder="Search"
+          autocomplete="off"
+          [(ngModel)]="search"
+        />
+      </div>
+
+      <label for="space" class="visually-hidden">Filter by space</label>
+      <select id="space" name="space" class="form-select form-select-sm" [(ngModel)]="space">
+        <option value="">All spaces</option>
+        @for (s of spaces; track s) {
+          <option [value]="s">{{ s }}</option>
+        }
+      </select>
+    </form>
+  </div>
+
+  <div class="card-body pt-3">
+    @if (drills() === null) {
+      <p class="empty text-center py-4 mb-0" role="status">Loading drills…</p>
+    } @else if (failed()) {
+      <p class="alert alert-danger mb-0" role="alert">
+        The drills could not be loaded. Check the Firebase settings and the Firestore rules.
+      </p>
+    } @else {
+      <p class="count" aria-live="polite">{{ filtered.length }} / {{ all.length }} drills</p>
+
+      <ul class="drill-list list-unstyled mb-0 d-grid gap-2">
+        @for (drill of filtered; track drill.id; let i = $index) {
+          <!-- Cada fila aparece un poquito después que la anterior -->
+          <li class="drill-row" [style.--i]="i">
+            <button
+              type="button"
+              class="drill-item text-start"
+              [attr.data-drill-id]="drill.id"
+              [class.selected]="drill.id === selectedId()"
+              [attr.aria-pressed]="drill.id === selectedId()"
+              (click)="drillSelected.emit(drill)"
+            >
+              <span class="players-count" aria-hidden="true">{{ drill.jugadoras }}</span>
+              <span class="info">
+                <span class="name">{{ drill.nombre }}</span>
+                <span class="meta">
+                  <span class="badge space-badge">{{ drill.espacio }}</span>
+                  <span>{{ drill.jugadoras }} players</span>
+                </span>
+              </span>
+              <i class="bi bi-chevron-right chevron" aria-hidden="true"></i>
+            </button>
+
+            <!-- El icono de borrar va al lado, en su propio botón -->
+            <button
+              type="button"
+              class="btn-delete"
+              [attr.aria-label]="'Delete ' + drill.nombre"
+              (click)="drillDeleted.emit(drill)"
+            >
+              <i class="bi bi-trash3" aria-hidden="true"></i>
+            </button>
+          </li>
+        } @empty {
+          <li class="empty text-center py-4">
+            @if (all.length === 0) {
+              <i class="bi bi-journal-plus fs-3 d-block mb-2" aria-hidden="true"></i>
+              There are no drills yet. Add the first one with “New drill”.
+            } @else {
+              <i class="bi bi-funnel fs-3 d-block mb-2" aria-hidden="true"></i>
+              No drills match your filters.
+              <button type="button" class="btn btn-link btn-sm d-block mx-auto" (click)="clearFilters()">
+                Clear filters
+              </button>
+            }
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</section>

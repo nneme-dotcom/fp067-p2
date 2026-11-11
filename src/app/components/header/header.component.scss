@@ -1,0 +1,54 @@
+.eagles-header {
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 90% 120%, rgba(106, 247, 120, 0.18), transparent 60%),
+    var(--eagles-surface);
+  border-bottom: 3px solid transparent;
+  border-image: var(--eagles-gradient) 1;
+}
+
+.text-logo {
+  display: block;
+  width: clamp(210px, 40vw, 330px);
+  height: auto;
+}
+
+.slogan-wrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: 220px;
+  min-height: 96px;
+}
+
+/* El águila detrás del lema, para que no quede un hueco vacío */
+.header-eagle {
+  position: absolute;
+  width: 150px;
+  height: auto;
+  opacity: 0.22;
+  pointer-events: none;
+}
+
+.slogan {
+  position: relative;
+  font-family: var(--eagles-font-display);
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  line-height: 1;
+  letter-spacing: 0.03em;
+  background: var(--eagles-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: slogan-in 0.6s 0.15s ease-out both;
+}
+
+@keyframes slogan-in {
+  from { opacity: 0; transform: skewX(var(--eagles-slant)) translateX(16px); }
+  to { opacity: 1; transform: skewX(var(--eagles-slant)); }
+}
+
+/* En pantallas pequeñas el lema no cabe al lado del logo, así que lo escondemos */
+@media (max-width: 767.98px) {
+  .slogan-wrap { display: none; }
+}

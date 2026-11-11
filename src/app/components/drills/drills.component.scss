@@ -1,0 +1,181 @@
+.drills {
+  container: drills-card / inline-size;
+}
+
+/* La lista nunca se sale de su tarjeta: si un nombre es muy largo, se corta con «…» */
+.drill-list {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.count {
+  margin-bottom: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--eagles-text-muted);
+}
+
+/* Las filas entran una detrás de otra, como en cascada */
+.drill-row {
+  display: flex;
+  gap: 0.5rem;
+  animation: row-in 0.35s ease-out both;
+  animation-delay: calc(var(--i, 0) * 45ms);
+}
+
+@keyframes row-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+.drill-item {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.6rem 0.85rem 0.6rem 1rem;
+  border: 1px solid transparent;
+  border-radius: var(--eagles-radius);
+  background: var(--eagles-surface-alt);
+  color: var(--eagles-text);
+  transition: background-color 0.15s, border-color 0.15s, transform 0.15s;
+
+  /* Al pasar el ratón aparece una rayita lima a la izquierda */
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0.35rem;
+    top: 22%;
+    bottom: 22%;
+    width: 3px;
+    border-radius: 2px;
+    background: var(--eagles-lime);
+    opacity: 0;
+    transform: scaleY(0.4);
+    transition: opacity 0.15s, transform 0.15s;
+  }
+
+  &:hover {
+    background: var(--eagles-surface-hover);
+    transform: translateX(2px);
+
+    &::before { opacity: 1; transform: scaleY(1); }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--eagles-lime);
+    outline-offset: 2px;
+  }
+
+  /* El drill elegido se pinta en lima */
+  &.selected {
+    background: var(--eagles-gradient);
+    border-color: var(--eagles-lime);
+    color: var(--eagles-on-lime);
+    box-shadow: 0 0 24px rgba(205, 220, 57, 0.25);
+
+    .meta { color: rgba(0, 0, 0, 0.7); }
+    .players-count { color: var(--eagles-on-lime); }
+    .space-badge { background: var(--eagles-on-lime); color: var(--eagles-lime); }
+    .chevron { color: var(--eagles-on-lime); opacity: 1; }
+
+    &::before { opacity: 0; }
+  }
+}
+
+.players-count {
+  font-family: var(--eagles-font-display);
+  font-size: 2rem;
+  line-height: 1;
+  min-width: 2ch;
+  text-align: center;
+  color: var(--eagles-lime);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.name {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--eagles-text-muted);
+}
+
+.space-badge {
+  /* Que no baje de 12 px, que si no cuesta leerlo */
+  font-size: 0.75rem;
+  padding: 0.25em 0.55em;
+  background: var(--eagles-lime);
+  color: var(--eagles-on-lime);
+  font-weight: 600;
+}
+
+.chevron {
+  opacity: 0.35;
+}
+
+.btn-delete {
+  flex-shrink: 0;
+  width: var(--eagles-touch);
+  border: 1px solid transparent;
+  border-radius: var(--eagles-radius);
+  background: var(--eagles-surface-alt);
+  color: var(--eagles-text-soft);
+  transition: background-color 0.15s, color 0.15s;
+
+  &:hover {
+    background: #dc3545;
+    color: #fff;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--eagles-lime);
+    outline-offset: 2px;
+  }
+}
+
+/* Buscador y desplegable, uno al lado del otro */
+.filters {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.5rem;
+}
+
+/* Si la tarjeta es estrecha, uno debajo del otro */
+@container drills-card (max-width: 320px) {
+  .filters { grid-template-columns: minmax(0, 1fr); }
+}
+
+.search-field {
+  position: relative;
+
+  .bi {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.85rem;
+    color: var(--eagles-text-muted);
+    pointer-events: none;
+  }
+
+  .form-control { padding-left: 2.1rem; }
+}
+
+.empty {
+  color: var(--eagles-text-muted);
+}

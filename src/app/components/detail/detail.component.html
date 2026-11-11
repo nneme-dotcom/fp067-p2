@@ -1,0 +1,95 @@
+@let d = drill();
+
+<!-- Arriba: nombre, datos básicos y los botones de editar y cerrar -->
+<article class="card shadow-sm detail-hero" aria-labelledby="detail-title">
+  <div class="detail-heading">
+    <span class="detail-meta">{{ d.jugadoras }} players · {{ d.espacio }}</span>
+    <h2 id="detail-title" class="detail-name mb-0"><span class="slanted">{{ d.nombre }}</span></h2>
+  </div>
+
+  <div class="detail-actions">
+    <button type="button" class="btn btn-outline-eagles btn-touch" (click)="edit.emit()">
+      <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>Edit
+    </button>
+    <button type="button" class="btn btn-touch detail-close" aria-label="Close drill" (click)="closed.emit()">
+      <i class="bi bi-x-lg" aria-hidden="true"></i>
+    </button>
+  </div>
+</article>
+
+<!-- Los datos del drill -->
+<section class="card shadow-sm detail-body" aria-label="Drill data">
+  <dl class="fields mb-0">
+    <div class="field">
+      <dt>Objective</dt>
+      <dd>{{ d.objetivo }}</dd>
+    </div>
+
+    <div class="field">
+      <dt>Description</dt>
+      <dd class="text">{{ d.descripcion }}</dd>
+    </div>
+
+    @if (d.rolesFijos) {
+      <div class="field">
+        <dt>Fixed roles</dt>
+        <dd class="text">{{ d.rolesFijos }}</dd>
+      </div>
+    }
+
+    @if (d.rotan) {
+      <div class="field">
+        <dt>Rotating players</dt>
+        <dd class="text">{{ d.rotan }}</dd>
+      </div>
+    }
+
+    @if (steps().length) {
+      <div class="field">
+        <dt>Sequence</dt>
+        <dd>
+          <ol class="steps mb-0">
+            @for (step of steps(); track $index) {
+              <li>{{ step }}</li>
+            }
+          </ol>
+        </dd>
+      </div>
+    }
+
+    @if (d.rotacion) {
+      <div class="field">
+        <dt>Rotation after each action</dt>
+        <dd class="text">{{ d.rotacion }}</dd>
+      </div>
+    }
+
+    @if (d.progresiones) {
+      <div class="field">
+        <dt>Progressions and variants</dt>
+        <dd class="text">{{ d.progresiones }}</dd>
+      </div>
+    }
+  </dl>
+</section>
+
+<!-- Imagen, vídeo y animación: solo salen los que tiene el drill -->
+@if (d.imagen && brokenImage() !== d.imagen) {
+  <img
+    class="detail-image"
+    [src]="d.imagen"
+    [alt]="'Diagram of ' + d.nombre"
+    loading="lazy"
+    (error)="brokenImage.set(d.imagen!)"
+  />
+}
+
+@if (d.video) {
+  <app-media [src]="d.video" [label]="'Video of ' + d.nombre" />
+}
+
+@if (d.animacionUrl) {
+  <a class="btn btn-eagles btn-touch align-self-start" [href]="d.animacionUrl" target="_blank" rel="noopener">
+    <i class="bi bi-box-arrow-up-right me-2" aria-hidden="true"></i>Open 3D animation
+  </a>
+}

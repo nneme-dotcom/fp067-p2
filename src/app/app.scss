@@ -1,0 +1,35 @@
+/* La columna de la derecha se estira para medir lo mismo que la lista */
+.drill-zone {
+  align-self: stretch;
+  scroll-margin-top: 1rem;
+}
+
+#drill-zone {
+  scroll-margin-top: 1rem;
+}
+
+.empty-state {
+  border: 1px dashed rgba(205, 220, 57, 0.35);
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(106, 247, 120, 0.1), transparent 65%),
+    var(--eagles-surface);
+}
+
+.empty-icon {
+  font-size: 3.5rem;
+  line-height: 1;
+  color: var(--eagles-lime);
+  opacity: 0.8;
+}
+
+.empty-hint {
+  color: var(--eagles-text-muted);
+}
+
+/* Aquí el título va centrado, así que le quitamos la rayita de la izquierda */
+.empty-state .section-title {
+  justify-content: center;
+  text-align: center;
+
+  &::before { display: none; }
+}

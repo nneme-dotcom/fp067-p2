@@ -1,0 +1,90 @@
+<section class="media" [attr.aria-label]="label()">
+  <div class="video-wrapper" [style.--video-ratio]="aspectRatio()">
+    <!-- No usamos los botones del navegador: los controles los hemos hecho nosotros -->
+    <video
+      #video
+      class="d-block"
+      preload="metadata"
+      playsinline
+      [src]="src()"
+      (click)="togglePlay()"
+      (loadedmetadata)="onLoadedMetadata()"
+      (timeupdate)="onTimeUpdate()"
+      (play)="onPlayState()"
+      (pause)="onPlayState()"
+      (ended)="onPlayState()"
+      (volumechange)="onVolumeChange()"
+      (error)="loadFailed.set(true)"
+    ></video>
+
+    @if (loadFailed()) {
+      <p class="load-error" role="alert">
+        <i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i>The video could not be loaded.
+      </p>
+    }
+  </div>
+
+  <div class="controls">
+    <!-- La barra para avanzar o retroceder -->
+    <div class="d-flex align-items-center gap-2 mb-2">
+      <span class="time">{{ formatTime(currentTime()) }}</span>
+      <input
+        type="range"
+        class="form-range flex-grow-1"
+        min="0"
+        step="0.1"
+        aria-label="Video position"
+        [max]="duration()"
+        [value]="currentTime()"
+        (input)="seek($event)"
+      />
+      <span class="time">{{ formatTime(duration()) }}</span>
+    </div>
+
+    <div class="d-flex flex-wrap align-items-center gap-2">
+      <!-- Play, pausa y stop -->
+      <div class="btn-group" role="group" aria-label="Playback controls">
+        @if (isPlaying()) {
+          <button type="button" class="btn btn-eagles btn-touch" (click)="pause()" aria-label="Pause">
+            <i class="bi bi-pause-fill" aria-hidden="true"></i>
+          </button>
+        } @else {
+          <button type="button" class="btn btn-eagles btn-touch" (click)="play()" aria-label="Play">
+            <i class="bi bi-play-fill" aria-hidden="true"></i>
+          </button>
+        }
+        <button type="button" class="btn btn-outline-eagles btn-touch" (click)="stop()" aria-label="Stop">
+          <i class="bi bi-stop-fill" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <!-- El volumen -->
+      <div class="d-flex align-items-center gap-2 ms-auto volume">
+        <button
+          type="button"
+          class="btn btn-link btn-touch text-reset p-0"
+          (click)="toggleMute()"
+          [attr.aria-label]="muted() ? 'Unmute' : 'Mute'"
+        >
+          @if (muted() || volume() === 0) {
+            <i class="bi bi-volume-mute-fill fs-5" aria-hidden="true"></i>
+          } @else if (volume() < 0.5) {
+            <i class="bi bi-volume-down-fill fs-5" aria-hidden="true"></i>
+          } @else {
+            <i class="bi bi-volume-up-fill fs-5" aria-hidden="true"></i>
+          }
+        </button>
+        <input
+          type="range"
+          class="form-range"
+          min="0"
+          max="1"
+          step="0.05"
+          aria-label="Volume"
+          [value]="muted() ? 0 : volume()"
+          (input)="changeVolume($event)"
+        />
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,121 @@
+/* El detalle son varias piezas, una debajo de otra */
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.detail-hero {
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background:
+    radial-gradient(ellipse at 100% 0%, rgba(106, 247, 120, 0.22), transparent 60%),
+    radial-gradient(ellipse at 0% 100%, rgba(205, 220, 57, 0.12), transparent 55%),
+    #050605;
+  color: var(--eagles-text);
+}
+
+.detail-heading {
+  min-width: 0;
+}
+
+.detail-meta {
+  font-family: var(--eagles-font-display);
+  font-size: 1.2rem;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  color: var(--eagles-neon);
+}
+
+.detail-name {
+  font-family: var(--eagles-font-display);
+  font-size: clamp(1.8rem, 5vw, 2.4rem);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.detail-actions {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.detail-close {
+  --bs-btn-color: var(--eagles-text-soft);
+  --bs-btn-hover-color: var(--eagles-on-lime);
+  --bs-btn-hover-bg: var(--eagles-lime);
+  --bs-btn-active-bg: var(--eagles-lime);
+  --bs-btn-active-color: var(--eagles-on-lime);
+  --bs-btn-focus-shadow-rgb: 205, 220, 57;
+  border-radius: 50%;
+  font-size: 1.1rem;
+}
+
+/* En pantallas estrechas el nombre y los botones van uno debajo del otro */
+@media (max-width: 575.98px) {
+  .detail-hero {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .detail-actions {
+    justify-content: space-between;
+  }
+}
+
+.detail-body {
+  padding: 0.5rem 1.25rem;
+}
+
+.field {
+  padding: 0.85rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+
+  &:last-child { border-bottom: 0; }
+
+  dt {
+    margin-bottom: 0.25rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--eagles-text-muted);
+  }
+
+  dd {
+    margin: 0;
+    color: var(--eagles-text);
+  }
+
+  /* Respeta los saltos de línea que se escribieron en el formulario */
+  .text {
+    white-space: pre-line;
+    color: var(--eagles-text-soft);
+  }
+}
+
+.steps {
+  padding-left: 1.25rem;
+  color: var(--eagles-text-soft);
+
+  li { padding-left: 0.25rem; }
+  li + li { margin-top: 0.35rem; }
+  li::marker {
+    font-weight: 600;
+    color: var(--eagles-lime);
+  }
+}
+
+.detail-image {
+  width: 100%;
+  max-height: 60vh;
+  object-fit: contain;
+  border-radius: var(--eagles-radius);
+  background: var(--eagles-surface-alt);
+}

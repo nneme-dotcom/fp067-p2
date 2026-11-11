@@ -1,0 +1,164 @@
+<section class="card shadow-sm drill-form" aria-labelledby="form-title">
+  <div class="card-header border-0 pt-3 pb-0">
+    <h2 id="form-title" class="section-title mb-0">{{ drill() ? 'Edit drill' : 'New drill' }}</h2>
+  </div>
+
+  <form class="card-body" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    @if (submitted() && form.invalid) {
+      <p class="alert alert-danger" role="alert">Some fields need your attention before saving.</p>
+    }
+
+    <!-- Datos obligatorios -->
+    <div class="mb-3">
+      <label for="nombre" class="form-label">Name <span class="required" aria-hidden="true">*</span></label>
+      <input
+        id="nombre"
+        type="text"
+        class="form-control"
+        formControlName="nombre"
+        autocomplete="off"
+        [class.is-invalid]="error('nombre')"
+        [attr.aria-invalid]="error('nombre') ? true : null"
+        aria-describedby="nombre-error"
+        required
+      />
+      @if (error('nombre'); as message) {
+        <div id="nombre-error" class="invalid-feedback d-block">{{ message }}</div>
+      }
+    </div>
+
+    <div class="mb-3">
+      <label for="objetivo" class="form-label">Objective <span class="required" aria-hidden="true">*</span></label>
+      <textarea
+        id="objetivo"
+        class="form-control"
+        rows="2"
+        formControlName="objetivo"
+        [class.is-invalid]="error('objetivo')"
+        [attr.aria-invalid]="error('objetivo') ? true : null"
+        aria-describedby="objetivo-error"
+        required
+      ></textarea>
+      @if (error('objetivo'); as message) {
+        <div id="objetivo-error" class="invalid-feedback d-block">{{ message }}</div>
+      }
+    </div>
+
+    <div class="row g-3 mb-3">
+      <div class="col-sm-6">
+        <label for="jugadoras" class="form-label">Players <span class="required" aria-hidden="true">*</span></label>
+        <input
+          id="jugadoras"
+          type="number"
+          inputmode="numeric"
+          min="1"
+          max="40"
+          class="form-control"
+          formControlName="jugadoras"
+          [class.is-invalid]="error('jugadoras')"
+          [attr.aria-invalid]="error('jugadoras') ? true : null"
+          aria-describedby="jugadoras-error"
+          required
+        />
+        @if (error('jugadoras'); as message) {
+          <div id="jugadoras-error" class="invalid-feedback d-block">{{ message }}</div>
+        }
+      </div>
+
+      <div class="col-sm-6">
+        <label for="espacio" class="form-label">Space <span class="required" aria-hidden="true">*</span></label>
+        <select
+          id="espacio"
+          class="form-select"
+          formControlName="espacio"
+          [class.is-invalid]="error('espacio')"
+          [attr.aria-invalid]="error('espacio') ? true : null"
+          aria-describedby="espacio-error"
+          required
+        >
+          <option value="" disabled>Choose…</option>
+          @for (s of spaces; track s) {
+            <option [value]="s">{{ s }}</option>
+          }
+        </select>
+        @if (error('espacio'); as message) {
+          <div id="espacio-error" class="invalid-feedback d-block">{{ message }}</div>
+        }
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="descripcion" class="form-label">Description <span class="required" aria-hidden="true">*</span></label>
+      <textarea
+        id="descripcion"
+        class="form-control"
+        rows="3"
+        formControlName="descripcion"
+        [class.is-invalid]="error('descripcion')"
+        [attr.aria-invalid]="error('descripcion') ? true : null"
+        aria-describedby="descripcion-error"
+        required
+      ></textarea>
+      @if (error('descripcion'); as message) {
+        <div id="descripcion-error" class="invalid-feedback d-block">{{ message }}</div>
+      }
+    </div>
+
+    <!-- Datos opcionales -->
+    @for (field of optionalTexts; track field.name) {
+      <div class="mb-3">
+        <label [for]="field.name" class="form-label">{{ field.label }}</label>
+        <textarea
+          [id]="field.name"
+          class="form-control"
+          [rows]="field.rows"
+          [formControlName]="field.name"
+          [class.is-invalid]="error(field.name)"
+          [attr.aria-invalid]="error(field.name) ? true : null"
+          [attr.aria-describedby]="field.name + '-error'"
+        ></textarea>
+        @if (field.hint) {
+          <div class="form-text">{{ field.hint }}</div>
+        }
+        @if (error(field.name); as message) {
+          <div [id]="field.name + '-error'" class="invalid-feedback d-block">{{ message }}</div>
+        }
+      </div>
+    }
+
+    @for (field of links; track field.name) {
+      <div class="mb-3">
+        <label [for]="field.name" class="form-label">{{ field.label }}</label>
+        <input
+          [id]="field.name"
+          type="url"
+          class="form-control"
+          [formControlName]="field.name"
+          placeholder="https://…"
+          autocomplete="off"
+          [class.is-invalid]="error(field.name)"
+          [attr.aria-invalid]="error(field.name) ? true : null"
+          [attr.aria-describedby]="field.name + '-error'"
+        />
+        @if (error(field.name); as message) {
+          <div [id]="field.name + '-error'" class="invalid-feedback d-block">{{ message }}</div>
+        }
+      </div>
+    }
+
+    <p class="form-text mb-4"><span class="required" aria-hidden="true">*</span> Required</p>
+
+    <div class="d-flex flex-wrap gap-2">
+      <button type="submit" class="btn btn-eagles btn-touch" [disabled]="saving()">
+        @if (saving()) {
+          <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Saving…
+        } @else {
+          <i class="bi bi-check-lg me-1" aria-hidden="true"></i>Save
+        }
+      </button>
+      <button type="button" class="btn btn-outline-secondary btn-touch" [disabled]="saving()" (click)="cancelled.emit()">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>

@@ -1,0 +1,53 @@
+:host {
+  display: block;
+}
+
+.media {
+  overflow: hidden;
+  border-radius: var(--eagles-radius);
+  background: var(--eagles-surface-alt);
+}
+
+/* El marco toma la forma del vídeo, con un tope de altura para que no ocupe media pantalla */
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--video-ratio, 16 / 9);
+  max-height: 60vh;
+  background: #000;
+
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    cursor: pointer;
+  }
+}
+
+.load-error {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 1rem;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.85);
+  color: var(--eagles-text-soft);
+}
+
+.controls {
+  padding: 0.75rem 1rem 1rem;
+}
+
+.time {
+  min-width: 3ch;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--eagles-text-muted);
+}
+
+.volume {
+  width: 9rem;
+}
