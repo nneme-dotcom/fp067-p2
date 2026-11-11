@@ -1,0 +1,11 @@
+rules_version = '2';
+
+// Reglas abiertas: la práctica pide poder leer y escribir sin identificarse.
+// Hay que cerrarlas (con login) antes de publicar la app de verdad.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /drills/{drillId} {
+      allow read, write: if true;
+    }
+  }
+}
