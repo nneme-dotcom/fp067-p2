@@ -10,7 +10,7 @@
     "rotan": "8 jugadoras. Espera → entra a 6 → (defiende) → pasa a 4 → ataca en diagonal → espera del otro campo.",
     "secuencia": "El entrenador ataca sobre el campo A desde fuera del campo B (solo para iniciar).\nDefienden 4, 5 y 6; defiende la que corresponda según dónde va el balón.\nLa armadora coloca a zona 4.\nAtaque controlado en diagonal desde 4, sin bloqueo.\nSe repite en el otro campo, rally continuo.",
     "rotacion": "La de 4 cambia de campo por fuera de la red y va a la fila de espera del otro lado.\nLa de 6 pasa a 4 (defiende cerca de la línea de 3 m).\nLa primera de la espera entra a 6.",
-    "animacionUrl": "https://claude.ai/artifact/5pnmqjE1etMfaC9FX1mJcD"
+    "animacionUrl": "assets/animations/defensa-6-diagonal-4.html"
   },
   {
     "id": "defensa-ataque-4-o-2",
@@ -23,6 +23,6 @@
     "rotan": "8 jugadoras: 3 en pista por campo y 1 en la fila de espera.",
     "secuencia": "El entrenador ataca sobre el campo A desde fuera del campo B (solo para iniciar).\nDefiende la que corresponda según dónde va el balón.\nLa armadora penetra desde entre 2 y 3 y coloca a la zona de ataque.\nAtaque controlado en la dirección elegida, sin bloqueo.\nSe repite en el otro campo, rally continuo.",
     "rotacion": "La atacante cambia de campo por fuera de la red, por el poste de su lado, y va a la fila de espera del otro campo.\nLas otras dos rotantes avanzan un puesto en el recorrido.\nLa primera de la espera entra a la zona de entrada (1 con ataque desde 4, 6 con ataque desde 2).\nSi la espera está vacía, la que llega del otro campo entra directa a la zona de entrada.",
-    "animacionUrl": "https://claude.ai/artifact/JLZz3bJSij9YfkRNoDwxux"
+    "animacionUrl": "assets/animations/defensa-ataque-4-o-2.html"
   }
 ]
