@@ -1,4 +1,4 @@
-<!-- Filtramos la lista una sola vez y usamos el resultado en el contador y en la lista -->
+<!-- We filter the list once and use the result in the counter and in the list -->
 @let all = drills() ?? [];
 @let filtered = all | drillFilter: search() : space();
 
@@ -11,7 +11,7 @@
       </button>
     </div>
 
-    <!-- Los dos filtros: buscar por texto y elegir el espacio -->
+    <!-- The two filters: search by text and choose the space -->
     <form class="filters" role="search" (submit)="$event.preventDefault()">
       <label for="search" class="visually-hidden">Search by name or objective</label>
       <div class="search-field">
@@ -49,7 +49,7 @@
 
       <ul class="drill-list list-unstyled mb-0 d-grid gap-2">
         @for (drill of filtered; track drill.id; let i = $index) {
-          <!-- Cada fila aparece un poquito después que la anterior -->
+          <!-- Each row appears a little after the previous one -->
           <li class="drill-row" [style.--i]="i">
             <button
               type="button"
@@ -59,22 +59,22 @@
               [attr.aria-pressed]="drill.id === selectedId()"
               (click)="drillSelected.emit(drill)"
             >
-              <span class="players-count" aria-hidden="true">{{ drill.jugadoras }}</span>
+              <span class="players-count" aria-hidden="true">{{ drill.players }}</span>
               <span class="info">
-                <span class="name">{{ drill.nombre }}</span>
+                <span class="name">{{ drill.name }}</span>
                 <span class="meta">
-                  <span class="badge space-badge">{{ drill.espacio }}</span>
-                  <span>{{ drill.jugadoras }} players</span>
+                  <span class="badge space-badge">{{ drill.space }}</span>
+                  <span>{{ drill.players }} players</span>
                 </span>
               </span>
               <i class="bi bi-chevron-right chevron" aria-hidden="true"></i>
             </button>
 
-            <!-- El icono de borrar va al lado, en su propio botón -->
+            <!-- The delete icon goes next to it, in its own button -->
             <button
               type="button"
               class="btn-delete"
-              [attr.aria-label]="'Delete ' + drill.nombre"
+              [attr.aria-label]="'Delete ' + drill.name"
               (click)="drillDeleted.emit(drill)"
             >
               <i class="bi bi-trash3" aria-hidden="true"></i>

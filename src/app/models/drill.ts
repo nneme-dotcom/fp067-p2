@@ -1,34 +1,34 @@
-/** Dónde se hace el drill. */
+/** Where the drill is done. */
 export type Space = 'Full court' | 'Half court';
 
-/** Las opciones en orden, para el desplegable. */
+/** The options in order, for the dropdown. */
 export const SPACES: readonly Space[] = ['Full court', 'Half court'];
 
 /**
- * La ficha de un drill. Los datos con `?` son opcionales.
- * Los textos largos se guardan como texto normal; en `secuencia`
- * cada línea es un paso.
+ * The data of a drill. Fields with `?` are optional.
+ * Long texts are saved as plain text; in `sequence`
+ * each line is one step.
  */
 export interface Drill {
-  /** Lo pone Firestore al crear el documento. */
+  /** Set by Firestore when the document is created. */
   id: string;
-  nombre: string;
-  objetivo: string;
-  jugadoras: number;
-  espacio: Space;
-  descripcion: string;
-  rolesFijos?: string;
-  rotan?: string;
-  secuencia?: string;
-  rotacion?: string;
-  progresiones?: string;
-  /** Enlace a la animación 3D. */
-  animacionUrl?: string;
-  /** Dirección de la imagen. */
-  imagen?: string;
-  /** Dirección del vídeo. */
+  name: string;
+  objective: string;
+  players: number;
+  space: Space;
+  description: string;
+  fixedRoles?: string;
+  rotating?: string;
+  sequence?: string;
+  rotation?: string;
+  progressions?: string;
+  /** Link to the 3D animation. */
+  animationUrl?: string;
+  /** Image URL. */
+  image?: string;
+  /** Video URL. */
   video?: string;
 }
 
-/** Lo que se guarda en Firestore: el drill sin su id. */
+/** What is saved in Firestore: the drill without its id. */
 export type DrillData = Omit<Drill, 'id'>;

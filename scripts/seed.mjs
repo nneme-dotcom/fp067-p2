@@ -1,6 +1,6 @@
-// Carga los drills de src/app/data/drills.seed.json en Firestore.
-// Uso: npm run seed   (antes hay que rellenar src/app/firebase.config.json)
-// Cada drill se guarda con su id, así que repetir el comando no crea duplicados.
+// Loads the drills from src/app/data/drills.seed.json into Firestore.
+// Usage: npm run seed   (first fill in src/app/firebase.config.json)
+// Each drill is saved with its id, so running the command again does not create duplicates.
 import { readFile } from 'node:fs/promises';
 import { initializeApp } from 'firebase/app';
 import { doc, getFirestore, setDoc } from 'firebase/firestore';
@@ -23,5 +23,5 @@ for (const { id, ...data } of drills) {
 }
 
 console.log(`${drills.length} drills guardados.`);
-// Firestore deja la conexión abierta; salimos a mano
+// Firestore leaves the connection open; we exit by hand
 process.exit(0);

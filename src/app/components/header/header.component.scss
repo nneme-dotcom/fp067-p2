@@ -21,7 +21,7 @@
   min-height: 96px;
 }
 
-/* El águila detrás del lema, para que no quede un hueco vacío */
+/* The eagle behind the slogan, so there is no empty gap */
 .header-eagle {
   position: absolute;
   width: 150px;
@@ -48,7 +48,7 @@
   to { opacity: 1; transform: skewX(var(--eagles-slant)); }
 }
 
-/* En pantallas pequeñas el lema no cabe al lado del logo, así que lo escondemos */
+/* On small screens the slogan does not fit next to the logo, so we hide it */
 @media (max-width: 767.98px) {
   .slogan-wrap { display: none; }
 }

@@ -15,22 +15,22 @@ import { Drill, DrillData } from '../models/drill';
 
 const COLLECTION = 'drills';
 
-/** Todo lo que la app hace con la base de datos está aquí. */
+/** Everything the app does with the database is here. */
 @Injectable({ providedIn: 'root' })
 export class DrillsService {
   private readonly firestore = inject(Firestore);
   private readonly drillsRef = collection(this.firestore, COLLECTION);
 
-  /** Es false mientras no se hayan puesto los datos del proyecto en firebase.config.json. */
+  /** False until the project data is put in firebase.config.json. */
   readonly configured = !firebaseConfig.projectId.startsWith('YOUR_');
 
-  /** Se pone a true si Firestore no deja leer los datos. */
+  /** Set to true if Firestore does not allow reading the data. */
   readonly failed = signal(false);
 
   /**
-   * Los drills, siempre al día: Firestore avisa en cuanto algo cambia
-   * (aunque el cambio se haga desde la consola), sin recargar la página.
-   * Vale null mientras cargan.
+   * The drills, always up to date: Firestore tells us as soon as something changes
+   * (even if the change is made from the console), without reloading the page.
+   * It is null while they load.
    */
   readonly drills = toSignal(this.watchDrills(), { initialValue: null });
 
@@ -38,7 +38,7 @@ export class DrillsService {
     return addDoc(this.drillsRef, data).then((ref) => ref.id);
   }
 
-  /** Sustituye el documento entero, así un campo opcional que se vacía desaparece. */
+  /** Replaces the whole document, so an optional field that is emptied disappears. */
   update(id: string, data: DrillData): Promise<void> {
     return setDoc(doc(this.firestore, COLLECTION, id), data);
   }
@@ -53,7 +53,7 @@ export class DrillsService {
     }
 
     return (collectionData(this.drillsRef, { idField: 'id' }) as Observable<Drill[]>).pipe(
-      map((list) => [...list].sort((a, b) => a.nombre.localeCompare(b.nombre))),
+      map((list) => [...list].sort((a, b) => a.name.localeCompare(b.name))),
       catchError((err) => {
         console.error('Could not read the drills:', err);
         this.failed.set(true);

@@ -1,10 +1,10 @@
 /* ==========================================================
-   VBE Eagles Echternach · Los estilos de toda la app
-   Copiamos el estilo de la web del club (volleyball-echternach.lu):
-   fondo negro, verde lima y neón, Bebas Neue para los títulos e Inter para el texto.
+   VBE Eagles Echternach · Styles for the whole app
+   We copy the style of the club website (volleyball-echternach.lu):
+   black background, lime and neon green, Bebas Neue for titles and Inter for text.
    ========================================================== */
 
-/* La letra de los títulos (Bebas Neue), guardada en el proyecto. Es libre (licencia SIL OFL) */
+/* The title font (Bebas Neue), stored in the project. It is free (SIL OFL licence) */
 @font-face {
   font-family: 'Bebas Neue';
   font-style: normal;
@@ -27,19 +27,19 @@
 }
 
 :root {
-  /* Los fondos, del más oscuro al más claro */
+  /* Backgrounds, from darkest to lightest */
   --eagles-bg: #000000;
   --eagles-surface: #0f1010;
   --eagles-surface-alt: #1b1d1d;
   --eagles-surface-hover: #242727;
 
-  /* Los colores del club */
+  /* The club colours */
   --eagles-lime: #cddc39;
   --eagles-lime-light: #d4ff84;
   --eagles-neon: #6af778;
   --eagles-gradient: linear-gradient(40deg, var(--eagles-lime), var(--eagles-lime-light));
 
-  /* Colores del texto */
+  /* Text colours */
   --eagles-text: #ffffff;
   --eagles-text-soft: rgba(255, 255, 255, 0.7);
   --eagles-text-muted: rgba(255, 255, 255, 0.5);
@@ -48,15 +48,15 @@
   --eagles-radius: 0.75rem;
   --eagles-font-display: 'Bebas Neue', 'Arial Narrow', sans-serif;
 
-  /* Bebas Neue no tiene cursiva, así que la inclinamos nosotros
-     (si no, el navegador se inventa una y queda rara). */
+  /* Bebas Neue has no italic, so we slant it ourselves
+     (otherwise the browser makes one up and it looks odd). */
   --eagles-slant: -8deg;
 
-  /* Lo mínimo que debe medir un botón para tocarlo cómodo con el dedo */
+  /* Minimum size of a button so it is easy to tap with a finger */
   --eagles-touch: 44px;
 }
 
-/* Le decimos a Bootstrap que use nuestros colores en su modo oscuro */
+/* Tell Bootstrap to use our colours in its dark mode */
 [data-bs-theme='dark'] {
   --bs-body-font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --bs-body-bg: var(--eagles-bg);
@@ -73,7 +73,7 @@
 }
 
 body {
-  /* Un brillo verde suave de fondo, como en la web del club */
+  /* A soft green glow in the background, like on the club website */
   background:
     radial-gradient(ellipse at 85% -10%, rgba(106, 247, 120, 0.12), transparent 55%),
     radial-gradient(ellipse at 0% 100%, rgba(205, 220, 57, 0.06), transparent 50%),
@@ -99,7 +99,7 @@ body {
   line-height: 1;
   color: var(--eagles-lime);
 
-  /* La rayita lima inclinada que va antes de cada título */
+  /* The slanted lime dash before each title */
   &::before {
     content: '';
     flex-shrink: 0;
@@ -111,7 +111,7 @@ body {
   }
 }
 
-/* Para inclinar textos (nuestra «cursiva») */
+/* To slant text (our "italic") */
 .slanted {
   display: inline-block;
   font-style: normal;
@@ -139,7 +139,7 @@ body {
   color: var(--eagles-text);
 }
 
-/* Botones con los colores del club */
+/* Buttons with the club colours */
 .btn-eagles {
   --bs-btn-bg: var(--eagles-lime);
   --bs-btn-border-color: var(--eagles-lime);
@@ -164,7 +164,7 @@ body {
   --bs-btn-focus-shadow-rgb: 205, 220, 57;
 }
 
-/* Botones con tamaño cómodo para el dedo */
+/* Buttons with a size that is easy to tap */
 .btn-touch {
   display: inline-flex;
   align-items: center;
@@ -173,7 +173,7 @@ body {
   min-height: var(--eagles-touch);
 }
 
-/* Las barras deslizantes (vídeo y volumen) en lima */
+/* The sliders (video and volume) in lime */
 .form-range { accent-color: var(--eagles-lime); }
 .form-range::-webkit-slider-thumb { background-color: var(--eagles-lime); }
 .form-range::-moz-range-thumb { background-color: var(--eagles-lime); }
@@ -186,7 +186,7 @@ body {
   color: var(--eagles-on-lime);
 }
 
-/* Si en tu ordenador tienes activado «reducir movimiento», quitamos las animaciones */
+/* If "reduce motion" is on in the user's system, we remove the animations */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

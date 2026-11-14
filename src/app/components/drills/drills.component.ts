@@ -10,23 +10,23 @@ import { DrillFilterPipe } from '../../pipes/drill-filter.pipe';
   styleUrl: './drills.component.scss',
 })
 export class DrillsComponent {
-  /** Los drills de la base de datos. Vale null mientras cargan. */
+  /** The drills from the database. It is null while they load. */
   readonly drills = input<Drill[] | null>(null);
 
-  /** Es true si no se han podido leer los datos. */
+  /** True if the data could not be read. */
   readonly failed = input(false);
 
-  /** Qué drill está elegido (para pintarlo en lima). */
+  /** Which drill is selected (to colour it lime). */
   readonly selectedId = input<string | null>(null);
 
-  /** Avisos al componente principal. */
+  /** Events for the main component. */
   readonly drillSelected = output<Drill>();
   readonly drillDeleted = output<Drill>();
   readonly newClicked = output<void>();
 
   protected readonly spaces = SPACES;
 
-  /** Lo que has escrito en el buscador y el espacio elegido. */
+  /** What was typed in the search box and the chosen space. */
   protected readonly search = signal('');
   protected readonly space = signal<Space | ''>('');
 

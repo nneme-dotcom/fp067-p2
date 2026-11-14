@@ -2,11 +2,11 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Drill, Space } from '../models/drill';
 
 /**
- * El filtro de la lista. Recibe dos cosas:
- *  1. lo que escribes en el buscador → busca en el nombre y en el objetivo
- *  2. el espacio del desplegable    → vacío = todos
+ * The list filter. It receives two things:
+ *  1. what is typed in the search box → searches in the name and the objective
+ *  2. the space from the dropdown    → empty = all
  *
- * Se usa así: drills | drillFilter : texto : espacio
+ * Used like this: drills | drillFilter : text : space
  */
 @Pipe({ name: 'drillFilter' })
 export class DrillFilterPipe implements PipeTransform {
@@ -14,14 +14,14 @@ export class DrillFilterPipe implements PipeTransform {
     const term = normalize(search.trim());
 
     return drills.filter((d) => {
-      const matchesText = !term || normalize(`${d.nombre} ${d.objetivo}`).includes(term);
-      const matchesSpace = !space || d.espacio === space;
+      const matchesText = !term || normalize(`${d.name} ${d.objective}`).includes(term);
+      const matchesSpace = !space || d.space === space;
       return matchesText && matchesSpace;
     });
   }
 }
 
-/** Quita mayúsculas y tildes, para que «defensa» encuentre «Defensa» y «zaguera» a «zaguéra». */
+/** Removes capitals and accents, so "defence" finds "Defence", and the same for accented letters. */
 function normalize(value: string): string {
   return value
     .toLowerCase()

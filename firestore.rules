@@ -1,7 +1,7 @@
 rules_version = '2';
 
-// Reglas abiertas: la práctica pide poder leer y escribir sin identificarse.
-// Hay que cerrarlas (con login) antes de publicar la app de verdad.
+// Open rules: the assignment needs reading and writing without logging in.
+// They must be closed (with login) before publishing the app for real.
 service cloud.firestore {
   match /databases/{database}/documents {
     match /drills/{drillId} {

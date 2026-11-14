@@ -6,10 +6,10 @@ import { HeaderComponent } from './components/header/header.component';
 import { Drill, DrillData } from './models/drill';
 import { DrillsService } from './services/drills.service';
 
-/** Por debajo de este ancho (móvil) la lista y el detalle van uno debajo del otro. */
+/** Below this width (mobile) the list and the detail go one below the other. */
 const STACKED_LAYOUT = '(max-width: 767.98px)';
 
-/** Qué se enseña a la derecha: el detalle, el formulario de uno nuevo o el de editar. */
+/** What is shown on the right: the detail, the new drill form or the edit form. */
 type Mode = 'view' | 'new' | 'edit';
 
 interface Notice {
@@ -18,8 +18,8 @@ interface Notice {
 }
 
 /**
- * El componente principal hace de intermediario: la lista le avisa de lo que
- * pasa (elegir, borrar, nuevo) y él se lo cuenta al servicio y a los demás.
+ * The main component is the middleman: the list tells it what
+ * happens (select, delete, new) and it tells the service and the others.
  */
 @Component({
   selector: 'app-root',
@@ -40,8 +40,8 @@ export class App {
   protected readonly notice = signal<Notice | null>(null);
 
   /**
-   * El drill elegido, buscado cada vez en la lista que viene de Firestore.
-   * Así, si alguien lo cambia desde la consola, el detalle se actualiza solo.
+   * The selected drill, looked up each time in the list that comes from Firestore.
+   * This way, if someone changes it from the console, the detail updates by itself.
    */
   protected readonly selected = computed(
     () => this.drills()?.find((d) => d.id === this.selectedId()) ?? null,
@@ -66,13 +66,13 @@ export class App {
     this.selectedId.set(null);
     this.mode.set('view');
 
-    // Al cerrar, el cursor del teclado vuelve al drill que estaba abierto
+    // On close, the keyboard focus goes back to the drill that was open
     requestAnimationFrame(() =>
       document.querySelector<HTMLElement>(`[data-drill-id="${closedId}"]`)?.focus(),
     );
   }
 
-  /** Cancelar el formulario: si se editaba, volvemos al detalle; si era nuevo, a la lista. */
+  /** Cancel the form: if it was an edit, go back to the detail; if it was new, go to the list. */
   protected onCancelled(): void {
     this.mode.set('view');
   }
@@ -85,13 +85,13 @@ export class App {
       if (editing) {
         await this.service.update(editing.id, data);
         this.mode.set('view');
-        this.showNotice('success', `“${data.nombre}” was saved.`);
+        this.showNotice('success', `“${data.name}” was saved.`);
       } else {
         await this.service.add(data);
-        // Al terminar de añadir volvemos a la lista, para poder elegir otro drill
+        // After adding we go back to the list, so another drill can be chosen
         this.selectedId.set(null);
         this.mode.set('view');
-        this.showNotice('success', `“${data.nombre}” was added to the list.`);
+        this.showNotice('success', `“${data.name}” was added to the list.`);
       }
     } catch (err) {
       console.error('Could not save the drill:', err);
@@ -102,7 +102,7 @@ export class App {
   }
 
   protected async onDelete(drill: Drill): Promise<void> {
-    if (!window.confirm(`Delete “${drill.nombre}”? This cannot be undone.`)) return;
+    if (!window.confirm(`Delete “${drill.name}”? This cannot be undone.`)) return;
 
     try {
       await this.service.remove(drill.id);
@@ -110,7 +110,7 @@ export class App {
         this.selectedId.set(null);
         this.mode.set('view');
       }
-      this.showNotice('success', `“${drill.nombre}” was deleted.`);
+      this.showNotice('success', `“${drill.name}” was deleted.`);
     } catch (err) {
       console.error('Could not delete the drill:', err);
       this.showNotice('danger', 'The drill could not be deleted. Try again.');
@@ -128,7 +128,7 @@ export class App {
     this.noticeTimer = setTimeout(() => this.notice.set(null), 5000);
   }
 
-  /** En el móvil la zona de la derecha queda debajo de la lista, así que bajamos hasta ella. */
+  /** On mobile the right area is below the list, so we scroll down to it. */
   private scrollToZone(): void {
     if (window.matchMedia(STACKED_LAYOUT).matches) {
       requestAnimationFrame(() =>

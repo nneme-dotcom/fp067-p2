@@ -1,4 +1,4 @@
-/* La columna de la derecha se estira para medir lo mismo que la lista */
+/* The right column stretches to be as tall as the list */
 .drill-zone {
   align-self: stretch;
   scroll-margin-top: 1rem;
@@ -26,7 +26,7 @@
   color: var(--eagles-text-muted);
 }
 
-/* Aquí el título va centrado, así que le quitamos la rayita de la izquierda */
+/* Here the title is centred, so we remove the dash on the left */
 .empty-state .section-title {
   justify-content: center;
   text-align: center;

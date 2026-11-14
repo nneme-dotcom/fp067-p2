@@ -2,7 +2,7 @@
   container: drills-card / inline-size;
 }
 
-/* La lista nunca se sale de su tarjeta: si un nombre es muy largo, se corta con «…» */
+/* The list never goes outside its card: if a name is too long, it is cut with "…" */
 .drill-list {
   grid-template-columns: minmax(0, 1fr);
 }
@@ -13,7 +13,7 @@
   color: var(--eagles-text-muted);
 }
 
-/* Las filas entran una detrás de otra, como en cascada */
+/* The rows come in one after another, like a cascade */
 .drill-row {
   display: flex;
   gap: 0.5rem;
@@ -40,7 +40,7 @@
   color: var(--eagles-text);
   transition: background-color 0.15s, border-color 0.15s, transform 0.15s;
 
-  /* Al pasar el ratón aparece una rayita lima a la izquierda */
+  /* On hover a small lime dash appears on the left */
   &::before {
     content: '';
     position: absolute;
@@ -67,7 +67,7 @@
     outline-offset: 2px;
   }
 
-  /* El drill elegido se pinta en lima */
+  /* The selected drill is coloured lime */
   &.selected {
     background: var(--eagles-gradient);
     border-color: var(--eagles-lime);
@@ -116,7 +116,7 @@
 }
 
 .space-badge {
-  /* Que no baje de 12 px, que si no cuesta leerlo */
+  /* Keep it at 12 px or more, otherwise it is hard to read */
   font-size: 0.75rem;
   padding: 0.25em 0.55em;
   background: var(--eagles-lime);
@@ -148,14 +148,14 @@
   }
 }
 
-/* Buscador y desplegable, uno al lado del otro */
+/* Search box and dropdown, next to each other */
 .filters {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.5rem;
 }
 
-/* Si la tarjeta es estrecha, uno debajo del otro */
+/* If the card is narrow, one below the other */
 @container drills-card (max-width: 320px) {
   .filters { grid-template-columns: minmax(0, 1fr); }
 }

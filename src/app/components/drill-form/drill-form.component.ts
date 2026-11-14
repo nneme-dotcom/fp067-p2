@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { Drill, DrillData, SPACES, Space } from '../../models/drill';
 
-/** Enlace con http(s) o una ruta dentro de assets/. Vacío también vale (son datos opcionales). */
+/** Link with http(s) or a path inside assets/. Empty is also valid (they are optional). */
 const linkValidator: ValidatorFn = (control) => {
   const value = String(control.value ?? '').trim();
   return !value || /^(https?:\/\/|assets\/)\S+$/i.test(value) ? null : { link: true };
@@ -17,25 +17,25 @@ const linkValidator: ValidatorFn = (control) => {
 const text = (...validators: ValidatorFn[]) =>
   new FormControl('', { nonNullable: true, validators });
 
-/** El formulario con todos los datos del drill. */
+/** The form with all the drill data. */
 function buildForm() {
   return new FormGroup({
-    nombre: text(Validators.required, Validators.maxLength(80)),
-    objetivo: text(Validators.required, Validators.maxLength(300)),
-    jugadoras: new FormControl<number | null>(null, [
+    name: text(Validators.required, Validators.maxLength(80)),
+    objective: text(Validators.required, Validators.maxLength(300)),
+    players: new FormControl<number | null>(null, [
       Validators.required,
       Validators.min(1),
       Validators.max(40),
     ]),
-    espacio: new FormControl<Space | ''>('', { nonNullable: true, validators: [Validators.required] }),
-    descripcion: text(Validators.required, Validators.maxLength(1500)),
-    rolesFijos: text(Validators.maxLength(600)),
-    rotan: text(Validators.maxLength(600)),
-    secuencia: text(Validators.maxLength(2000)),
-    rotacion: text(Validators.maxLength(1000)),
-    progresiones: text(Validators.maxLength(1000)),
-    animacionUrl: text(linkValidator),
-    imagen: text(linkValidator),
+    space: new FormControl<Space | ''>('', { nonNullable: true, validators: [Validators.required] }),
+    description: text(Validators.required, Validators.maxLength(1500)),
+    fixedRoles: text(Validators.maxLength(600)),
+    rotating: text(Validators.maxLength(600)),
+    sequence: text(Validators.maxLength(2000)),
+    rotation: text(Validators.maxLength(1000)),
+    progressions: text(Validators.maxLength(1000)),
+    animationUrl: text(linkValidator),
+    image: text(linkValidator),
     video: text(linkValidator),
   });
 }
@@ -43,15 +43,15 @@ function buildForm() {
 type DrillForm = ReturnType<typeof buildForm>;
 type ControlName = keyof DrillForm['controls'];
 
-/** Los datos que no son obligatorios: si están vacíos no se guardan. */
+/** The fields that are not required: if they are empty they are not saved. */
 const OPTIONAL_FIELDS = [
-  'rolesFijos',
-  'rotan',
-  'secuencia',
-  'rotacion',
-  'progresiones',
-  'animacionUrl',
-  'imagen',
+  'fixedRoles',
+  'rotating',
+  'sequence',
+  'rotation',
+  'progressions',
+  'animationUrl',
+  'image',
   'video',
 ] as const;
 
@@ -62,10 +62,10 @@ const OPTIONAL_FIELDS = [
   styleUrl: './drill-form.component.scss',
 })
 export class DrillFormComponent {
-  /** El drill que se edita. Si no llega ninguno, el formulario es para uno nuevo. */
+  /** The drill being edited. If none arrives, the form is for a new one. */
   readonly drill = input<Drill | null>(null);
 
-  /** Es true mientras se está guardando (para bloquear el botón). */
+  /** True while saving (to block the button). */
   readonly saving = input(false);
 
   readonly saved = output<DrillData>();
@@ -74,26 +74,26 @@ export class DrillFormComponent {
   protected readonly spaces = SPACES;
   protected readonly form = buildForm();
 
-  /** Se pone a true al intentar guardar con errores, para enseñar el aviso de arriba. */
+  /** Set to true when saving with errors, to show the warning at the top. */
   protected readonly submitted = signal(false);
 
   protected readonly optionalTexts: { name: ControlName; label: string; rows: number; hint?: string }[] = [
-    { name: 'rolesFijos', label: 'Fixed roles', rows: 2 },
-    { name: 'rotan', label: 'Rotating players', rows: 2 },
-    { name: 'secuencia', label: 'Sequence', rows: 5, hint: 'One step per line.' },
-    { name: 'rotacion', label: 'Rotation after each action', rows: 3 },
-    { name: 'progresiones', label: 'Progressions and variants', rows: 3 },
+    { name: 'fixedRoles', label: 'Fixed roles', rows: 2 },
+    { name: 'rotating', label: 'Rotating players', rows: 2 },
+    { name: 'sequence', label: 'Sequence', rows: 5, hint: 'One step per line.' },
+    { name: 'rotation', label: 'Rotation after each action', rows: 3 },
+    { name: 'progressions', label: 'Progressions and variants', rows: 3 },
   ];
 
   protected readonly links: { name: ControlName; label: string }[] = [
-    { name: 'animacionUrl', label: '3D animation link' },
-    { name: 'imagen', label: 'Image URL' },
+    { name: 'animationUrl', label: '3D animation link' },
+    { name: 'image', label: 'Image URL' },
     { name: 'video', label: 'Video URL' },
   ];
 
   constructor() {
-    // Rellenamos el formulario solo cuando cambia el drill (no cada vez que Firestore
-    // manda una actualización), para no borrar lo que se está escribiendo.
+    // We fill the form only when the drill changes (not every time Firestore
+    // sends an update), so we do not erase what is being typed.
     effect(() => {
       const id = this.drill()?.id;
       untracked(() => this.fill(id ? this.drill() : null));
@@ -103,23 +103,23 @@ export class DrillFormComponent {
   private fill(drill: Drill | null): void {
     this.submitted.set(false);
     this.form.reset({
-      nombre: drill?.nombre ?? '',
-      objetivo: drill?.objetivo ?? '',
-      jugadoras: drill?.jugadoras ?? null,
-      espacio: drill?.espacio ?? '',
-      descripcion: drill?.descripcion ?? '',
-      rolesFijos: drill?.rolesFijos ?? '',
-      rotan: drill?.rotan ?? '',
-      secuencia: drill?.secuencia ?? '',
-      rotacion: drill?.rotacion ?? '',
-      progresiones: drill?.progresiones ?? '',
-      animacionUrl: drill?.animacionUrl ?? '',
-      imagen: drill?.imagen ?? '',
+      name: drill?.name ?? '',
+      objective: drill?.objective ?? '',
+      players: drill?.players ?? null,
+      space: drill?.space ?? '',
+      description: drill?.description ?? '',
+      fixedRoles: drill?.fixedRoles ?? '',
+      rotating: drill?.rotating ?? '',
+      sequence: drill?.sequence ?? '',
+      rotation: drill?.rotation ?? '',
+      progressions: drill?.progressions ?? '',
+      animationUrl: drill?.animationUrl ?? '',
+      image: drill?.image ?? '',
       video: drill?.video ?? '',
     });
   }
 
-  /** El mensaje de error de un campo, o null si está bien (o aún no se ha tocado). */
+  /** The error message of a field, or null if it is fine (or not touched yet). */
   protected error(name: ControlName): string | null {
     const control = this.form.controls[name];
     if (!control.touched || !control.errors) return null;
@@ -140,14 +140,14 @@ export class DrillFormComponent {
 
     const value = this.form.getRawValue();
     const data: DrillData = {
-      nombre: value.nombre.trim(),
-      objetivo: value.objetivo.trim(),
-      jugadoras: value.jugadoras!,
-      espacio: value.espacio as Space,
-      descripcion: value.descripcion.trim(),
+      name: value.name.trim(),
+      objective: value.objective.trim(),
+      players: value.players!,
+      space: value.space as Space,
+      description: value.description.trim(),
     };
 
-    // Firestore no admite valores «undefined», así que los opcionales vacíos se dejan fuera
+    // Firestore does not accept "undefined" values, so empty optional fields are left out
     for (const field of OPTIONAL_FIELDS) {
       const content = value[field].trim();
       if (content) data[field] = content;

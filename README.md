@@ -1,85 +1,97 @@
-# VBE Eagles Echternach · Drills (Producto 2)
+# VBE Eagles Echternach · Drills (Product 2)
 
-La biblioteca de ejercicios de voleibol del **VBE Eagles Echternach**. Eliges un ejercicio de la lista y ves su ficha: objetivo, roles, secuencia y rotación, con un enlace a su animación en 3D. También se pueden añadir ejercicios nuevos, editarlos y borrarlos.
+The volleyball drill library of **VBE Eagles Echternach**. You pick a drill from the list and see its page: objective, fixed roles, sequence and rotation, with a link to its 3D animation. You can also add new drills, edit them and delete them.
 
-Los datos están en Firestore (Firebase) y la web se actualiza sola cuando algo cambia, aunque el cambio se haga desde la consola.
+The data is in Firestore (Firebase) and the page updates by itself when something changes, even if the change is made from the console.
 
-Es el Producto 2 de la asignatura FP.451 *Desarrollo front-end con frameworks avanzados en entornos móviles* (CFGS DAW, UOC). Lo hago yo solo: Nadir Neme Rodriguez.
+This is Product 2 of the subject FP.451 *Front-end development with advanced frameworks in mobile environments* (CFGS DAW, UOC). I do it alone: Nadir Neme Rodriguez.
 
-- La web está en **inglés**, como en el Producto 1. Los textos de cada ejercicio están como los escribe el entrenador, en español.
-- Los logos, los colores y las letras son los de la web del club: [volleyball-echternach.lu](https://volleyball-echternach.lu/).
+- The UI and the drill content are both in **English**.
+- The logos, colours and fonts are the ones from the club website: [volleyball-echternach.lu](https://volleyball-echternach.lu/).
 
-## Qué necesitas
+## What you need
 
-- **Node.js 20.19, 22.12 o más nuevo** (o la versión 24).
-- Un proyecto de **Firebase** con Firestore. Vale el plan gratuito (Spark).
+- **Node.js 20.19, 22.12 or newer** (or version 24).
+- A **Firebase** project with Firestore. The free plan (Spark) is enough.
 
-## Cómo arrancarlo
+## How to run it
 
 ```bash
-npm install          # descarga lo necesario (solo la primera vez)
-npm start            # abre la web en http://localhost:4200
-npm run build        # prepara la versión final en la carpeta dist/
+npm install          # downloads what is needed (only the first time)
+npm start            # opens the app at http://localhost:4200
+npm run build        # builds the final version in the dist/ folder
 ```
 
-**En CodeSandbox** el proyecto ya trae la configuración para instalar todo y arrancar la web solo. Solo falta rellenar los datos de Firebase (siguiente apartado).
+**In CodeSandbox** the project already has the setup to install everything and start the app by itself. Only the Firebase data is missing (next section).
 
-## Conectar con Firebase
+## Connect to Firebase
 
-1. En la [consola de Firebase](https://console.firebase.google.com/) crea un proyecto.
-2. En **Firestore Database**, crea la base de datos en una región cercana.
-3. En la pestaña **Reglas**, pega el contenido de `firestore.rules` y publica.
-4. En **Configuración del proyecto → Tus apps**, añade una app web y copia sus datos en `src/app/firebase.config.json`.
-5. Carga los ejercicios de ejemplo:
+1. In the [Firebase console](https://console.firebase.google.com/) create a project.
+2. In **Firestore Database**, create the database in a nearby region.
+3. In the **Rules** tab, paste the content of `firestore.rules` and publish.
+4. In **Project settings → Your apps**, add a web app and copy its data into `src/app/firebase.config.json`.
+5. Load the example drills:
 
    ```bash
    npm run seed
    ```
 
-   Cada ejercicio se guarda con un nombre fijo, así que se puede repetir sin crear duplicados.
+   Each drill is saved with a fixed id, so the command can be repeated without creating duplicates.
 
-Mientras `firebase.config.json` siga con los valores de ejemplo, la web avisa de que falta configurarlo.
+While `firebase.config.json` still has the example values, the app shows a message saying it is not configured yet.
 
-## Qué hace la web
+## What the app does
 
-| Lo que pide el producto | Cómo está hecho |
+| What the product asks for | How it is done |
 |---|---|
-| **La base de datos** | Colección `drills` en Firestore. Cada ejercicio tiene nombre, objetivo, jugadoras, espacio y descripción, y de forma opcional roles, secuencia, rotación, progresiones, enlace a la animación, imagen y vídeo. |
-| **La lista** (`DrillsComponent`) | Lee los ejercicios en directo. Cada fila lleva su icono de borrar (pide confirmación) y el botón **New drill** abre el formulario. Tiene buscador y filtro por espacio. |
-| **El detalle** (`DetailComponent`) | Muestra todos los datos. El botón **Edit** abre el formulario con los datos puestos. Si el ejercicio tiene vídeo sale el reproductor, y si tiene animación sale un botón para abrirla. |
-| **El alta** (`DrillFormComponent`) | Un mismo formulario sirve para crear y para editar. Los campos obligatorios avisan si faltan, y los enlaces se comprueban. Al guardar sale un aviso y se vuelve a la lista para elegir otro ejercicio. |
+| **The database** | Collection `drills` in Firestore. Each drill has `name`, `objective`, `players`, `space` and `description`, and optionally `fixedRoles`, `rotating`, `sequence`, `rotation`, `progressions`, `animationUrl`, `image` and `video`. |
+| **The list** (`DrillsComponent`) | Reads the drills live. Each row has its delete icon (it asks for confirmation) and the **New drill** button opens the form. It has a search box and a filter by space. |
+| **The detail** (`DetailComponent`) | Shows all the data. The **Edit** button opens the form with the data filled in. If the drill has a video, the player is shown, and if it has an animation, a button to open it is shown. |
+| **The form** (`DrillFormComponent`) | The same form is used to create and to edit. Required fields show a message if they are missing, and the links are checked. After saving, a message is shown and the app goes back to the list to pick another drill. |
 
-## Dónde está cada cosa
+## Animations
+
+The 3D animations are HTML files in `public/assets/animations/`:
+
+- `defence-6-cross-court-4`
+- `defence-attack-4-or-2`
+- `pepper-traditional`
+- `pepper-3-consecutive`
+- `pepper-short`
+
+A drill points to its animation with the `animationUrl` field.
+
+## Where everything is
 
 ```
 src/app/
-├── models/drill.ts                  Qué datos tiene cada ejercicio
-├── services/drills.service.ts       Todo lo que se hace con Firestore (leer, añadir, editar, borrar)
-├── pipes/drill-filter.pipe.ts       El filtro de la lista
-├── firebase.config.json             Los datos del proyecto de Firebase
-├── data/drills.seed.json            Los ejercicios de ejemplo
+├── models/drill.ts                  The data each drill has
+├── services/drills.service.ts       Everything done with Firestore (read, add, edit, delete)
+├── pipes/drill-filter.pipe.ts       The list filter
+├── firebase.config.json             The Firebase project data
+├── data/drills.seed.json            The example drills
 ├── components/
-│   ├── header/                      La cabecera con el logo y el lema #goeagles
-│   ├── drills/                      La lista con el buscador
-│   ├── detail/                      La ficha del ejercicio
-│   ├── drill-form/                  El formulario de alta y edición
-│   └── media/                       El reproductor de vídeo
-└── app.ts / app.html / app.scss     La página que lo junta todo
-scripts/seed.mjs                     Carga los ejercicios de ejemplo en Firestore
-firestore.rules                      Las reglas de la base de datos
+│   ├── header/                      The header with the logo and the #goeagles slogan
+│   ├── drills/                      The list with the search box
+│   ├── detail/                      The drill page
+│   ├── drill-form/                  The form to add and edit
+│   └── media/                       The video player
+└── app.ts / app.html / app.scss     The page that puts it all together
+scripts/seed.mjs                     Loads the example drills into Firestore
+firestore.rules                      The database rules
 ```
 
-## Algunas decisiones
+## Some decisions
 
-- **Angular 21, no 22.** `@angular/fire` todavía no tiene versión estable para Angular 22 (solo una candidata, la `22.0.0-rc.0`), así que uso Angular 21 con la última versión estable de `@angular/fire`.
-- **Imagen, vídeo y animación son enlaces.** No se suben ficheros: Cloud Storage obliga a pasar al plan de pago de Firebase. El formulario acepta enlaces con `https://` o rutas dentro de `assets/`.
-- **Reglas abiertas.** Cualquiera puede leer y escribir, porque la práctica lo pide así. Antes de publicar la web de verdad habría que pedir un inicio de sesión.
-- **Las animaciones tienen su propio estilo.** La web es negra y lima como la del club; las animaciones 3D de cada ejercicio conservan su estética y se abren aparte.
+- **Angular 21, not 22.** `@angular/fire` does not have a stable version for Angular 22 yet (only a release candidate, `22.0.0-rc.0`), so I use Angular 21 with the latest stable version of `@angular/fire`.
+- **Image, video and animation are links.** Files are not uploaded: Cloud Storage forces a move to the paid Firebase plan. The form accepts links with `https://` or paths inside `assets/`.
+- **Open rules.** Anyone can read and write, because the assignment asks for it. Before publishing the app for real, a login would be needed.
+- **The animations have their own style.** The app is black and lime like the club website; the 3D animation of each drill keeps its own look and opens separately.
 
-## Hitos
+## Milestones
 
-| Etiqueta | Qué incluye |
+| Tag | What it includes |
 |---|---|
-| `v2.0-setup` | La base del proyecto: Angular 21, Bootstrap, letras y configuración |
-| `v2.1-firestore` | El modelo, el servicio de Firestore, el filtro y los datos de ejemplo |
-| `v2.2-crud` | La lista, el detalle, el formulario y el reproductor |
+| `v2.0-setup` | The project base: Angular 21, Bootstrap, fonts and setup |
+| `v2.1-firestore` | The model, the Firestore service, the filter and the example data |
+| `v2.2-crud` | The list, the detail, the form and the video player |

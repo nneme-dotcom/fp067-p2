@@ -9,21 +9,21 @@ import { MediaComponent } from '../media/media.component';
   styleUrl: './detail.component.scss',
 })
 export class DetailComponent {
-  /** El drill que hay que mostrar (nos lo pasa el componente principal). */
+  /** The drill to show (the main component gives it to us). */
   readonly drill = input.required<Drill>();
 
-  /** Avisos al componente principal: editar o cerrar. */
+  /** Events for the main component: edit or close. */
   readonly edit = output<void>();
   readonly closed = output<void>();
 
-  /** Los pasos de la secuencia: cada línea del texto es un paso. */
+  /** The steps of the sequence: each line of the text is one step. */
   protected readonly steps = computed(() =>
-    (this.drill().secuencia ?? '')
+    (this.drill().sequence ?? '')
       .split('\n')
       .map((line) => line.trim())
       .filter(Boolean),
   );
 
-  /** La imagen que no se ha podido cargar, para no enseñar el icono de imagen rota. */
+  /** The image that failed to load, so we do not show the broken image icon. */
   protected readonly brokenImage = signal<string | null>(null);
 }

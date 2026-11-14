@@ -6,34 +6,34 @@ import { Component, ElementRef, input, signal, viewChild } from '@angular/core';
   styleUrl: './media.component.scss',
 })
 export class MediaComponent {
-  /** Dirección del vídeo. */
+  /** Video URL. */
   readonly src = input.required<string>();
 
-  /** Para describir el vídeo a quien usa lector de pantalla. */
+  /** To describe the video for screen reader users. */
   readonly label = input.required<string>();
 
-  /** El vídeo de la página, para poder darle órdenes (play, pausa...). */
+  /** The video element on the page, so we can control it (play, pause...). */
   private readonly videoRef = viewChild.required<ElementRef<HTMLVideoElement>>('video');
 
-  /** Cómo está el reproductor ahora mismo (se actualiza cuando el vídeo cambia). */
+  /** Current state of the player (updated when the video changes). */
   protected readonly isPlaying = signal(false);
   protected readonly currentTime = signal(0);
   protected readonly duration = signal(0);
   protected readonly volume = signal(0.8);
   protected readonly muted = signal(false);
-  /** La forma del vídeo (ancho / alto). Hasta que carga suponemos que es apaisado. */
+  /** The shape of the video (width / height). Until it loads we assume it is landscape. */
   protected readonly aspectRatio = signal('16 / 9');
-  /** Se pone a true si la dirección no lleva a un vídeo que se pueda reproducir. */
+  /** Set to true if the URL does not lead to a video that can be played. */
   protected readonly loadFailed = signal(false);
 
   private get video(): HTMLVideoElement {
     return this.videoRef().nativeElement;
   }
 
-  // ---------- Lo que hacen los botones ----------
+  // ---------- What the buttons do ----------
 
   protected play(): void {
-    // A veces el navegador no deja reproducir; si pasa, lo apuntamos en la consola y seguimos
+    // Sometimes the browser does not allow playback; if so, we log it in the console and carry on
     this.video.play().catch((err) => console.warn('Video could not be played:', err));
   }
 
@@ -41,7 +41,7 @@ export class MediaComponent {
     this.video.pause();
   }
 
-  /** El navegador no trae botón de stop, así que lo hacemos a mano: pausa y vuelta al principio. */
+  /** The browser has no stop button, so we do it by hand: pause and go back to the start. */
   protected stop(): void {
     this.video.pause();
     this.video.currentTime = 0;
@@ -55,7 +55,7 @@ export class MediaComponent {
     }
   }
 
-  /** Al mover la barra, saltamos a ese momento del vídeo. */
+  /** When the bar is moved, we jump to that point of the video. */
   protected seek(event: Event): void {
     this.video.currentTime = Number((event.target as HTMLInputElement).value);
   }
@@ -73,12 +73,12 @@ export class MediaComponent {
     }
   }
 
-  // ---------- Lo que nos cuenta el vídeo (para tener la pantalla al día) ----------
+  // ---------- What the video tells us (to keep the screen up to date) ----------
 
   protected onLoadedMetadata(): void {
     this.loadFailed.set(false);
     this.duration.set(this.video.duration || 0);
-    // Ajustamos el marco a la forma del vídeo para que no queden franjas negras
+    // We fit the frame to the shape of the video so there are no black bars
     if (this.video.videoWidth && this.video.videoHeight) {
       this.aspectRatio.set(`${this.video.videoWidth} / ${this.video.videoHeight}`);
     }
@@ -99,7 +99,7 @@ export class MediaComponent {
     this.muted.set(this.video.muted);
   }
 
-  /** Pasa segundos a minutos: 75 → "1:15" */
+  /** Converts seconds to minutes: 75 → "1:15" */
   protected formatTime(seconds: number): string {
     const s = Math.floor(seconds);
     return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;

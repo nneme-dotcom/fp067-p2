@@ -7,7 +7,7 @@
   color: var(--eagles-text-muted);
 }
 
-/* Los textos largos no necesitan la altura mínima de los botones */
+/* Long text fields do not need the minimum button height */
 textarea.form-control {
   min-height: 0;
 }

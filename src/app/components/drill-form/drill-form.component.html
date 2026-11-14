@@ -8,72 +8,72 @@
       <p class="alert alert-danger" role="alert">Some fields need your attention before saving.</p>
     }
 
-    <!-- Datos obligatorios -->
+    <!-- Required fields -->
     <div class="mb-3">
-      <label for="nombre" class="form-label">Name <span class="required" aria-hidden="true">*</span></label>
+      <label for="name" class="form-label">Name <span class="required" aria-hidden="true">*</span></label>
       <input
-        id="nombre"
+        id="name"
         type="text"
         class="form-control"
-        formControlName="nombre"
+        formControlName="name"
         autocomplete="off"
-        [class.is-invalid]="error('nombre')"
-        [attr.aria-invalid]="error('nombre') ? true : null"
-        aria-describedby="nombre-error"
+        [class.is-invalid]="error('name')"
+        [attr.aria-invalid]="error('name') ? true : null"
+        aria-describedby="name-error"
         required
       />
-      @if (error('nombre'); as message) {
-        <div id="nombre-error" class="invalid-feedback d-block">{{ message }}</div>
+      @if (error('name'); as message) {
+        <div id="name-error" class="invalid-feedback d-block">{{ message }}</div>
       }
     </div>
 
     <div class="mb-3">
-      <label for="objetivo" class="form-label">Objective <span class="required" aria-hidden="true">*</span></label>
+      <label for="objective" class="form-label">Objective <span class="required" aria-hidden="true">*</span></label>
       <textarea
-        id="objetivo"
+        id="objective"
         class="form-control"
         rows="2"
-        formControlName="objetivo"
-        [class.is-invalid]="error('objetivo')"
-        [attr.aria-invalid]="error('objetivo') ? true : null"
-        aria-describedby="objetivo-error"
+        formControlName="objective"
+        [class.is-invalid]="error('objective')"
+        [attr.aria-invalid]="error('objective') ? true : null"
+        aria-describedby="objective-error"
         required
       ></textarea>
-      @if (error('objetivo'); as message) {
-        <div id="objetivo-error" class="invalid-feedback d-block">{{ message }}</div>
+      @if (error('objective'); as message) {
+        <div id="objective-error" class="invalid-feedback d-block">{{ message }}</div>
       }
     </div>
 
     <div class="row g-3 mb-3">
       <div class="col-sm-6">
-        <label for="jugadoras" class="form-label">Players <span class="required" aria-hidden="true">*</span></label>
+        <label for="players" class="form-label">Players <span class="required" aria-hidden="true">*</span></label>
         <input
-          id="jugadoras"
+          id="players"
           type="number"
           inputmode="numeric"
           min="1"
           max="40"
           class="form-control"
-          formControlName="jugadoras"
-          [class.is-invalid]="error('jugadoras')"
-          [attr.aria-invalid]="error('jugadoras') ? true : null"
-          aria-describedby="jugadoras-error"
+          formControlName="players"
+          [class.is-invalid]="error('players')"
+          [attr.aria-invalid]="error('players') ? true : null"
+          aria-describedby="players-error"
           required
         />
-        @if (error('jugadoras'); as message) {
-          <div id="jugadoras-error" class="invalid-feedback d-block">{{ message }}</div>
+        @if (error('players'); as message) {
+          <div id="players-error" class="invalid-feedback d-block">{{ message }}</div>
         }
       </div>
 
       <div class="col-sm-6">
-        <label for="espacio" class="form-label">Space <span class="required" aria-hidden="true">*</span></label>
+        <label for="space" class="form-label">Space <span class="required" aria-hidden="true">*</span></label>
         <select
-          id="espacio"
+          id="space"
           class="form-select"
-          formControlName="espacio"
-          [class.is-invalid]="error('espacio')"
-          [attr.aria-invalid]="error('espacio') ? true : null"
-          aria-describedby="espacio-error"
+          formControlName="space"
+          [class.is-invalid]="error('space')"
+          [attr.aria-invalid]="error('space') ? true : null"
+          aria-describedby="space-error"
           required
         >
           <option value="" disabled>Choose…</option>
@@ -81,30 +81,30 @@
             <option [value]="s">{{ s }}</option>
           }
         </select>
-        @if (error('espacio'); as message) {
-          <div id="espacio-error" class="invalid-feedback d-block">{{ message }}</div>
+        @if (error('space'); as message) {
+          <div id="space-error" class="invalid-feedback d-block">{{ message }}</div>
         }
       </div>
     </div>
 
     <div class="mb-3">
-      <label for="descripcion" class="form-label">Description <span class="required" aria-hidden="true">*</span></label>
+      <label for="description" class="form-label">Description <span class="required" aria-hidden="true">*</span></label>
       <textarea
-        id="descripcion"
+        id="description"
         class="form-control"
         rows="3"
-        formControlName="descripcion"
-        [class.is-invalid]="error('descripcion')"
-        [attr.aria-invalid]="error('descripcion') ? true : null"
-        aria-describedby="descripcion-error"
+        formControlName="description"
+        [class.is-invalid]="error('description')"
+        [attr.aria-invalid]="error('description') ? true : null"
+        aria-describedby="description-error"
         required
       ></textarea>
-      @if (error('descripcion'); as message) {
-        <div id="descripcion-error" class="invalid-feedback d-block">{{ message }}</div>
+      @if (error('description'); as message) {
+        <div id="description-error" class="invalid-feedback d-block">{{ message }}</div>
       }
     </div>
 
-    <!-- Datos opcionales -->
+    <!-- Optional fields -->
     @for (field of optionalTexts; track field.name) {
       <div class="mb-3">
         <label [for]="field.name" class="form-label">{{ field.label }}</label>

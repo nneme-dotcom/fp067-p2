@@ -1,4 +1,4 @@
-/* El detalle son varias piezas, una debajo de otra */
+/* The detail is several parts, one below the other */
 :host {
   display: flex;
   flex-direction: column;
@@ -57,7 +57,7 @@
   font-size: 1.1rem;
 }
 
-/* En pantallas estrechas el nombre y los botones van uno debajo del otro */
+/* On narrow screens the name and the buttons go one below the other */
 @media (max-width: 575.98px) {
   .detail-hero {
     flex-direction: column;
@@ -93,7 +93,7 @@
     color: var(--eagles-text);
   }
 
-  /* Respeta los saltos de línea que se escribieron en el formulario */
+  /* Keeps the line breaks that were typed in the form */
   .text {
     white-space: pre-line;
     color: var(--eagles-text-soft);
