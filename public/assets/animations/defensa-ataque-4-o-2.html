@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Defensa y Ataque 4 o 2</title>
+<title>Defence and Attack from 4 or 2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap">
 <style>
@@ -73,95 +73,95 @@ dt{color:var(--muted)} dd{margin:0}
 <div class="app">
   <header class="top">
     <div>
-      <p class="eyebrow">Drill · Defensa y transición</p>
-      <h1>Defensa y ataque desde 4 o 2</h1>
+      <p class="eyebrow">Drill · Defence and transition</p>
+      <h1>Defence and attack from 4 or 2</h1>
     </div>
-    <div class="meta"><span id="metaMode">Ataque desde 4 · diagonal</span> · 12 jugadoras · pista completa · rally continuo · sin bloqueo</div>
+    <div class="meta"><span id="metaMode">Attack from 4 · cross-court</span> · 12 players · full court · continuous rally · no block</div>
   </header>
 
   <main class="layout">
     <section class="stage-card">
       <div class="stage" id="stage">
         <div class="caption" aria-live="polite">
-          <span class="step" id="capStep">Acción 0</span>
-          <p class="main" id="capMain">Posiciones iniciales</p>
+          <span class="step" id="capStep">Action 0</span>
+          <p class="main" id="capMain">Starting positions</p>
           <p class="sub" id="capSub"></p>
         </div>
-        <div class="cams" role="group" aria-label="Cámara">
-          <button class="chip" data-cam="iso" aria-pressed="true">Isométrica</button>
-          <button class="chip" data-cam="lat" aria-pressed="false">Lateral</button>
-          <button class="chip" data-cam="top" aria-pressed="false">Cenital</button>
-          <button class="chip" data-cam="back" aria-pressed="false">Fondo A</button>
+        <div class="cams" role="group" aria-label="Camera">
+          <button class="chip" data-cam="iso" aria-pressed="true">Isometric</button>
+          <button class="chip" data-cam="lat" aria-pressed="false">Side</button>
+          <button class="chip" data-cam="top" aria-pressed="false">Top</button>
+          <button class="chip" data-cam="back" aria-pressed="false">Back</button>
         </div>
       </div>
       <div class="controls">
         <div class="row">
           <div class="transport">
-            <button class="btn" id="prev" title="Acción anterior (←)" aria-label="Acción anterior"><svg viewBox="0 0 24 24"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
-            <button class="btn play" id="play" title="Reproducir / pausa (espacio)" aria-label="Pausa"><svg viewBox="0 0 24 24" id="playIcon"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg></button>
-            <button class="btn" id="next" title="Acción siguiente (→)" aria-label="Acción siguiente"><svg viewBox="0 0 24 24"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
+            <button class="btn" id="prev" title="Previous action (←)" aria-label="Previous action"><svg viewBox="0 0 24 24"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
+            <button class="btn play" id="play" title="Play / pause (space)" aria-label="Pause"><svg viewBox="0 0 24 24" id="playIcon"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg></button>
+            <button class="btn" id="next" title="Next action (→)" aria-label="Next action"><svg viewBox="0 0 24 24"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
           </div>
           <span class="time" id="time">0.0 s</span>
-          <div class="group" role="group" aria-label="Velocidad">
-            <span class="lbl">Vel.</span>
+          <div class="group" role="group" aria-label="Speed">
+            <span class="lbl">Speed</span>
             <button class="chip" data-speed="0.5" aria-pressed="false">0.5×</button>
             <button class="chip" data-speed="1" aria-pressed="true">1×</button>
             <button class="chip" data-speed="1.5" aria-pressed="false">1.5×</button>
           </div>
           <span class="spacer"></span>
-          <div class="group" role="group" aria-label="Capas">
-            <button class="chip" data-tog="zones" aria-pressed="true">Zonas</button>
-            <button class="chip" data-tog="trail" aria-pressed="true">Trayectoria</button>
-            <button class="chip" data-tog="tags" aria-pressed="true">Números</button>
+          <div class="group" role="group" aria-label="Layers">
+            <button class="chip" data-tog="zones" aria-pressed="true">Zones</button>
+            <button class="chip" data-tog="trail" aria-pressed="true">Ball path</button>
+            <button class="chip" data-tog="tags" aria-pressed="true">Numbers</button>
           </div>
         </div>
         <div class="timeline">
           <div class="ticks" id="ticks"></div>
-          <input type="range" id="scrub" min="0" max="100" step="0.01" value="0" aria-label="Línea de tiempo">
+          <input type="range" id="scrub" min="0" max="100" step="0.01" value="0" aria-label="Timeline">
         </div>
       </div>
     </section>
 
     <aside class="panel">
-      <h2>Ficha del ejercicio</h2>
+      <h2>Drill sheet</h2>
       <div class="cfg">
-        <h3>Configuración</h3>
-        <div class="group" role="group" aria-label="Zona de ataque">
-          <span class="lbl">Ataque</span>
-          <button class="chip" data-mode="4" aria-pressed="true">Desde 4</button>
-          <button class="chip" data-mode="2" aria-pressed="false">Desde 2</button>
+        <h3>Set-up</h3>
+        <div class="group" role="group" aria-label="Attack zone">
+          <span class="lbl">Attack</span>
+          <button class="chip" data-mode="4" aria-pressed="true">From 4</button>
+          <button class="chip" data-mode="2" aria-pressed="false">From 2</button>
         </div>
-        <div class="group" role="group" aria-label="Dirección del ataque">
-          <span class="lbl">Dirección</span>
-          <button class="chip" data-dir="diag" aria-pressed="true">Diagonal</button>
-          <button class="chip" data-dir="line" aria-pressed="false">Paralela</button>
+        <div class="group" role="group" aria-label="Attack direction">
+          <span class="lbl">Direction</span>
+          <button class="chip" data-dir="diag" aria-pressed="true">Cross-court</button>
+          <button class="chip" data-dir="line" aria-pressed="false">Down the line</button>
         </div>
       </div>
       <div>
-        <h3>Jugadoras</h3>
+        <h3>Players</h3>
         <div class="legend">
-          <div><span class="dot" style="background:var(--pale)"></span>Rotan (1–8)</div>
-          <div><span class="dot" style="background:var(--red)"></span>Armadora · entre 2 y 3</div>
-          <div><span class="dot" style="background:var(--gold)"></span>Líbero · zona 5</div>
-          <div><span class="dot" style="background:var(--coach)"></span>Entrenador</div>
+          <div><span class="dot" style="background:var(--pale)"></span>Rotating (1–8)</div>
+          <div><span class="dot" style="background:var(--red)"></span>Setter · between 2 and 3</div>
+          <div><span class="dot" style="background:var(--gold)"></span>Libero · zone 5</div>
+          <div><span class="dot" style="background:var(--coach)"></span>Coach</div>
         </div>
       </div>
       <div>
-        <h3>Secuencia</h3>
+        <h3>Sequence</h3>
         <ol id="seqList"></ol>
       </div>
       <div>
-        <h3>Rotación tras cada ataque</h3>
+        <h3>Rotation after each attack</h3>
         <dl id="rotList"></dl>
       </div>
       <div>
-        <h3>Espacio</h3>
+        <h3>Space</h3>
         <dl>
-          <dt>Espera</dt><dd>Fuera del campo, detrás de zona 6 · 1 por campo</dd>
-          <dt>Reglas</dt><dd>Sin bloqueo y sin puntuación por ahora</dd>
+          <dt>Waiting</dt><dd>Outside the court, behind zone 6 · 1 per court</dd>
+          <dt>Rules</dt><dd>No block and no scoring for now</dd>
         </dl>
       </div>
-      <button class="chip reseed" id="reseed">Nueva secuencia de defensoras</button>
+      <button class="chip reseed" id="reseed">New sequence of diggers</button>
       <p class="note" id="noteDef"></p>
     </aside>
   </main>
@@ -244,10 +244,10 @@ for(const z of [-4.5,4.5])for(let i=0;i<8;i++){const a=cyl(0.012,0.012,0.1,basic
 const zoneGroup=[];
 const ZN=[[1,-7.5,3],[6,-7.5,0],[5,-7.5,-3],[4,-1.5,-3],[3,-1.5,0],[2,-1.5,3]];
 for(const [n,x,z] of ZN){zoneGroup.push(floorText(String(n),x,z,1.3,1.3,200,.42));zoneGroup.push(floorText(String(n),-x,-z,1.3,1.3,200,.42));}
-floorText('CAMPO A',-5,6.3,3.2,0.8,90,.85,512,128);
-floorText('CAMPO B',5,-6.3,3.2,0.8,90,.85,512,128);
-floorText('ESPERA',-11.2,1.2,2.2,0.55,90,.75,512,128);
-floorText('ESPERA',11.2,-1.2,2.2,0.55,90,.75,512,128);
+floorText('COURT A',-5,6.3,3.2,0.8,90,.85,512,128);
+floorText('COURT B',5,-6.3,3.2,0.8,90,.85,512,128);
+floorText('WAITING',-11.2,1.2,2.2,0.55,90,.75,512,128);
+floorText('WAITING',11.2,-1.2,2.2,0.55,90,.75,512,128);
 
 /* ---------- Figuras ---------- */
 const L1=0.44,L2=0.465;
@@ -382,14 +382,14 @@ const MODES={
        HITB:{x:-1.2,y:2.72,z:2.85},W:[{x:-1.0,z:5.9},{x:1.0,z:5.9},{x:9.4,z:5.9}],
        sets:{diag:['1','2','6'],line:['5','6']}}
 };
-const DIRN={diag:'diagonal',line:'paralela'};
+const DIRN={diag:'Cross-court',line:'Down-the-line'};
 let MODE='4',DIR='diag';
 const slot=i=>({x:-10.25-0.8*i,z:0});
 const COACH={x:4.6,z:6.4}, COACH_HAND={x:4.45,y:1.2,z:6.2}, COACH_HIT={x:4.35,y:2.3,z:6.05};
 const COACH_FACE=Math.atan2(-1,-0.55);
 const N=16, PER=3.15, T0=2.2;
 const SIDE=['A','B'];
-const name=id=>id[0]==='r'?'#'+id.slice(1):id[0]==='L'?'la líbero':id[0]==='S'?'la armadora':'el entrenador';
+const name=id=>id[0]==='r'?'#'+id.slice(1):id[0]==='L'?'the libero':id[0]==='S'?'the setter':'the coach';
 
 let tracks,ballSegs,events,TOTAL;
 function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
@@ -424,7 +424,7 @@ function build(seed){
   key('C',1.9,COACH,'stand',{face:COACH_FACE});
   ballSegs.push({t0:0.72,t1:1.2,p0:COACH_HAND,p1:COACH_HIT,h:0.45});
   ballSegs.push({t0:1.2,t1:T0,p0:COACH_HIT,p1:digBall[0],h:1.4});
-  events.push({t:1.2,kind:'coach',actor:'C',main:'El entrenador ataca sobre el campo A',sub:'Desde fuera del campo B. Solo para iniciar el rally.'});
+  events.push({t:1.2,kind:'coach',actor:'C',main:'The coach attacks onto court A',sub:'From outside court B. Only to start the rally.'});
 
   for(let k=0;k<N;k++){
     const s=k%2,o=1-s,X=st[s];
@@ -437,15 +437,15 @@ function build(seed){
     key(def,T-0.8,base,'ready');key(def,T-0.48,base,'split',{y:0.07});key(def,T-0.36,base,'ready');
     key(def,T-0.1,dp,'dig');key(def,T+0.02,dp,'dig');key(def,T+0.22,dp,'digFollow');key(def,T+0.6,dp,'ready');
     if(def!==X.atk)key(def,T+1.4,base,'ready');
-    events.push({t:T,kind:'dig',actor:def,main:`Defiende ${name(def)} en zona ${r}`,sub:`Campo ${SIDE[s]} · el balón va a la armadora`});
+    events.push({t:T,kind:'dig',actor:def,main:`${name(def)} digs at zone ${r}`,sub:`Court ${SIDE[s]} · the ball goes to the setter`});
     // armadora: siempre mirando a 4; con ataque por 2 coloca de espaldas
     const sid='S'+s,faceSet=(s?0:Math.PI),back=MODE==='2';
     key(sid,T-0.2,S(s,R23),'ready');key(sid,tSet-0.4,S(s,SP),'ready');
     key(sid,tSet-0.22,S(s,SP),back?'setBackLoad':'setLoad',{face:faceSet});key(sid,tSet-0.04,S(s,SP),back?'setBackLoad':'setLoad',{face:faceSet});
     key(sid,tSet+0.12,S(s,SP),back?'setBack':'setPush',{face:faceSet});key(sid,tSet+0.3,S(s,SP),back?'setBack':'setPush',{face:faceSet});
     key(sid,tSet+0.65,S(s,SP),'ready');key(sid,tHit+1.3,S(s,R23),'ready');
-    events.push({t:tSet,kind:'set',actor:sid,main:`Coloca la armadora a zona ${M.atk}`,
-      sub:`Campo ${SIDE[s]} · ${back?'de espaldas':'de frente'} · para ${name(X.atk)}`});
+    events.push({t:tSet,kind:'set',actor:sid,main:`The setter sets to zone ${M.atk}`,
+      sub:`Court ${SIDE[s]} · ${back?'back to the target':'facing the target'} · for ${name(X.atk)}`});
     // atacante
     const A=X.atk;
     if(r!==M.atk)key(A,T-0.1,S(s,ZP[M.atk]),'ready');
@@ -476,8 +476,8 @@ function build(seed){
     key(X.mid,tHit+0.1,S(s,ZP[M.mid]),'ready');key(X.mid,tHit+1.5,S(s,ZP[M.atk]),'ready');
     key(X.entry,tHit+0.1,S(s,ZP[M.entry]),'ready');key(X.entry,tHit+1.5,S(s,ZP[M.mid]),'ready');
     const last=k===N-1;
-    events.push({t:tHit,kind:'hit',actor:A,main:`Ataque ${DIRN[DIR]} de ${name(A)} desde ${M.atk}`,
-      sub:`Después: ${name(A)} → espera ${SIDE[o]} · ${name(X.mid)} pasa a ${M.atk} · ${name(X.entry)} pasa a ${M.mid} · ${name(Q.id)} entra a ${M.entry}`});
+    events.push({t:tHit,kind:'hit',actor:A,main:`${DIRN[DIR]} attack by ${name(A)} from ${M.atk}`,
+      sub:`Next: ${name(A)} → waiting line ${SIDE[o]} · ${name(X.mid)} moves to ${M.atk} · ${name(X.entry)} moves to ${M.mid} · ${name(Q.id)} comes in at ${M.entry}`});
     X.atk=X.mid;X.mid=X.entry;X.entry=Q.id;
     // balón
     const setB=S(s,SETB),hitB=S(s,M.HITB);
@@ -485,7 +485,7 @@ function build(seed){
     ballSegs.push({t0:tSet,t1:tHit,p0:setB,p1:hitB,h:1.5});
     if(!last)ballSegs.push({t0:tHit,t1:Tn,p0:hitB,p1:digBall[k+1],h:1.35});
     else{const z=ZP[set[0]],land=S(o,{x:z.x+0.8,y:0.11,z:z.z*0.7});ballSegs.push({t0:tHit,t1:tHit+0.95,p0:hitB,p1:land,h:1.3});
-      TOTAL=tHit+3.2;events.push({t:tHit+0.95,kind:'end',actor:null,main:'Fin de la secuencia de muestra',sub:'Vuelve a empezar desde el inicio.'});}
+      TOTAL=tHit+3.2;events.push({t:tHit+0.95,kind:'end',actor:null,main:'End of the sample sequence',sub:'It starts again from the beginning.'});}
   }
   // segunda pasada: filas de espera
   const init=[['r4'],['r8']];
@@ -511,24 +511,24 @@ function build(seed){
 function renderPanel(){
   const M=MODES[MODE],set=M.sets[DIR],dir=DIRN[DIR];
   const target=MODE==='4'?(DIR==='diag'?'5':'1'):(DIR==='diag'?'1':'5');
-  const zones=set.map(z=>z==='5'?'la líbero de 5':'la de '+z);
-  const list=zones.length>2?zones.slice(0,-1).join(', ')+' o '+zones[zones.length-1]:zones.join(' o ');
+  const zones=set.map(z=>z==='5'?'the libero at 5':'the player at '+z);
+  const list=zones.length>2?zones.slice(0,-1).join(', ')+' or '+zones[zones.length-1]:zones.join(' or ');
   $('seqList').innerHTML=[
-    'El entrenador ataca sobre el campo A desde fuera del campo B (solo al inicio).',
-    `Defiende ${list}, según dónde vaya el balón.`,
-    `La armadora sale de entre 2 y 3, penetra y coloca a zona ${M.atk} ${MODE==='2'?'de espaldas':'de frente'}.`,
-    `Ataque controlado en ${dir} desde ${M.atk} hacia la zona ${target} rival, sin bloqueo.`,
-    'El rally sigue igual en el otro campo.'
+    'The coach attacks onto court A from outside court B (only to start the rally).',
+    `${list.charAt(0).toUpperCase()+list.slice(1)} digs, depending on where the ball goes.`,
+    `The setter leaves from between 2 and 3, penetrates and sets to zone ${M.atk} ${MODE==='2'?'with her back to the target':'facing the target'}.`,
+    `Controlled attack ${dir.toLowerCase()} from ${M.atk} to the opposing zone ${target}, no block.`,
+    'The rally continues the same way on the other court.'
   ].map(x=>`<li>${x}</li>`).join('');
   $('rotList').innerHTML=[
-    [M.atk,'Sale por fuera de la red, por el poste de su lado, a la espera del otro campo'],
-    [M.mid,`Pasa a ${M.atk}`],
-    [M.entry,`Pasa a ${M.mid}`],
-    ['Espera',`La primera entra a ${M.entry}`]
+    [M.atk,'Leaves outside the net, by the post on her side, to the other court\'s waiting line'],
+    [M.mid,`Moves to ${M.atk}`],
+    [M.entry,`Moves to ${M.mid}`],
+    ['Waiting',`The first in line comes in at ${M.entry}`]
   ].map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('')+
-  `<dt>Recorrido</dt><dd>Espera → ${M.entry} → ${M.mid} → ${M.atk} → espera del otro campo${MODE==='2'?' · zona 4 vacía':''}</dd>`;
-  $('noteDef').textContent=`El orden de quién defiende (${set.join(', ')}) es aleatorio. Arrastra para girar la vista, rueda o pellizco para acercar.`;
-  $('metaMode').textContent=`Ataque desde ${M.atk} · ${dir}`;
+  `<dt>Path</dt><dd>Waiting → ${M.entry} → ${M.mid} → ${M.atk} → other court's waiting line${MODE==='2'?' · zone 4 empty':''}</dd>`;
+  $('noteDef').textContent=`The order of who digs (${set.join(', ')}) is random. Drag to rotate the view, scroll or pinch to zoom.`;
+  $('metaMode').textContent=`Attack from ${M.atk} · ${dir.toLowerCase()}`;
 }
 
 /* ---------- Muestreo ---------- */
@@ -617,7 +617,7 @@ function buildTicks(){
   const col={coach:'var(--ink)',dig:'var(--sky)',set:'var(--red)',hit:'var(--court)',end:'var(--muted)'};
   $('ticks').innerHTML=events.map(e=>`<i style="left:${(e.t/TOTAL*100).toFixed(2)}%;background:${col[e.kind]}"></i>`).join('');
 }
-function setPlaying(p){playing=p;$('play').setAttribute('aria-label',p?'Pausa':'Reproducir');
+function setPlaying(p){playing=p;$('play').setAttribute('aria-label',p?'Pause':'Play');
   $('playIcon').innerHTML=p?'<path d="M7 5h4v14H7zM13 5h4v14h-4z"/>':'<path d="M7 4v16l13-8z"/>';}
 function seek(nt){t=Math.max(0,Math.min(TOTAL,nt));update(t,0,true);}
 $('play').onclick=()=>{if(t>=TOTAL-0.01)t=0;setPlaying(!playing);};
@@ -646,9 +646,9 @@ document.addEventListener('keydown',e=>{
 function updateCaption(){
   let idx=-1;events.forEach((e,i)=>{if(e.t<=t+0.001)idx=i;});
   if(idx===lastEvIdx)return;lastEvIdx=idx;
-  if(idx<0){$('capStep').textContent=`Acción 0 de ${events.length}`;$('capMain').textContent='Posiciones iniciales';
-    const M=MODES[MODE];$('capSub').textContent=`Armadoras entre 2 y 3 · líberos en 5 · rotantes en ${M.entry}, ${M.mid} y ${M.atk} · 1 en espera por campo`;return;}
-  const e=events[idx];$('capStep').textContent=`Acción ${idx+1} de ${events.length}`;
+  if(idx<0){$('capStep').textContent=`Action 0 of ${events.length}`;$('capMain').textContent='Starting positions';
+    const M=MODES[MODE];$('capSub').textContent=`Setters between 2 and 3 · liberos at 5 · rotating players at ${M.entry}, ${M.mid} and ${M.atk} · 1 waiting per court`;return;}
+  const e=events[idx];$('capStep').textContent=`Action ${idx+1} of ${events.length}`;
   $('capMain').textContent=e.main;$('capSub').textContent=e.sub||'';
 }
 
