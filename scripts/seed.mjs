@@ -11,7 +11,7 @@ const config = await read('../src/app/firebase.config.json');
 const drills = await read('../src/app/data/drills.seed.json');
 
 if (config.projectId.startsWith('YOUR_')) {
-  console.error('Primero pon los datos de tu proyecto en src/app/firebase.config.json');
+  console.error('Fill in your project data in src/app/firebase.config.json first');
   process.exit(1);
 }
 
@@ -22,6 +22,6 @@ for (const { id, ...data } of drills) {
   console.log(`✓ ${id}`);
 }
 
-console.log(`${drills.length} drills guardados.`);
-// Firestore leaves the connection open; we exit by hand
+console.log(`${drills.length} drills saved.`);
+// Firestore keeps the connection open, so we exit by hand
 process.exit(0);
