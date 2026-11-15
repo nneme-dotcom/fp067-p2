@@ -47,7 +47,17 @@ While `firebase.config.json` still has the example values, the app shows a messa
 | **The database** | Collection `drills` in Firestore. Each drill has `name`, `objective`, `players`, `space` and `description`, and optionally `group`, `fixedRoles`, `rotating`, `sequence`, `rotation`, `progressions`, `animationUrl`, `image` and `video`. |
 | **The list** (`DrillsComponent`) | Reads the drills live. The drills are shown in groups (Pepper, Ball control and Other). Each row has its small delete icon (it asks for confirmation; the drill sheet also has a small delete button at the end) and the **New drill** button opens the form. It has a search box and a filter by space. |
 | **The detail** (`DetailComponent`) | Shows all the data. The **Edit** button opens the form with the data filled in. If the drill has a video, the player is shown, and if it has an animation, it is shown inside the page (an `iframe`). |
-| **The form** (`DrillFormComponent`) | The same form is used to create and to edit. Required fields show a message if they are missing, and the links are checked. After saving, a message is shown and the app goes back to the list to pick another drill. |
+| **The form** (`DrillFormComponent`) | The same form is used to create and to edit. Required fields show a message if they are missing, and the links are checked. An image and a video can be chosen on the computer: they are uploaded when saving and their link is stored in the drill. After saving, a message is shown and the app goes back to the list to pick another drill. |
+
+## Uploading the image and the video
+
+The files chosen in the form are sent to [Cloudinary](https://cloudinary.com/) (free plan) and the link it gives back is saved in the drill, in the `image` and `video` fields. The upload is done from the browser with an *unsigned upload preset*, so no secret key is kept in the project.
+
+1. Create a free Cloudinary account.
+2. In **Settings → Upload → Upload presets**, add a preset with **Signing mode: Unsigned**.
+3. Put the cloud name and the preset name in `src/app/upload.config.json`.
+
+Limits of the free plan: 10 MB for an image and 100 MB for a video. While `upload.config.json` still has the example values, the file pickers are turned off and only links can be used.
 
 ## Animations
 
@@ -76,15 +86,21 @@ Each row of the list has a button to add the drill to a training. The **Training
 src/app/
 ├── models/drill.ts                  The data each drill has
 ├── services/drills.service.ts       Everything done with Firestore (read, add, edit, delete)
+├── services/upload.service.ts       Sends the image and the video to the file server
 ├── pipes/drill-filter.pipe.ts       The list filter
+├── pipes/drill-groups.pipe.ts       Puts the drills of the list in groups
 ├── firebase.config.json             The Firebase project data
+├── upload.config.json               The file server data (Cloudinary)
 ├── data/drills.seed.json            The example drills
 ├── components/
 │   ├── header/                      The header with the logo and the #goeagles slogan
 │   ├── drills/                      The list with the search box
 │   ├── detail/                      The drill page
+│   ├── animation/                   The 3D animation inside the drill page
+│   ├── sheet/                       The drill sheet (objective, description, set-up, sequence)
 │   ├── drill-form/                  The form to add and edit
-│   └── media/                       The video player
+│   ├── media/                       The video player
+│   └── training/                    The training screen
 └── app.ts / app.html / app.scss     The page that puts it all together
 scripts/seed.mjs                     Loads the example drills into Firestore
 firestore.rules                      The database rules
@@ -93,14 +109,6 @@ firestore.rules                      The database rules
 ## Some decisions
 
 - **Angular 21, not 22.** `@angular/fire` does not have a stable version for Angular 22 yet (only a release candidate, `22.0.0-rc.0`), so I use Angular 21 with the latest stable version of `@angular/fire`.
-- **Image, video and animation are links.** Files are not uploaded: Cloud Storage forces a move to the paid Firebase plan. The form accepts links with `https://` or paths inside `assets/`.
+- **Files go to Cloudinary, not to Cloud Storage.** Cloud Storage forces a move to the paid Firebase plan, so the image and the video are uploaded to Cloudinary and Firestore keeps their link. The form also accepts links with `https://` or paths inside `assets/`, which is what the animations use.
 - **Open rules.** Anyone can read and write, because the assignment asks for it. Before publishing the app for real, a login would be needed.
 - **The animations have their own style.** The app is black and lime like the club website; the 3D animation of each drill keeps its own look and is shown inside the page.
-
-## Milestones
-
-| Tag | What it includes |
-|---|---|
-| `v2.0-setup` | The project base: Angular 21, Bootstrap, fonts and setup |
-| `v2.1-firestore` | The model, the Firestore service, the filter and the example data |
-| `v2.2-crud` | The list, the detail, the form and the video player |

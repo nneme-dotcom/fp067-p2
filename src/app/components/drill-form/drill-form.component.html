@@ -4,7 +4,7 @@
   </div>
 
   <form class="card-body" [formGroup]="form" (ngSubmit)="submit()" novalidate>
-    @if (submitted() && form.invalid) {
+    @if (submitted() && (form.invalid || hasFileError())) {
       <p class="alert alert-danger" role="alert">Some fields need your attention before saving.</p>
     }
 
@@ -137,37 +137,126 @@
       </div>
     }
 
-    @for (field of links; track field.name) {
-      <div class="mb-3">
-        <label [for]="field.name" class="form-label">{{ field.label }}</label>
+    <div class="mb-3">
+      <label for="animationUrl" class="form-label">3D animation link</label>
+      <input
+        id="animationUrl"
+        type="url"
+        class="form-control"
+        formControlName="animationUrl"
+        placeholder="https://…"
+        autocomplete="off"
+        [class.is-invalid]="error('animationUrl')"
+        [attr.aria-invalid]="error('animationUrl') ? true : null"
+        aria-describedby="animationUrl-error"
+      />
+      @if (error('animationUrl'); as message) {
+        <div id="animationUrl-error" class="invalid-feedback d-block">{{ message }}</div>
+      }
+    </div>
+
+    <!-- Image and video: choose a file on the computer (it is uploaded when saving) or paste a link -->
+    @for (item of media; track item.kind) {
+      @let saved = form.controls[item.kind].value;
+      @let chosen = files()[item.kind];
+
+      <fieldset class="media-field mb-3">
+        <legend class="form-label">{{ item.label }}</legend>
+
+        @if (saved && !chosen) {
+          <p class="media-current">
+            <i class="bi bi-check-circle" aria-hidden="true"></i>
+            <a [href]="saved" target="_blank" rel="noopener">Current {{ item.kind }}</a>
+          </p>
+        }
+
+        <label [for]="item.kind + '-file'" class="visually-hidden">{{ item.label }} file</label>
+        <div class="d-flex gap-2">
+          <input
+            #fileInput
+            [id]="item.kind + '-file'"
+            type="file"
+            class="form-control"
+            [accept]="item.accept"
+            [disabled]="!canUpload || saving() || !!uploading()"
+            [class.is-invalid]="fileErrors()[item.kind]"
+            [attr.aria-describedby]="item.kind + '-file-hint'"
+            (change)="onFileChosen(item.kind, $event)"
+          />
+          @if (saved || chosen) {
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              [attr.aria-label]="'Remove ' + item.kind"
+              [disabled]="saving() || !!uploading()"
+              (click)="removeMedia(item.kind, fileInput)"
+            >
+              <i class="bi bi-x-lg" aria-hidden="true"></i>
+            </button>
+          }
+        </div>
+
+        @if (fileErrors()[item.kind]; as message) {
+          <div class="invalid-feedback d-block">{{ message }}</div>
+        }
+        <div [id]="item.kind + '-file-hint'" class="form-text">
+          @if (canUpload) {
+            From your computer, up to {{ maxSize[item.kind] }} MB. It is uploaded when you save.
+          } @else {
+            File upload is not set up (<code>upload.config.json</code>). You can still paste a link.
+          }
+        </div>
+
+        @if (uploading(); as u) {
+          @if (u.kind === item.kind) {
+            <div
+              class="progress mt-2"
+              role="progressbar"
+              [attr.aria-label]="'Uploading ' + item.kind"
+              [attr.aria-valuenow]="u.percent"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            >
+              <div class="progress-bar" [style.width.%]="u.percent">{{ u.percent }} %</div>
+            </div>
+          }
+        }
+
+        <label [for]="item.kind" class="form-text d-block mt-2">…or paste a link</label>
         <input
-          [id]="field.name"
+          [id]="item.kind"
           type="url"
           class="form-control"
-          [formControlName]="field.name"
+          [formControlName]="item.kind"
           placeholder="https://…"
           autocomplete="off"
-          [class.is-invalid]="error(field.name)"
-          [attr.aria-invalid]="error(field.name) ? true : null"
-          [attr.aria-describedby]="field.name + '-error'"
+          [class.is-invalid]="error(item.kind)"
+          [attr.aria-invalid]="error(item.kind) ? true : null"
+          [attr.aria-describedby]="item.kind + '-error'"
         />
-        @if (error(field.name); as message) {
-          <div [id]="field.name + '-error'" class="invalid-feedback d-block">{{ message }}</div>
+        @if (error(item.kind); as message) {
+          <div [id]="item.kind + '-error'" class="invalid-feedback d-block">{{ message }}</div>
         }
-      </div>
+      </fieldset>
+    }
+
+    @if (uploadError(); as message) {
+      <p class="alert alert-danger" role="alert">{{ message }}</p>
     }
 
     <p class="form-text mb-4"><span class="required" aria-hidden="true">*</span> Required</p>
 
     <div class="d-flex flex-wrap gap-2">
-      <button type="submit" class="btn btn-eagles btn-touch" [disabled]="saving()">
-        @if (saving()) {
+      <button type="submit" class="btn btn-eagles btn-touch" [disabled]="saving() || !!uploading()">
+        @if (uploading()) {
+          <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Uploading…
+        } @else if (saving()) {
           <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Saving…
         } @else {
           <i class="bi bi-check-lg me-1" aria-hidden="true"></i>Save
         }
       </button>
-      <button type="button" class="btn btn-outline-secondary btn-touch" [disabled]="saving()" (click)="cancelled.emit()">
+      <button type="button" class="btn btn-outline-secondary btn-touch" [disabled]="saving() || !!uploading()" (click)="cancelled.emit()">
         Cancel
       </button>
     </div>

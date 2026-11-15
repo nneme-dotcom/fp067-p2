@@ -1,4 +1,4 @@
-import { Component, effect, input, output, signal, untracked } from '@angular/core';
+import { Component, effect, inject, input, output, signal, untracked } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -7,6 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Drill, DrillData, DrillGroup, GROUPS, SPACES, Space } from '../../models/drill';
+import { FileKind, MAX_SIZE_MB, UploadService } from '../../services/upload.service';
 
 /** Link with http(s) or a path inside assets/. Empty is also valid (they are optional). */
 const linkValidator: ValidatorFn = (control) => {
@@ -69,6 +70,24 @@ export class DrillFormComponent {
   /** True while saving (to block the button). */
   readonly saving = input(false);
 
+  private readonly uploads = inject(UploadService);
+
+  /** False if the file server is not set up: then only links can be used. */
+  protected readonly canUpload = this.uploads.configured;
+  protected readonly maxSize = MAX_SIZE_MB;
+
+  /** The files chosen on the computer, waiting to be uploaded when saving. */
+  protected readonly files = signal<Record<FileKind, File | null>>({ image: null, video: null });
+
+  /** The message when a chosen file is not valid (wrong type or too big). */
+  protected readonly fileErrors = signal<Record<FileKind, string | null>>({ image: null, video: null });
+
+  /** What is being uploaded right now and how far it is (null if nothing). */
+  protected readonly uploading = signal<{ kind: FileKind; percent: number } | null>(null);
+
+  /** The message if the upload fails. */
+  protected readonly uploadError = signal<string | null>(null);
+
   readonly saved = output<DrillData>();
   readonly cancelled = output<void>();
 
@@ -87,10 +106,10 @@ export class DrillFormComponent {
     { name: 'progressions', label: 'Progressions and variants', rows: 3 },
   ];
 
-  protected readonly links: { name: ControlName; label: string }[] = [
-    { name: 'animationUrl', label: '3D animation link' },
-    { name: 'image', label: 'Image URL' },
-    { name: 'video', label: 'Video URL' },
+  /** Image and video: a file from the computer or, if you prefer, a link. */
+  protected readonly media: { kind: FileKind; label: string; accept: string }[] = [
+    { kind: 'image', label: 'Image', accept: 'image/*' },
+    { kind: 'video', label: 'Video', accept: 'video/*' },
   ];
 
   constructor() {
@@ -104,6 +123,9 @@ export class DrillFormComponent {
 
   private fill(drill: Drill | null): void {
     this.submitted.set(false);
+    this.files.set({ image: null, video: null });
+    this.fileErrors.set({ image: null, video: null });
+    this.uploadError.set(null);
     this.form.reset({
       name: drill?.name ?? '',
       objective: drill?.objective ?? '',
@@ -134,11 +156,58 @@ export class DrillFormComponent {
     return 'This value is not valid.';
   }
 
-  protected submit(): void {
-    if (this.form.invalid) {
+  /** When a file is chosen we check it and keep it until saving. */
+  protected onFileChosen(kind: FileKind, event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0] ?? null;
+    const problem = file ? this.uploads.check(file, kind) : null;
+
+    this.fileErrors.update((errors) => ({ ...errors, [kind]: problem }));
+    this.files.update((files) => ({ ...files, [kind]: problem ? null : file }));
+  }
+
+  /** Takes the image or the video out of the drill (the chosen file and the saved link). */
+  protected removeMedia(kind: FileKind, fileInput: HTMLInputElement): void {
+    fileInput.value = '';
+    this.files.update((files) => ({ ...files, [kind]: null }));
+    this.fileErrors.update((errors) => ({ ...errors, [kind]: null }));
+    this.form.controls[kind].setValue('');
+  }
+
+  protected hasFileError(): boolean {
+    const errors = this.fileErrors();
+    return !!errors.image || !!errors.video;
+  }
+
+  protected async submit(): Promise<void> {
+    if (this.uploading()) return;
+
+    if (this.form.invalid || this.hasFileError()) {
       this.submitted.set(true);
       this.form.markAllAsTouched();
       return;
+    }
+
+    // First the chosen files go to the server; the link we get back
+    // is put in the form, so it is saved in Firestore like any other field
+    this.uploadError.set(null);
+    try {
+      for (const { kind } of this.media) {
+        const file = this.files()[kind];
+        if (!file) continue;
+
+        this.uploading.set({ kind, percent: 0 });
+        const link = await this.uploads.upload(file, kind, (percent) =>
+          this.uploading.set({ kind, percent }),
+        );
+        this.form.controls[kind].setValue(link);
+        this.files.update((files) => ({ ...files, [kind]: null }));
+      }
+    } catch (err) {
+      console.error('Could not upload the file:', err);
+      this.uploadError.set('The file could not be uploaded. Check your connection and try again.');
+      return;
+    } finally {
+      this.uploading.set(null);
     }
 
     const value = this.form.getRawValue();
