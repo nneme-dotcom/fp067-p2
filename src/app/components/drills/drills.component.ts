@@ -20,9 +20,14 @@ export class DrillsComponent {
   /** Which drill is selected (to colour it lime). */
   readonly selectedId = input<string | null>(null);
 
+  /** The ids of the drills chosen for the training. */
+  readonly trainingIds = input<readonly string[]>([]);
+
   /** Events for the main component. */
   readonly drillSelected = output<Drill>();
   readonly drillDeleted = output<Drill>();
+  readonly trainingToggled = output<Drill>();
+  readonly trainingOpened = output<void>();
   readonly newClicked = output<void>();
 
   protected readonly spaces = SPACES;

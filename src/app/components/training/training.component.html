@@ -1,0 +1,52 @@
+<section class="training" aria-labelledby="training-title">
+  <header class="card shadow-sm training-hero">
+    <div class="training-heading">
+      <span class="training-meta">{{ drills().length }} {{ drills().length === 1 ? 'drill' : 'drills' }}</span>
+      <h2 id="training-title" class="training-name mb-0"><span class="slanted">Training</span></h2>
+    </div>
+
+    <div class="training-actions">
+      @if (drills().length) {
+        <button type="button" class="btn btn-outline-eagles btn-touch" (click)="cleared.emit()">
+          <i class="bi bi-eraser me-1" aria-hidden="true"></i>Clear
+        </button>
+      }
+      <button type="button" class="btn btn-eagles btn-touch" (click)="closed.emit()">
+        <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Back to the list
+      </button>
+    </div>
+  </header>
+
+  @for (drill of drills(); track drill.id; let i = $index) {
+    <article class="training-drill" [attr.aria-labelledby]="'training-drill-' + drill.id">
+      <div class="drill-head">
+        <span class="drill-number" aria-hidden="true">{{ i + 1 }}</span>
+        <div class="drill-title">
+          <h3 [id]="'training-drill-' + drill.id" class="mb-0">{{ drill.name }}</h3>
+          <span class="drill-meta">{{ drill.players }} players · {{ drill.space }}</span>
+        </div>
+        <button type="button" class="drill-remove" (click)="removed.emit(drill)">
+          <i class="bi bi-x-lg" aria-hidden="true"></i>Remove
+        </button>
+      </div>
+
+      <!-- Animation on the left and sheet on the right; on narrow screens one below the other -->
+      <div class="drill-body">
+        @if (drill.animationUrl) {
+          <app-animation [src]="drill.animationUrl" [label]="'3D animation of ' + drill.name" />
+        } @else {
+          <p class="no-animation mb-0">
+            <i class="bi bi-camera-video-off fs-3 d-block mb-2" aria-hidden="true"></i>
+            This drill has no animation.
+          </p>
+        }
+        <app-sheet [drill]="drill" />
+      </div>
+    </article>
+  } @empty {
+    <p class="card training-empty text-center mb-0">
+      The training is empty. Go back to the list and add drills with the
+      <i class="bi bi-plus-circle" aria-hidden="true"></i> button of each row.
+    </p>
+  }
+</section>

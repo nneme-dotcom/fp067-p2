@@ -1,0 +1,133 @@
+.training {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.training-hero {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background:
+    radial-gradient(ellipse at 100% 0%, rgba(106, 247, 120, 0.22), transparent 60%),
+    radial-gradient(ellipse at 0% 100%, rgba(205, 220, 57, 0.12), transparent 55%),
+    #050605;
+  color: var(--eagles-text);
+}
+
+.training-meta {
+  font-family: var(--eagles-font-display);
+  font-size: 1.2rem;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  color: var(--eagles-neon);
+}
+
+.training-name {
+  font-family: var(--eagles-font-display);
+  font-size: clamp(1.8rem, 5vw, 2.4rem);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.training-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.training-drill {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.drill-head {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.drill-number {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  background: var(--eagles-gradient);
+  font-family: var(--eagles-font-display);
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--eagles-on-lime);
+}
+
+.drill-title {
+  flex: 1;
+  min-width: 0;
+
+  h3 {
+    font-family: var(--eagles-font-display);
+    font-size: 1.6rem;
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: 0.02em;
+  }
+}
+
+.drill-meta {
+  font-size: 0.8rem;
+  color: var(--eagles-text-muted);
+}
+
+.drill-remove {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  background: transparent;
+  font-size: 0.8rem;
+  color: var(--eagles-text-soft);
+  transition: background-color 0.15s, color 0.15s;
+
+  &:hover {
+    background: var(--eagles-surface-hover);
+    color: var(--eagles-text);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--eagles-lime);
+    outline-offset: 2px;
+  }
+}
+
+/* Side by side: the animation takes a bit more room than the sheet */
+.drill-body {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+@media (max-width: 991.98px) {
+  .drill-body { grid-template-columns: minmax(0, 1fr); }
+}
+
+.no-animation,
+.training-empty {
+  padding: 2.5rem 1rem;
+  text-align: center;
+  color: var(--eagles-text-muted);
+}
+
+.no-animation {
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: var(--eagles-radius);
+}

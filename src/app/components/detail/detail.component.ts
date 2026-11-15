@@ -1,11 +1,12 @@
-import { Component, computed, input, output, signal } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { Drill } from '../../models/drill';
 import { AnimationComponent } from '../animation/animation.component';
 import { MediaComponent } from '../media/media.component';
+import { SheetComponent } from '../sheet/sheet.component';
 
 @Component({
   selector: 'app-detail',
-  imports: [AnimationComponent, MediaComponent],
+  imports: [AnimationComponent, MediaComponent, SheetComponent],
   templateUrl: './detail.component.html',
   styleUrl: './detail.component.scss',
 })
@@ -17,14 +18,6 @@ export class DetailComponent {
   readonly edit = output<void>();
   readonly deleted = output<void>();
   readonly closed = output<void>();
-
-  /** The steps of the sequence: each line of the text is one step. */
-  protected readonly steps = computed(() =>
-    (this.drill().sequence ?? '')
-      .split('\n')
-      .map((line) => line.trim())
-      .filter(Boolean),
-  );
 
   /** The image that failed to load, so we do not show the broken image icon. */
   protected readonly brokenImage = signal<string | null>(null);

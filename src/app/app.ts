@@ -3,6 +3,7 @@ import { DetailComponent } from './components/detail/detail.component';
 import { DrillFormComponent } from './components/drill-form/drill-form.component';
 import { DrillsComponent } from './components/drills/drills.component';
 import { HeaderComponent } from './components/header/header.component';
+import { TrainingComponent } from './components/training/training.component';
 import { Drill, DrillData } from './models/drill';
 import { DrillsService } from './services/drills.service';
 
@@ -11,6 +12,18 @@ const STACKED_LAYOUT = '(max-width: 767.98px)';
 
 /** What is shown on the right: the detail, the new drill form or the edit form. */
 type Mode = 'view' | 'new' | 'edit';
+
+/** Where the chosen drills are remembered in this browser. */
+const TRAINING_KEY = 'eagles-training';
+
+function readTraining(): string[] {
+  try {
+    const saved: unknown = JSON.parse(localStorage.getItem(TRAINING_KEY) ?? '[]');
+    return Array.isArray(saved) ? saved.filter((id) => typeof id === 'string') : [];
+  } catch {
+    return [];
+  }
+}
 
 interface Notice {
   kind: 'success' | 'danger';
@@ -23,7 +36,7 @@ interface Notice {
  */
 @Component({
   selector: 'app-root',
-  imports: [HeaderComponent, DrillsComponent, DetailComponent, DrillFormComponent],
+  imports: [HeaderComponent, DrillsComponent, DetailComponent, DrillFormComponent, TrainingComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
@@ -47,7 +60,45 @@ export class App {
     () => this.drills()?.find((d) => d.id === this.selectedId()) ?? null,
   );
 
+  /** The ids of the drills chosen for the training, in the order they were chosen. */
+  protected readonly trainingIds = signal<string[]>(readTraining());
+
+  /** True while the training is on screen instead of the list. */
+  protected readonly showTraining = signal(false);
+
+  /** The chosen drills. If one was deleted from the database it is simply left out. */
+  protected readonly training = computed(() => {
+    const all = this.drills() ?? [];
+    return this.trainingIds()
+      .map((id) => all.find((d) => d.id === id))
+      .filter((d): d is Drill => !!d);
+  });
+
   private noticeTimer?: ReturnType<typeof setTimeout>;
+
+  /** Adds the drill to the training, or takes it out if it was already there. */
+  protected toggleTraining(drill: Drill): void {
+    const ids = this.trainingIds();
+    this.saveTraining(ids.includes(drill.id) ? ids.filter((id) => id !== drill.id) : [...ids, drill.id]);
+  }
+
+  protected clearTraining(): void {
+    this.saveTraining([]);
+  }
+
+  protected openTraining(): void {
+    this.showTraining.set(true);
+    window.scrollTo({ top: 0 });
+  }
+
+  private saveTraining(ids: string[]): void {
+    this.trainingIds.set(ids);
+    try {
+      localStorage.setItem(TRAINING_KEY, JSON.stringify(ids));
+    } catch {
+      // Without storage (private mode) the training still works, it is just not remembered
+    }
+  }
 
   protected onSelected(drill: Drill): void {
     this.selectedId.set(drill.id);
