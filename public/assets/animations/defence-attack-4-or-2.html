@@ -102,22 +102,7 @@ dt{color:var(--muted)} dd{margin:0}
             <button class="btn" id="next" title="Next action (→)" aria-label="Next action"><svg viewBox="0 0 24 24"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
           </div>
           <span class="time" id="time">0.0 s</span>
-          <div class="group" role="group" aria-label="Speed">
-            <span class="lbl">Speed</span>
-            <button class="chip" data-speed="0.5" aria-pressed="false">0.5×</button>
-            <button class="chip" data-speed="1" aria-pressed="true">1×</button>
-            <button class="chip" data-speed="1.5" aria-pressed="false">1.5×</button>
-          </div>
-          <span class="spacer"></span>
-          <div class="group" role="group" aria-label="Layers">
-            <button class="chip" data-tog="zones" aria-pressed="true">Zones</button>
-            <button class="chip" data-tog="trail" aria-pressed="true">Ball path</button>
-            <button class="chip" data-tog="tags" aria-pressed="true">Numbers</button>
-          </div>
-        </div>
-        <div class="timeline">
-          <div class="ticks" id="ticks"></div>
-          <input type="range" id="scrub" min="0" max="100" step="0.01" value="0" aria-label="Timeline">
+          
         </div>
       </div>
     </section>
@@ -349,7 +334,7 @@ const actors={};
 function addActor(id,jersey,tag,tagBg,tagFg,opts){
   const f=makeFigure(jersey,opts);scene.add(f.root);scene.add(f.shadow);
   const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tagTex(tag,tagBg,tagFg),depthTest:false}));
-  sp.scale.set(0.55,0.55,1);sp.renderOrder=10;scene.add(sp);f.tag=sp;actors[id]=f;
+  sp.scale.set(0.55,0.55,1);sp.renderOrder=10;sp.visible=false;scene.add(sp);f.tag=sp;actors[id]=f;
 }
 
 /* ---------- Balón ---------- */
@@ -611,9 +596,10 @@ new ResizeObserver(resize).observe(stage);
 
 /* ---------- Interfaz ---------- */
 let t=0,playing=true,speed=1,lastNow=performance.now(),seed=7,lastEvIdx=-2;
-const scrub=$('scrub');
+const scrub=$('scrub')||{value:0,max:0,addEventListener(){}};
 function buildTicks(){
   scrub.max=TOTAL.toFixed(2);
+  if(!$('ticks'))return;
   const col={coach:'var(--ink)',dig:'var(--sky)',set:'var(--red)',hit:'var(--court)',end:'var(--muted)'};
   $('ticks').innerHTML=events.map(e=>`<i style="left:${(e.t/TOTAL*100).toFixed(2)}%;background:${col[e.kind]}"></i>`).join('');
 }

@@ -1,0 +1,13 @@
+.animation {
+  border-radius: var(--eagles-radius);
+  overflow: hidden;
+  background: var(--eagles-surface-alt);
+}
+
+iframe {
+  display: block;
+  width: 100%;
+  /* Tall enough for the 3D scene and the drill sheet when the page is narrow */
+  height: clamp(520px, 80vh, 780px);
+  border: 0;
+}

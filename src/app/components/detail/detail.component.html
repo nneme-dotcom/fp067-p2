@@ -89,7 +89,5 @@
 }
 
 @if (d.animationUrl) {
-  <a class="btn btn-eagles btn-touch align-self-start" [href]="d.animationUrl" target="_blank" rel="noopener">
-    <i class="bi bi-box-arrow-up-right me-2" aria-hidden="true"></i>Open 3D animation
-  </a>
+  <app-animation [src]="d.animationUrl" [label]="'3D animation of ' + d.name" />
 }

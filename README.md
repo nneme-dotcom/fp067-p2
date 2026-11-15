@@ -1,6 +1,6 @@
 # VBE Eagles Echternach · Drills (Product 2)
 
-The volleyball drill library of **VBE Eagles Echternach**. You pick a drill from the list and see its page: objective, fixed roles, sequence and rotation, with a link to its 3D animation. You can also add new drills, edit them and delete them.
+The volleyball drill library of **VBE Eagles Echternach**. You pick a drill from the list and see its page: objective, fixed roles, sequence and rotation, with its 3D animation shown right on the page. You can also add new drills, edit them and delete them.
 
 The data is in Firestore (Firebase) and the page updates by itself when something changes, even if the change is made from the console.
 
@@ -46,7 +46,7 @@ While `firebase.config.json` still has the example values, the app shows a messa
 |---|---|
 | **The database** | Collection `drills` in Firestore. Each drill has `name`, `objective`, `players`, `space` and `description`, and optionally `fixedRoles`, `rotating`, `sequence`, `rotation`, `progressions`, `animationUrl`, `image` and `video`. |
 | **The list** (`DrillsComponent`) | Reads the drills live. Each row has its delete icon (it asks for confirmation) and the **New drill** button opens the form. It has a search box and a filter by space. |
-| **The detail** (`DetailComponent`) | Shows all the data. The **Edit** button opens the form with the data filled in. If the drill has a video, the player is shown, and if it has an animation, a button to open it is shown. |
+| **The detail** (`DetailComponent`) | Shows all the data. The **Edit** button opens the form with the data filled in. If the drill has a video, the player is shown, and if it has an animation, it is shown inside the page (an `iframe`). |
 | **The form** (`DrillFormComponent`) | The same form is used to create and to edit. Required fields show a message if they are missing, and the links are checked. After saving, a message is shown and the app goes back to the list to pick another drill. |
 
 ## Animations
@@ -86,7 +86,7 @@ firestore.rules                      The database rules
 - **Angular 21, not 22.** `@angular/fire` does not have a stable version for Angular 22 yet (only a release candidate, `22.0.0-rc.0`), so I use Angular 21 with the latest stable version of `@angular/fire`.
 - **Image, video and animation are links.** Files are not uploaded: Cloud Storage forces a move to the paid Firebase plan. The form accepts links with `https://` or paths inside `assets/`.
 - **Open rules.** Anyone can read and write, because the assignment asks for it. Before publishing the app for real, a login would be needed.
-- **The animations have their own style.** The app is black and lime like the club website; the 3D animation of each drill keeps its own look and opens separately.
+- **The animations have their own style.** The app is black and lime like the club website; the 3D animation of each drill keeps its own look and is shown inside the page.
 
 ## Milestones
 

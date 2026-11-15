@@ -1,10 +1,11 @@
 import { Component, computed, input, output, signal } from '@angular/core';
 import { Drill } from '../../models/drill';
+import { AnimationComponent } from '../animation/animation.component';
 import { MediaComponent } from '../media/media.component';
 
 @Component({
   selector: 'app-detail',
-  imports: [MediaComponent],
+  imports: [AnimationComponent, MediaComponent],
   templateUrl: './detail.component.html',
   styleUrl: './detail.component.scss',
 })
