@@ -419,7 +419,7 @@ function startScript(nExtras){
   for(let i=0;i<nExtras;i++)newBall();
   if(typeof drillSetup==='function')drillSetup();
   build();initVariants();resize();setCam('iso',true);update(0,0,true);
-  requestAnimationFrame(n=>{lastNow=n;loop(n);});
+  resume();
 }
 function start(){startScript(typeof NEXTRA==='number'?NEXTRA:0);}
 
@@ -679,8 +679,18 @@ function updateCaption(){
   $('capMain').textContent=e.main;$('capSub').textContent=e.sub||'';
 }
 
+/* The loop only works when it is needed: it stops while the animation is off screen or the tab is hidden,
+   and while paused it draws only if the user is touching something (camera, buttons, window size). */
+let running=false,onScreen=true,wakeUntil=0;
+const wake=()=>{wakeUntil=performance.now()+1200;};
+function resume(){if(running||!onScreen||document.hidden)return;running=true;wake();requestAnimationFrame(n=>{lastNow=n;loop(n);});}
+['pointerdown','pointermove','wheel','keydown','input','click','touchstart','resize'].forEach(e=>addEventListener(e,wake,{passive:true}));
+document.addEventListener('visibilitychange',resume);
+if('IntersectionObserver' in window)new IntersectionObserver(en=>{onScreen=en[en.length-1].isIntersecting;resume();}).observe(document.documentElement);
 function loop(now){
+  if(!onScreen||document.hidden){running=false;return;}
   const dt=Math.min(0.05,(now-lastNow)/1000);lastNow=now;
+  if(!playing&&!camTween&&now>wakeUntil){requestAnimationFrame(loop);return;}
   if(playing){t+=dt*speed;if(t>TOTAL){t=0;if(typeof onLoop==='function')onLoop();update(t,0,true);}}
   if(camTween){camTween.k=Math.min(1,camTween.k+dt/0.75);const u=ease(camTween.k);
     cam.position.lerpVectors(camTween.from,camTween.to,u);cam.zoom=camTween.z0+(1-camTween.z0)*u;
