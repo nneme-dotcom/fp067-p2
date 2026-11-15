@@ -53,11 +53,16 @@ While `firebase.config.json` still has the example values, the app shows a messa
 
 The 3D animations are HTML files in `public/assets/animations/`:
 
-- `defence-6-cross-court-4`
 - `defence-attack-4-or-2`
 - `pepper-traditional`
 - `pepper-3-consecutive`
 - `pepper-short`
+- `pepper-3p-traditional`
+- `pepper-3p-consecutive`
+- `control-y`
+- `control-x`
+- `chaos`
+- `side-out`
 
 A drill points to its animation with the `animationUrl` field.
 

@@ -1,18 +1,5 @@
 [
   {
-    "id": "defence-6-cross-court-4",
-    "name": "Defence at 6 and cross-court from 4",
-    "objective": "Back-row defence, setting and a controlled cross-court attack from 4 in a continuous rally.",
-    "players": 12,
-    "space": "Full court",
-    "description": "Full court, continuous rally, no block and no scoring for now. The waiting line stands outside the court, behind the end line near zone 6.",
-    "fixedRoles": "Setters: zone 2, one on each court.\nLiberos: zone 5, one on each court.",
-    "rotating": "8 players. Waiting line → come in at 6 → (dig) → move to 4 → cross-court attack → waiting line of the other court.",
-    "sequence": "The coach attacks onto court A from outside court B (only to start the rally).\nThe players at 4, 5 and 6 defend; whoever the ball goes to digs.\nThe setter sets to zone 4.\nControlled cross-court attack from 4, no block.\nThe same happens on the other court, continuous rally.",
-    "rotation": "The player at 4 changes court outside the net and joins the waiting line on the other side.\nThe player at 6 moves to 4 (defends near the 3 m line).\nThe first player in the waiting line comes in at 6.",
-    "animationUrl": "assets/animations/defence-6-cross-court-4.html"
-  },
-  {
     "id": "defence-attack-4-or-2",
     "name": "Defence and attack from 4 or 2",
     "objective": "Back-row and front-zone defence, setting and a controlled attack from 4 or from 2 in a continuous rally.",
@@ -21,7 +8,7 @@
     "description": "Full court, continuous rally, no block and no scoring for now. The waiting line stands outside the court, behind zone 6. You choose the attack zone (4 or 2) and the direction (cross-court or down the line). Attacking from 4: rotating players at 1, 6 and 4 plus a libero at 5; the path is waiting line → 1 → 6 → 4 → attack → waiting line of the other court. Attacking from 2: rotating players at 6, 1 and 2 plus a libero at 5, with zone 4 empty; the path is waiting line → 6 → 1 → 2 → attack → waiting line of the other court. Defensive formation. Attack from 4, cross-court: the front-row player drops to the short diagonal, the player at 5 defends the long diagonal, the player at 6 moves to 6-5 to help and the player at 1 moves to 1-2 to cover a tip behind the block. Attack from 4, down the line: the player at 1 defends the line, the player at 6 moves to 6-1, and the player at 4 moves to 3 to cover a tip behind the block. Attacking from 2 is the same, mirrored.",
     "fixedRoles": "Setter (one per court): starts between 2 and 3, penetrates to set and always looks at 4. Attack from 4: front set. Attack from 2: back set.\nLibero (one per court): zone 5.",
     "rotating": "8 players: 3 on court per side and 1 in the waiting line.",
-    "sequence": "The coach attacks onto court A from outside court B (only to start the rally).\nWhoever the ball goes to digs.\nThe setter penetrates from between 2 and 3 and sets to the attack zone.\nControlled attack in the chosen direction, no block.\nThe same happens on the other court, continuous rally.",
+    "sequence": "The coach attacks onto court A from outside court B (only to start the rally).\nEveryone starts at the base position of her zone. When the other court sets, the defenders move to the defensive formation.\nWhoever the ball goes to digs.\nThe setter penetrates from between 2 and 3 and sets to the attack zone.\nControlled attack in the chosen direction, no block.\nThe defenders go back to the base position while their own setter sets.\nThe same happens on the other court, continuous rally.",
     "rotation": "The attacker changes court outside the net, by the post on her side, and joins the waiting line of the other court.\nThe other two rotating players move up one spot along the path.\nThe first player in the waiting line comes in at the entry zone (1 when attacking from 4, 6 when attacking from 2).\nIf the waiting line is empty, the player arriving from the other court goes straight to the entry zone.",
     "animationUrl": "assets/animations/defence-attack-4-or-2.html"
   },
@@ -96,7 +83,7 @@
     "sequence": "The player at 4 hits a controlled ball (no jump) to 6.\nThe player at 6 digs to herself.\nShe sets to the player at the other spot (2 or 4) and moves to that spot.\nThe player who hit leaves to the end of the waiting line.\nThe next player in line enters at 6 and the sequence repeats, alternating spots.",
     "rotation": "Hitter goes to the end of the line, controller takes the spot she set to, first in line enters at 6.",
     "animationUrl": "assets/animations/control-y.html",
-    "progressions": "Regression: the player who receives the set first sets to herself and then attacks.\nProgression: after the self set she tips (finta) to the player who just set, who stands close to her; that player digs the tip up and the attack continues to the new player coming in at 6."
+    "progressions": "Regression: the player who receives the set first sets to herself and then attacks; the player who set goes straight to that spot and stands behind the attacker.\nProgression: after the self set she tips (finta) to the player who just set, who stands close to her; that player digs the tip up and the attack continues to the new player coming in at 6."
   },
   {
     "id": "ball-control-x",
@@ -109,7 +96,7 @@
     "sequence": "A player at the front makes a controlled attack (no jump) to a back spot.\nThe back player digs high to the centre.\nThe player at the other back spot moves to the centre and sets to the next front spot, then moves there.\nThe sequence repeats, alternating sides, and a new player fills the spot that was vacated.",
     "rotation": "The setter takes the front spot she set to; a player from the line fills the back spot.",
     "animationUrl": "assets/animations/control-x.html",
-    "progressions": "Regression: the player who receives the set first sets to herself and then attacks.\nProgression: after the self set she tips (finta) to the player who just set, who stands close to her; that player digs the tip up and the attack continues to the new player coming in at the back spot."
+    "progressions": "Regression: the player who receives the set first sets to herself and then attacks; the player who set goes straight to that spot and stands behind the attacker.\nProgression: after the self set she tips (finta) to the player who just set, who stands close to her; that player digs the tip up and the attack continues to the new player coming in at the back spot."
   },
   {
     "id": "chaos",
@@ -130,10 +117,10 @@
     "objective": "Practise serve, receive, set and attack in a circuit where the sides alternate.",
     "players": 12,
     "space": "Full court",
-    "description": "Two groups work at the same time, one on each half of the court. On each half, a line of servers stands at zone 1 and throws or serves to zone 5 of the opposite court, where a player receives and then attacks. A fixed setter on each half sets. Players rotate 5A → 1B → 5B → 1A. No scoring.",
-    "fixedRoles": "Per half: a line of servers at zone 1, a receiver and attacker at zone 5, and a fixed setter. Two setters in total.",
-    "sequence": "The first player in the line at zone 1 serves to zone 5 of the opposite court.\nThe player at 5 receives with a forearm pass to the setter.\nThe setter sets to zone 4.\nThe receiver attacks the set.\nThe attacker goes to the end of the line at zone 1 on the other side; the server takes the receiver's spot on the other half.",
-    "rotation": "Rotation 5A → 1B → 5B → 1A: the attacker goes to the line at 1 on the opposite side, the server goes to 5 on her own side of the court.",
+    "description": "Two groups work at the same time, one on each half of the court. On each half, the servers are at zone 1: the one who serves or throws stands inside the court and the others wait behind the end line. She sends the ball to zone 5 of the opposite court, where a player receives and then attacks, and one more player waits behind zone 5 to come in. A fixed setter on each half sets. Players rotate 5A → 1B → 5B → 1A. No scoring.",
+    "fixedRoles": "Per half: the servers at zone 1 (the first one inside the court), a receiver and attacker at zone 5 with one player waiting behind her, and a fixed setter. Two setters in total.",
+    "sequence": "The first server at zone 1 serves or throws from inside the court to zone 5 of the opposite court.\nThe player at 5 receives with a forearm pass to the setter.\nThe setter sets to zone 4.\nThe receiver attacks the set, and the player waiting behind zone 5 comes in to receive the next ball.\nThe attacker goes to the end of the line at zone 1 on the other side; the server goes to wait behind zone 5 on her own side.",
+    "rotation": "Rotation 5A → 1B → 5B → 1A: the attacker goes to the line at 1 on the opposite side; the server goes to wait behind 5 on her own side of the court and comes in when the receiver goes to attack.",
     "progressions": "Serve: two-hand bounce throw; spike to the floor; float serve; spin serve; jump serve.\nAttack: no jump; jump and catch at the highest point; jump and tip.",
     "animationUrl": "assets/animations/side-out.html"
   }

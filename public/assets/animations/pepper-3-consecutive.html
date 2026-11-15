@@ -27,7 +27,7 @@ h1{margin:4px 0 0;font:700 clamp(28px,4vw,40px)/1 var(--display);letter-spacing:
 .stage-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;min-width:0}
 .stage{position:relative;height:clamp(340px,64vh,720px);background:var(--stage)}
 .stage canvas{display:block;width:100%;height:100%;touch-action:none}
-.caption{position:absolute;left:12px;top:12px;max-width:min(440px,calc(100% - 24px));background:color-mix(in srgb,var(--panel) 90%,transparent);border:1px solid var(--line);border-radius:10px;padding:10px 12px;pointer-events:none;backdrop-filter:blur(6px)}
+.caption{position:absolute;left:12px;top:12px;max-width:min(440px,calc(100% - 24px));background:color-mix(in srgb,var(--panel) 90%,transparent);border:1px solid var(--line);border-radius:10px;padding:10px 12px;pointer-events:none;backdrop-filter:blur(6px);transform:scale(.65);transform-origin:top left}
 .caption .step{font:600 11px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .caption .main{margin:5px 0 0;font:700 21px/1.1 var(--display);text-transform:uppercase;letter-spacing:.01em}
 .caption .sub{margin:4px 0 0;font-size:13px;color:var(--muted)}
@@ -215,7 +215,7 @@ function makeFigure(jersey,{ponytail=true}={}){
   const torso=new THREE.Group();hips.add(torso);
   const body=cyl(0.15,0.172,0.56,mJ);body.position.y=0.3;torso.add(body);
   const neck=cyl(0.05,0.05,0.09,mSkin);neck.position.y=0.62;torso.add(neck);
-  const headG=new THREE.Group();headG.position.y=0.65;torso.add(headG);
+  const headG=new THREE.Group();headG.position.y=0.65;headG.rotation.order='YXZ';torso.add(headG);
   const head=new THREE.Mesh(new THREE.SphereGeometry(0.122,18,14),mSkin);head.position.y=0.12;headG.add(head);
   const hair=new THREE.Mesh(new THREE.SphereGeometry(0.13,18,12,0,Math.PI*2,0,Math.PI*0.55),mat(C.hair));
   hair.position.set(0,0.135,-0.012);hair.rotation.x=-0.45;headG.add(hair);
@@ -240,10 +240,14 @@ function makeFigure(jersey,{ponytail=true}={}){
 const pose=(o,L,Rr)=>Object.assign({c:.1,lean:0,tw:0,st:.08,lk:0,lf:L[0],la:L[1],le:L[2],rf:(Rr||L)[0],ra:(Rr||L)[1],re:(Rr||L)[2]},o);
 const POSES={
   stand:    pose({c:.08,lean:.03,st:.07},[.12,.1,.3]),
-  ready:    pose({c:.52,lean:.38,st:.22,lk:.15},[.95,.22,1.15]),
+  ready:    pose({c:.42,lean:.34,st:.22,lk:.15},[.85,.2,1.1]),
+  tipLoad:  pose({c:.2,lean:-.05,st:.12,lk:.5},[1.1,.3,1.0],[2.55,.2,1.25]),
+  tip:      pose({c:.04,lean:.06,st:.1,lk:.45},[.8,.3,.9],[2.95,.08,.3]),
+  throwLoad:pose({c:.22,lean:-.22,st:.18,lk:.35},[3.0,.2,1.35]),
+  throwOut: pose({c:.28,lean:.4,st:.18,lk:.05},[1.25,.1,.15]),
   split:    pose({c:.28,lean:.3,st:.26,lk:.15},[.85,.26,1.1]),
-  dig:      pose({c:.9,lean:.58,st:.34,lk:.25},[1.45,-.3,0]),
-  digFollow:pose({c:.7,lean:.45,st:.32,lk:.3},[1.7,-.3,0]),
+  dig:      pose({c:.88,lean:.56,st:.36,lk:.25},[1.42,-.3,0]),
+  digFollow:pose({c:.62,lean:.42,st:.34,lk:.3},[1.62,-.3,0]),
   setLoad:  pose({c:.38,lean:-.08,st:.16,lk:.5},[2.5,.55,1.7]),
   setPush:  pose({c:.05,lean:-.12,st:.14,lk:.45},[2.95,.35,.3]),
   approach: pose({c:.62,lean:.55,st:.12,lk:.35},[-1.05,.15,.25]),
@@ -251,29 +255,33 @@ const POSES={
   load:     pose({c:.05,lean:-.22,tw:-.55,st:.08,lk:.55},[2.75,.15,.15],[2.2,.75,2.0]),
   hit:      pose({c:0,lean:.3,tw:.3,st:.08,lk:.4},[.7,.3,1.0],[2.95,.1,.05]),
   follow:   pose({c:.1,lean:.45,tw:.4,st:.1,lk:.1},[.5,.25,.9],[.9,-.15,.3]),
-  land:     pose({c:.6,lean:.4,st:.25,lk:.2},[.8,.25,.7]),
+  land:     pose({c:.66,lean:.42,st:.24,lk:.2},[.75,.3,.8]),
   jog:      pose({c:.14,lean:.2,st:.06},[.3,.12,1.4]),
   toss:     pose({c:.1,lean:0,st:.14,lk:.5},[2.7,.1,.1],[.4,.3,.6]),
   cload:    pose({c:.12,lean:-.12,tw:-.5,st:.16,lk:.5},[2.5,.15,.2],[2.2,.75,2.0]),
   chit:     pose({c:.05,lean:.25,tw:.25,st:.16,lk:.35},[.7,.3,1.0],[2.85,.1,.05]),
   cfollow:  pose({c:.12,lean:.35,tw:.35,st:.16},[.5,.25,.9],[.9,-.15,.3])
 };
-function applyPose(f,p,jy,phase,amp){
+/* sh=1: short adjusting steps (shuffle) instead of a running stride; tm drives the small idle motion */
+function applyPose(f,p,jy,phase,amp,sh=0,tm=0){
   const a=p.c*1.1,b=p.c*2.0;
   const h=(L1*Math.cos(a)+L2*Math.cos(b-a))*Math.cos(p.st);
-  f.hips.position.y=h+0.03+jy;
+  const still=jy<0.02&&!reduceMotion?1-amp:0;
+  const idle=still*(0.005*Math.sin(tm*1.8)+(p.c>.3?0.011*Math.abs(Math.sin(tm*2.6)):0));
+  f.hips.position.y=h+0.03+jy+idle+(jy<0.02?amp*0.022*Math.abs(Math.sin(phase)):0);
   f.hips.position.z=-p.lean*p.c*0.18;
-  const tuck=Math.min(1,jy*1.6);
+  const air=Math.min(1,jy*1.6);
   f.legs.forEach((l,i)=>{
-    const sw=(i?1:-1)*Math.sin(phase)*0.6*amp;
-    const kb=amp*0.7*Math.max(0,Math.sin(phase+(i?Math.PI:0)+1.2));
-    l.thigh.rotation.x=-(a+sw+tuck*0.55);
-    l.thigh.rotation.z=(i?-1:1)*p.st*(1-amp*0.7);
-    l.shin.rotation.x=b+kb+tuck*1.0;
+    const sw=(i?1:-1)*Math.sin(phase)*0.6*amp*(1-0.65*sh);
+    const kb=amp*0.7*Math.max(0,Math.sin(phase+(i?Math.PI:0)+1.2))*(1-0.5*sh);
+    const lat=sh*amp*0.26*Math.max(0,Math.sin(phase+(i?Math.PI:0)));
+    l.thigh.rotation.x=-(a+sw)+air*0.18;
+    l.thigh.rotation.z=(i?-1:1)*(p.st*(1-amp*0.7*(1-sh))+lat);
+    l.shin.rotation.x=b+kb+air*0.85;
   });
   f.torso.rotation.set(p.lean,p.tw,0);
   f.headG.rotation.x=-p.lk+p.lean*0.4;
-  const as=Math.sin(phase)*0.6*amp;
+  const as=Math.sin(phase)*0.6*amp*(1-0.7*sh);
   const L=f.arms[0],R=f.arms[1];
   L.sh.rotation.set(-(p.lf+as),0,p.la);L.elbow.rotation.x=-p.le;
   R.sh.rotation.set(-(p.rf-as),0,-p.ra);R.elbow.rotation.x=-p.re;
@@ -293,7 +301,8 @@ const actors={};
 function addActor(id,jersey,tag,tagBg,tagFg,opts){
   const f=makeFigure(jersey,opts);scene.add(f.root);scene.add(f.shadow);
   const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tagTex(tag,tagBg,tagFg),depthTest:false}));
-  sp.scale.set(0.55,0.55,1);sp.renderOrder=10;sp.visible=false;scene.add(sp);f.tag=sp;actors[id]=f;
+  sp.scale.set(0.55,0.55,1);sp.renderOrder=10;sp.visible=false;scene.add(sp);f.tag=sp;
+  f.seed=Object.keys(actors).length*1.7;f.rx=0;f.hx=0;f.hy=0;actors[id]=f;
 }
 
 /* ---------- Balón ---------- */
@@ -304,6 +313,7 @@ const ball=new THREE.Mesh(new THREE.SphereGeometry(0.11,24,16),new THREE.MeshSta
 scene.add(ball);
 const ballShadow=new THREE.Mesh(new THREE.CircleGeometry(0.13,20),basic('#0b1a2a',0.25));
 ballShadow.rotation.x=-Math.PI/2;ballShadow.position.y=0.007;scene.add(ballShadow);
+const spinAxis=new THREE.Vector3();
 const TRAIL_N=40;
 const trailGeo=new THREE.BufferGeometry();trailGeo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(TRAIL_N*3),3));
 const trail=new THREE.Line(trailGeo,new THREE.LineBasicMaterial({color:'#ffffff',transparent:true,opacity:.95}));scene.add(trail);
@@ -425,11 +435,23 @@ function sample(tr,t){
   let i=0;while(i<tr.length-1&&tr[i+1].t<=t)i++;
   const k0=tr[i];
   if(i===tr.length-1)return{x:k0.x,z:k0.z,y:k0.y,pose:POSES[k0.pose],pose1:POSES[k0.pose],u:0,speed:0,d:k0.d,dx:0,dz:0,face:k0.face};
-  const k1=tr[i+1],dur=k1.t-k0.t,u=(t-k0.t)/dur,ue=ease(u),ul=k1.walk?u:ue;
+  const k1=tr[i+1],dur=k1.t-k0.t,u=(t-k0.t)/dur,ue=ease(u),air=k0.j&&k0.j===k1.j;
+  // runs speed up at the start and slow down at the end; a jump follows a parabola
+  let ul=ue;
+  if(air)ul=u;
+  else if(k1.walk){const s1=Math.sin(Math.PI*u)/Math.PI;
+    ul=k1.e0&&k1.e1?u-0.55*Math.sin(2*Math.PI*u)/(2*Math.PI):k1.e0?u-0.4*s1:k1.e1?u+0.4*s1:u;}
   const dist=d2(k0,k1);
-  return{x:k0.x+(k1.x-k0.x)*ul,z:k0.z+(k1.z-k0.z)*ul,y:k0.y+(k1.y-k0.y)*ue,pose:POSES[k0.pose],pose1:POSES[k1.pose],u:ue,
-    speed:dist/dur,d:k0.d+dist*ul,dx:k1.x-k0.x,dz:k1.z-k0.z,face:k1.face!=null?k1.face:k0.face};
+  let y=k0.y+(k1.y-k0.y)*ue;
+  if(air){const q=Math.min(1,Math.max(0,(t-k0.j.t0)/(k0.j.t1-k0.j.t0)));y=4*k0.j.h*q*(1-q);}
+  return{x:k0.x+(k1.x-k0.x)*ul,z:k0.z+(k1.z-k0.z)*ul,y,pose:POSES[k0.pose],pose1:POSES[k1.pose],u:ue,
+    speed:dist/dur,d:k0.d+dist*ul,dx:k1.x-k0.x,dz:k1.z-k0.z,face:k1.face!=null?k1.face:k0.face,
+    shuf:k1.sh||(!k1.walk&&dist<2.6)};
 }
+function markRuns(tr){tr.forEach((k,i)=>{if(k.walk){k.e0=!(tr[i-1]&&tr[i-1].walk);k.e1=!(tr[i+1]&&tr[i+1].walk);}});}
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const wrapA=a=>((a+Math.PI)%(2*Math.PI)+2*Math.PI)%(2*Math.PI)-Math.PI;
+const busy=(id,t)=>events.some(e=>e.actor===id&&e.t>t-1.2&&e.t<t+3);
 const lerpPose=(a,b,u)=>{const o={};for(const k in a)o[k]=a[k]+(b[k]-a[k])*u;return o;};
 function ballAt(t){
   if(t<=ballSegs[0].t0)return{p:ballSegs[0].p0,seg:null};
@@ -444,7 +466,10 @@ let showTrail=true;
 function update(t,dt,snap){
   const b=ballAt(t);
   ball.position.set(b.p.x,b.p.y,b.p.z);
-  if(b.seg&&!reduceMotion)ball.rotation.x+=dt*9,ball.rotation.z+=dt*4;
+  if(b.seg&&!reduceMotion&&dt>0){ // spin: topspin on hard-driven balls, light backspin on passes and sets
+    const g=b.seg,sx=g.p1.x-g.p0.x,sz=g.p1.z-g.p0.z,sl=Math.hypot(sx,sz);
+    if(sl>0.05){const v=sl/(g.t1-g.t0);spinAxis.set(sz/sl,0,-sx/sl);ball.rotateOnWorldAxis(spinAxis,dt*(v>8?16:-4));}
+  }
   ballShadow.position.set(b.p.x,0.007,b.p.z);
   const hs=Math.max(0.35,1-b.p.y*0.18);ballShadow.scale.setScalar(hs);ballShadow.material.opacity=0.25*hs;
   // trayectoria
@@ -460,16 +485,32 @@ function update(t,dt,snap){
     const f=actors[id],tr=tracks[id];if(!tr)continue;
     const s=sample(tr,t);
     f.root.position.set(s.x,0,s.z);f.shadow.position.set(s.x,0.006,s.z);
-    const moving=s.speed>1.0&&s.y<0.05;
+    const moving=s.speed>1.0&&s.y<0.05,shuf=moving&&s.shuf;
+    const bdx=b.p.x-s.x,bdz=b.p.z-s.z,bd=Math.hypot(bdx,bdz),live=bd<22;
     let target;
     if(s.face!=null)target=s.face;
-    else if(moving)target=Math.atan2(s.dx,s.dz);
-    else target=Math.atan2(b.p.x-s.x,b.p.z-s.z);
-    let diff=((target-f.ang+Math.PI)%(2*Math.PI)+2*Math.PI)%(2*Math.PI)-Math.PI;
+    else if(moving&&!shuf)target=Math.atan2(s.dx,s.dz);
+    else if(live)target=Math.atan2(bdx,bdz);
+    else target=f.ang;
+    let diff=wrapA(target-f.ang);
     f.ang=snap?target:f.ang+diff*Math.min(1,dt*9);
     f.root.rotation.y=f.ang;
     const amp=s.y<0.05?Math.min(1,Math.max(0,(s.speed-0.3)/2.6)):0;
-    applyPose(f,lerpPose(s.pose,s.pose1,s.u),s.y,s.d*2*Math.PI/1.5,amp);
+    // players waiting outside the court stand relaxed until their turn comes
+    const rest=s.pose===POSES.ready&&s.pose1===POSES.ready&&(Math.abs(s.x)>9.3||Math.abs(s.z)>4.8)&&!busy(id,t)?1:0;
+    f.rx=snap?rest:f.rx+(rest-f.rx)*Math.min(1,dt*4);
+    let p=lerpPose(s.pose,s.pose1,s.u);
+    if(f.rx>0.01)p=lerpPose(p,POSES.stand,f.rx);
+    if(amp>0&&!shuf)p.lean+=0.12*amp;
+    applyPose(f,p,s.y,s.d*2*Math.PI/(shuf?0.9:1.5),amp,shuf?1:0,t+f.seed);
+    // the head follows the ball
+    let hy=0,hx=f.headG.rotation.x;
+    if(live&&bd>0.3){const yaw=wrapA(Math.atan2(bdx,bdz)-f.ang-p.tw);
+      if(Math.abs(yaw)<2.5){hy=clamp(yaw,-1.1,1.1);
+        hx=-clamp(Math.atan2(b.p.y-(f.hips.position.y+0.75),bd)+p.lean*0.6,-0.3,1.0);}}
+    const hk=snap?1:Math.min(1,dt*10);
+    f.hy+=(hy-f.hy)*hk;f.hx+=(hx-f.hx)*hk;
+    f.headG.rotation.set(f.hx,f.hy,0);
     f.tag.position.set(s.x,f.hips.position.y+1.35,s.z);
   }
   // anillo bajo la jugadora que actúa
