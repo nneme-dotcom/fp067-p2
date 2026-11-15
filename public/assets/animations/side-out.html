@@ -34,6 +34,10 @@ h1{margin:4px 0 0;font:700 clamp(28px,4vw,40px)/1 var(--display);letter-spacing:
 .caption .sub:empty{display:none}
 .cams{position:absolute;right:12px;top:12px;display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end;max-width:50%}
 @media (max-width:560px){.cams{top:auto;bottom:12px;max-width:none}}
+.vars{position:absolute;left:12px;bottom:12px;display:flex;flex-direction:column;align-items:flex-start;gap:6px;max-width:calc(100% - 24px);z-index:5}
+.vrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.vlbl{font:600 11px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);min-width:44px}
+.layout.nosheet{grid-template-columns:minmax(0,1fr)}
 .chip{font:600 12px/1 var(--body);letter-spacing:.04em;padding:7px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--panel);border-color:var(--ink)}
 .chip:focus-visible,.btn:focus-visible,input:focus-visible{outline:2px solid var(--court);outline-offset:2px}
@@ -74,10 +78,10 @@ dt{color:var(--muted)} dd{margin:0}
       <p class="eyebrow">Drill · Serve, receive, attack</p>
       <h1>Side-out circuit</h1>
     </div>
-    <div class="meta">12 players · full court · circuit</div>
+    <div class="meta">12 players · full court · two groups</div>
   </header>
 
-  <main class="layout">
+  <main class="layout nosheet">
     <section class="stage-card">
       <div class="stage" id="stage">
         <div class="caption" aria-live="polite">
@@ -85,6 +89,7 @@ dt{color:var(--muted)} dd{margin:0}
           <p class="main" id="capMain">Starting positions</p>
           <p class="sub" id="capSub"></p>
         </div>
+        <div class="vars" id="vars" role="group" aria-label="Variants"></div>
         <div class="cams" role="group" aria-label="Camera">
           <button class="chip" data-cam="iso" aria-pressed="true">Isometric</button>
           <button class="chip" data-cam="lat" aria-pressed="false">Side</button>
@@ -105,13 +110,7 @@ dt{color:var(--muted)} dd{margin:0}
       </div>
     </section>
 
-    <aside class="panel">
-      <h2>Drill sheet</h2>
-      <div><h3>Players</h3><div class="legend"><div><span class="dot" style="background:var(--pale)"></span>Players</div></div></div>
-      <div><h3>Sequence</h3><ol><li>Six players on each court: a server, three passers, a setter and a hitter.</li><li>One side serves, the other receives with a forearm pass, sets and attacks.</li><li>Then the sides swap and the circuit repeats.</li><li>Serve variations: two-hand bounce throw, spike to the floor, float serve, spin serve, jump serve.</li><li>Attack variations: attack without jumping, jump and catch at the highest point, jump and tip.</li></ol></div>
-      <div><h3>Set-up</h3><dl><dt>Court</dt><dd>6 players per court</dd><dt>Contacts</dt><dd>Serve, pass, set, attack</dd><dt>Rotation</dt><dd>Sides alternate, 3 cycles in the sample</dd><dt>Scoring</dt><dd>None</dd></dl></div>
-      <p class="note">Drag to rotate the view, scroll or pinch to zoom.</p>
-    </aside>
+    
   </main>
 </div>
 
@@ -313,7 +312,7 @@ const ahead=new THREE.Line(aheadGeo,new THREE.LineDashedMaterial({color:'#ffffff
 const ring=new THREE.Mesh(new THREE.RingGeometry(0.42,0.56,40),basic('#ffffff',0.9));
 ring.rotation.x=-Math.PI/2;ring.position.y=0.012;scene.add(ring);
 
-/* ---------- Side-out circuit: serve, receive, set, attack; sides alternate ---------- */
+/* ---------- Side-out circuit: two groups working in parallel, one on each half of the court ---------- */
 /* ---------- Script helpers: keys for players, flights for the ball ---------- */
 const d2=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
 const ang=(a,b)=>Math.atan2(b.x-a.x,b.z-a.z);
@@ -384,76 +383,168 @@ function cone(x,z){
   const band=cyl(0.075,0.1,0.07,mat('#ffffff'),16);band.position.y=0.17;g.add(band);
   g.position.set(x,0,z);scene.add(g);
 }
+function pickVariant(id){
+  VAR=id;document.querySelectorAll('[data-var]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.var===id));
+  rebuild();
+}
+function rebuild(){build();lastEvIdx=-2;seek(0);setPlaying(true);}
+function initVariants(){
+  if(typeof VGROUPS!=='undefined'){
+    $('vars').innerHTML=VGROUPS.map(g=>`<div class="vrow"><span class="vlbl">${g.label}</span>${g.opts.map(o=>`<button class="chip" data-vg="${g.key}" data-vo="${o[0]}" aria-pressed="${VSEL[g.key]===o[0]}">${o[1]}</button>`).join('')}</div>`).join('');
+    document.querySelectorAll('[data-vg]').forEach(b=>b.onclick=()=>{VSEL[b.dataset.vg]=b.dataset.vo;
+      document.querySelectorAll('[data-vg="'+b.dataset.vg+'"]').forEach(x=>x.setAttribute('aria-pressed',x===b));rebuild();});
+    return;
+  }
+  if(typeof VARIANTS==='undefined')return;
+  $('vars').innerHTML='<div class="vrow">'+VARIANTS.map(v=>`<button class="chip" data-var="${v.id}" aria-pressed="${v.id===VAR}">${v.label}</button>`).join('')+'</div>';
+  document.querySelectorAll('[data-var]').forEach(b=>b.onclick=()=>pickVariant(b.dataset.var));
+}
 function startScript(nExtras){
   for(const a of ACTORS)addActor(a.id,a.color||C.pale,a.tag||'',a.bg||'#2D7DB2',a.fg||'#ffffff',a.opts);
   for(let i=0;i<nExtras;i++)newBall();
   if(typeof drillSetup==='function')drillSetup();
-  build();resize();setCam('iso',true);update(0,0,true);
+  build();initVariants();resize();setCam('iso',true);update(0,0,true);
   requestAnimationFrame(n=>{lastNow=n;loop(n);});
 }
 function start(){startScript(typeof NEXTRA==='number'?NEXTRA:0);}
 
-const INIT_SUB='Six players on each court: a server, three passers, a setter and a hitter. Court B serves first.';
-const ACTORS=[];for(const s of ['a','b'])for(let i=1;i<=6;i++)ACTORS.push({id:s+i});
-const L={srv:{x:-9.6,z:-1.0},p1:{x:-6.2,z:-3.2},p2:{x:-6.9,z:0.6},p3:{x:-6.2,z:3.4},set:{x:-1.5,z:2.3},open:{x:-5.3,z:-4.9}};
+const VGROUPS=[
+ {key:'serve',label:'Serve',opts:[['bounce','Bounce throw'],['floor','Spike to floor'],['float','Float'],['spin','Spin'],['jump','Jump serve']]},
+ {key:'attack',label:'Attack',opts:[['nojump','No jump'],['catch','Jump and catch'],['tip','Jump and tip']]}];
+const VSEL={serve:'bounce',attack:'nojump'};
+const INIT_SUB='Two groups work at the same time, one on each half of the court. Each has a line of servers at zone 1, a receiver at zone 5 and a setter.';
+const ACTORS=[];['1','2'].forEach(g=>{ACTORS.push({id:'r'+g},{id:'s'+g,color:C.red,tag:'A',bg:C.red});for(let i=0;i<4;i++)ACTORS.push({id:'l'+g+i});});
+const NEXTRA=1;
+const T0=2.6,PER=7.0,NC=3,D1=0.7;
 const pos=(s,p)=>s==='B'?{x:-p.x,z:-p.z}:p;
 const mp=(s,p)=>s==='B'?{x:-p.x,y:p.y,z:-p.z}:p;
-const ids=s=>{const c=s==='A'?'a':'b';return{srv:c+'1',p1:c+'2',p2:c+'3',p3:c+'4',set:c+'5',hit:c+'6'};};
-const CYC=[
- {r:'A',serve:'float',att:'spike'},
- {r:'B',serve:'jump',att:'spike'},
- {r:'A',serve:'float',att:'tip'}];
-const T0=2.4,PER=7.4;
+const LN=(Y,i)=>pos(Y,{x:-9.8,z:2.4+1.0*i});
+const PARK={x:0,y:-3,z:80};
+const SERV={bounce:{tf:1.9},floor:{tf:1.9},float:{tf:1.7},spin:{tf:1.5},jump:{tf:1.4}};
+const SERV_TXT={bounce:'Two-hand bounce throw',floor:'Spike to the floor',float:'Float serve',spin:'Spin serve',jump:'Jump serve'};
+const ATT_TXT={nojump:'No-jump attack',catch:'Jump and catch',tip:'Jump and tip'};
+function jumpK(id,T,P,hitPose,followPose){
+  K(id,T-0.9,P.open,'ready');
+  K(id,T-0.62,{x:P.open.x+(P.jump.x-P.open.x)*.45,z:P.open.z+(P.jump.z-P.open.z)*.45},'jog');
+  K(id,T-0.36,P.jump,'approach');K(id,T-0.3,P.jump,'approach');
+  K(id,T-0.2,{x:(P.jump.x+P.air.x)/2,z:(P.jump.z+P.air.z)/2},'takeoff',{y:0.22});
+  K(id,T-0.07,P.air,'load',{y:0.58});K(id,T,P.air,hitPose,{y:0.6});K(id,T+0.17,P.air,followPose,{y:0.42});
+  K(id,T+0.4,P.land,'land');K(id,T+0.85,P.land,'stand');
+}
 function build(){
   begin();
-  for(const s of ['A','B']){const I=ids(s),f=NET_FACE[s];
-    START(I.srv,pos(s,L.srv),f);START(I.p1,pos(s,L.p1),f);START(I.p2,pos(s,L.p2),f);START(I.p3,pos(s,L.p3),f);
-    START(I.set,pos(s,L.set),f);START(I.hit,pos(s,L.open),f);}
-  CYC.forEach((c,n)=>{
-    const r=c.r,q=r==='A'?'B':'A',R=ids(r),Q=ids(q),T=T0+n*PER;
-    const sv=pos(q,L.srv),fq=NET_FACE[q],fr=NET_FACE[r];
-    const nm=s=>s==='A'?'Court A':'Court B';
-    let cpS;
-    if(c.serve==='jump'){
-      const open=pos(q,{x:-12.3,z:-1.0}),jump=pos(q,{x:-10.7,z:-1.0}),air=pos(q,{x:-9.9,z:-1.0}),land=pos(q,{x:-9.1,z:-1.0});
-      cpS={x:air.x+(q==='A'?.25:-.25),y:3.15,z:air.z};
-      FLY(T-1.15,{x:open.x,y:1.4,z:open.z},T-0.45,{x:jump.x,y:3.2,z:jump.z},2.0);
-      FLY(T-0.45,{x:jump.x,y:3.2,z:jump.z},T,cpS,0.2);
-      SPIKE(Q.srv,T,{open,jump,air,land});
-      EV(T,'hit',Q.srv,`${nm(q)} · jump serve`,'Takes off from behind the end line');
-    }else{
-      cpS={x:sv.x+(q==='A'?.3:-.3),y:2.1,z:sv.z};
-      K(Q.srv,T-1.05,sv,'toss',{face:fq});
-      FLY(T-1.1,{x:sv.x,y:1.3,z:sv.z},T,cpS,0.9);
-      DO(Q.srv,T,'hit',sv,fq);
-      EV(T,'hit',Q.srv,`${nm(q)} · float serve`,'Standing, no spin');
-    }
-    const p2=pos(r,L.p2),cpP={x:p2.x+(r==='A'?.35:-.35),y:0.7,z:p2.z};
-    FLY(T,cpS,T+1.55,cpP,c.serve==='jump'?1.0:2.4);
-    DO(R.p2,T+1.55,'dig',p2,ang(p2,sv));
-    EV(T+1.55,'dig',R.p2,`${nm(r)} · receive`,'Forearm pass to the setter');
-    const st=pos(r,L.set),hit=pos(r,{x:-1.5,z:-3.4});
-    const cpSet={x:st.x+(r==='A'?.2:-.2),y:2.1,z:st.z};
-    FLY(T+1.55,cpP,T+2.75,cpSet,3.2);
-    const air=pos(r,{x:-1.45,z:-3.4}),open=pos(r,L.open),jump=pos(r,{x:-3.0,z:-4.1}),land=pos(r,{x:-2.5,z:-3.0});
-    DO(R.set,T+2.75,'set',st,ang(st,air));
-    EV(T+2.75,'set',R.set,`${nm(r)} · set`,'Fingers · to the outside hitter');
-    const cpH={x:air.x+(r==='A'?.3:-.3),y:3.1,z:air.z};
-    FLY(T+2.75,cpSet,T+4.15,cpH,3.1);
-    SPIKE(R.hit,T+4.15,{open,jump,air,land});
-    const tip=c.att==='tip';
-    const tgt=tip?pos(q,{x:-1.7,z:-0.8}):pos(q,{x:-5.2,z:-1.8});
-    FLY(T+4.15,cpH,T+4.15+(tip?1.0:0.75),{x:tgt.x,y:0.1,z:tgt.z},tip?1.3:0.3);
-    EV(T+4.15,'hit',R.hit,`${nm(r)} · ${tip?'jump and tip':'attack'}`,tip?'Jumps and tips the ball over the block':'Jumps and attacks the ball');
-    // hitter goes back to the starting position for the next turn
-    const w=WALK(R.hit,T+5.2,[land,open],2.8);HOLD(R.hit,END(w)+0.2,open,fr);
+  const sv=VSEL.serve,at=VSEL.attack,tf=SERV[sv].tf;
+  const segs=[[],[]];
+  const G=[ // group index 0 -> feature group (receives on A), 1 -> receives on B
+    {R:'A',Y:'B',off:0,rec:'r1',S:'s1',line:[0,1,2,3].map(i=>({id:'l1'+i,at:0}))},
+    {R:'B',Y:'A',off:D1,rec:'r2',S:'s2',line:[0,1,2,3].map(i=>({id:'l2'+i,at:0}))}];
+  const RS=R=>pos(R,{x:-6.9,z:-3.0}),SS=R=>pos(R,{x:-1.5,z:-0.9});
+  const AP=R=>({open:pos(R,{x:-5.0,z:-4.8}),jump:pos(R,{x:-3.0,z:-4.1}),air:pos(R,{x:-1.5,z:-3.5}),land:pos(R,{x:-2.3,z:-3.2}),hp:pos(R,{x:-2.4,z:-3.5})});
+  G.forEach((g,gi)=>{
+    START(g.rec,RS(g.R),NET_FACE[g.R]);START(g.S,SS(g.R),NET_FACE[g.R]);
+    g.line.forEach((m,i)=>START(m.id,LN(g.Y,i),NET_FACE[g.R]));
   });
-  const T=T0+(CYC.length-1)*PER;
-  events.push({t:T+5.5,kind:'end',actor:null,main:'End of the sample',sub:'The circuit continues: serve, receive, set, attack and the sides alternate.'});
-  finish(T+6.8);
+  const Tc=(g,c)=>T0+c*PER+g.off;
+  const thr=[[],[]];
+  for(let c=0;c<NC;c++){
+    G.forEach((g,gi)=>{
+      CUR=segs[gi];
+      const {R,Y}=g,T=Tc(g,c),tR=T+tf,tS=tR+1.2,tH=tS+1.4,feat=gi===0,ap=AP(R);
+      const dxY=Y==='A'?1:-1,dxR=R==='A'?1:-1;
+      // line: the first player serves, the others move up
+      const th=g.line.shift();thr[gi][c]=th.id;
+      g.line.forEach((m,i)=>{if(m.at<=T)WALK(m.id,T+0.4,[LN(Y,i+1),LN(Y,i)],1.5);});
+      // serve
+      const tsp=LN(Y,0),face=ang(tsp,RS(R));
+      const cpR={x:RS(R).x+dxR*.45,y:0.65,z:RS(R).z};
+      let cpS,type;
+      const bounceTo=(t0,p0,t1,p1)=>{const mx={x:(p0.x+p1.x)/2,y:0.11,z:(p0.z+p1.z)/2},tm=t0+(t1-t0)*0.55;FLY(t0,p0,tm,mx,0.7);FLY(tm,mx,t1,p1,1.1);};
+      if(sv==='bounce'){
+        cpS={x:tsp.x+dxY*.3,y:1.0,z:tsp.z};
+        K(th.id,T-0.4,tsp,'ready',{face});DO(th.id,T,'throw',tsp,face);
+        FLY(T-0.4,{x:tsp.x+dxY*.2,y:1.2,z:tsp.z},T,cpS,0.1);bounceTo(T,cpS,tR,cpR);
+      }else if(sv==='jump'){
+        const open=pos(Y,{x:-12.2,z:2.4}),jump=pos(Y,{x:-10.8,z:2.4}),air=pos(Y,{x:-9.9,z:2.4}),land=pos(Y,{x:-9.0,z:2.4});
+        cpS={x:air.x+dxY*.25,y:3.15,z:air.z};
+        FLY(T-1.2,{x:open.x,y:1.3,z:open.z},T-0.45,{x:jump.x,y:3.2,z:jump.z},2.0);FLY(T-0.45,{x:jump.x,y:3.2,z:jump.z},T,cpS,0.2);
+        jumpK(th.id,T,{open,jump,air,land},'hit','follow');
+        FLY(T,cpS,tR,cpR,2.0);
+      }else{
+        const hy=sv==='spin'?2.7:sv==='floor'?2.5:2.2;
+        cpS={x:tsp.x+dxY*.3,y:hy,z:tsp.z};
+        K(th.id,T-1.05,tsp,'toss',{face});FLY(T-1.1,{x:tsp.x,y:1.3,z:tsp.z},T,cpS,sv==='spin'?1.6:0.9);
+        DO(th.id,T,'hit',tsp,face);
+        if(sv==='floor')bounceTo(T,cpS,tR,cpR);else FLY(T,cpS,tR,cpR,sv==='spin'?3.4:2.6);
+      }
+      if(feat)EV(T,'hit',th.id,`${SERV_TXT[sv]} from zone 1 of court ${Y} to zone 5 of court ${R}`,gi===0&&c===0?'The other half works at the same time':'Same thing on the other half');
+      // receive
+      DO(g.rec,tR,'dig',RS(R),ang(RS(R),tsp));
+      if(feat)EV(tR,'dig',g.rec,`Receives at zone 5 of court ${R}`,'Forearm pass to the setter');
+      const ss=SS(R),cps={x:ss.x+dxR*.2,y:2.1,z:ss.z};
+      FLY(tR,cpR,tS,cps,2.8);
+      DO(g.S,tS,'set',ss,ang(ss,ap.hp));
+      if(feat)EV(tS,'set',g.S,'The setter sets to 4','Fixed setter on this half');
+      // attack
+      const jumping=at!=='nojump';
+      let cpH,land;
+      if(!jumping){
+        const w=WALK(g.rec,tR+0.45,[RS(R),ap.hp],2.8);
+        cpH={x:ap.hp.x+dxR*.3,y:2.3,z:ap.hp.z};land=ap.hp;
+        DO(g.rec,tH,'hit',ap.hp,ang(ap.hp,{x:0,z:ap.hp.z}));
+        FLY(tS,cps,tH,cpH,1.8);
+        const tg=mp(R,{x:5.0,y:0.1,z:-2.0});FLY(tH,cpH,tH+0.8,tg,0.3);
+        EV_att(feat,tH,g.rec);
+      }else{
+        WALK(g.rec,tR+0.45,[RS(R),ap.open],2.8);
+        cpH={x:ap.air.x+dxR*.3,y:3.0,z:ap.air.z};land=ap.land;
+        FLY(tS,cps,tH,cpH,1.8);
+        if(at==='catch'){
+          jumpK(g.rec,tH,ap,'setPush','setPush');
+          FLY(tH,cpH,tH+0.6,{x:ap.land.x,y:1.2,z:ap.land.z},0.1);
+        }else{
+          jumpK(g.rec,tH,ap,'setPush','setPush');
+          const tg=mp(R,{x:1.9,y:0.1,z:-1.0});FLY(tH,cpH,tH+1.0,tg,1.2);
+        }
+        EV_att(feat,tH,g.rec);
+      }
+      const tEndHit=tH+(at==='catch'?0.6:at==='tip'?1.0:0.8);
+      // the ball is collected
+      FLY(tEndHit,at==='catch'?{x:land.x,y:1.2,z:land.z}:cpH,tEndHit+0.01,PARK,0);
+      if(c<NC-1){const nT=Tc(g,c+1),nth=g.line[0];const nsp=LN(Y,0),hand={x:nsp.x+dxY*.2,y:1.2,z:nsp.z};
+        FLY(nT-1.3,PARK,nT-1.299,hand,0);if(sv==='bounce')FLY(nT-0.6,hand,nT-0.4,hand,0);}
+      // rotation of the hitter: to the end of the line of her own group
+      const out=pos(R,{x:-1.0,z:-5.9}),out2=pos(R,{x:1.0,z:-5.9}),out3=pos(R,{x:8.6,z:-5.9});
+      const pend=g.line.length;
+      let idx=pend,ta=0;
+      for(let it=0;it<2;it++){
+        const w=[land,out,out2,out3,LN(Y,Math.max(0,idx))];let tt=tH+(jumping?1.0:0.5);
+        for(let i=1;i<w.length;i++)tt+=d2(w[i-1],w[i])/3.4;ta=tt;
+        let k=0;for(let c2=c+1;c2<NC;c2++)if(Tc(g,c2)<=ta)k++;idx=Math.max(0,pend-k);
+      }
+      const wj=WALK(g.rec,tH+(jumping?1.0:0.5),[land,out,out2,out3,LN(Y,idx)],3.4);
+      HOLD(g.rec,END(wj)+0.3,LN(Y,idx),NET_FACE[R]);
+      g.line.push({id:g.rec,at:END(wj)});
+      g.nextRecFrom=th.id;
+    });
+    // rotation: each thrower becomes the receiver of the other half
+    G.forEach((g,gi)=>{
+      const o=G[1-gi],T=Tc(g,c),leaveO=Tc(o,c)+tf+0.45;
+      const id=thr[gi][c],{R,Y}=g;
+      const dest=RS(o.R),start=Math.max(T+1.0,leaveO+0.2);
+      const w=WALK(id,start,[LN(Y,0),dest],3.2);HOLD(id,END(w)+0.3,dest,NET_FACE[o.R]);
+      o.recNext=id;
+      if(gi===0&&c===0)events.push({t:start,kind:'coach',actor:id,main:'Rotation: 5 → 1 → 5 → 1',sub:'The server takes the receiver spot on the other half; the hitter goes to the line of servers'});
+    });
+    G.forEach(g=>{g.rec=g.recNext||g.rec;});
+  }
+  ballSegs=segs[0];extras.forEach((x,i)=>{x.segs=segs[1];});
+  const tEnd=T0+(NC-1)*PER+D1+tf+5.0;
+  events.push({t:tEnd,kind:'end',actor:null,main:'End of the sample',sub:'The circuit continues with the next server in each line.'});
+  finish(tEnd+1.2);
 }
+function EV_att(feat,t,id){if(feat)EV(t,'hit',id,ATT_TXT[VSEL.attack]+' at 4',VSEL.attack==='tip'?'Soft tip over the block':VSEL.attack==='catch'?'Catches the ball and lands with it':'Controlled attack to the other court');}
 function drillSetup(){}
-function drillFloor(){}
+function drillFloor(){floorText('SERVERS',-11.6,3.4,2.2,0.55,90,.75,512,128);floorText('SERVERS',11.6,-3.4,2.2,0.55,90,.75,512,128);}
 
 
 /* ---------- Muestreo ---------- */

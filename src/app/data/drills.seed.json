@@ -18,7 +18,7 @@
     "objective": "Back-row and front-zone defence, setting and a controlled attack from 4 or from 2 in a continuous rally.",
     "players": 12,
     "space": "Full court",
-    "description": "Full court, continuous rally, no block and no scoring for now. The waiting line stands outside the court, behind zone 6. You choose the attack zone (4 or 2) and the direction (cross-court or down the line). Attacking from 4: rotating players at 1, 6 and 4 plus a libero at 5; the path is waiting line → 1 → 6 → 4 → attack → waiting line of the other court. Attacking from 2: rotating players at 6, 1 and 2 plus a libero at 5, with zone 4 empty; the path is waiting line → 6 → 1 → 2 → attack → waiting line of the other court.",
+    "description": "Full court, continuous rally, no block and no scoring for now. The waiting line stands outside the court, behind zone 6. You choose the attack zone (4 or 2) and the direction (cross-court or down the line). Attacking from 4: rotating players at 1, 6 and 4 plus a libero at 5; the path is waiting line → 1 → 6 → 4 → attack → waiting line of the other court. Attacking from 2: rotating players at 6, 1 and 2 plus a libero at 5, with zone 4 empty; the path is waiting line → 6 → 1 → 2 → attack → waiting line of the other court. Defensive formation. Attack from 4, cross-court: the front-row player drops to the short diagonal, the player at 5 defends the long diagonal, the player at 6 moves to 6-5 to help and the player at 1 moves to 1-2 to cover a tip behind the block. Attack from 4, down the line: the player at 1 defends the line, the player at 6 moves to 6-1, and the player at 4 moves to 3 to cover a tip behind the block. Attacking from 2 is the same, mirrored.",
     "fixedRoles": "Setter (one per court): starts between 2 and 3, penetrates to set and always looks at 4. Attack from 4: front set. Attack from 2: back set.\nLibero (one per court): zone 5.",
     "rotating": "8 players: 3 on court per side and 1 in the waiting line.",
     "sequence": "The coach attacks onto court A from outside court B (only to start the rally).\nWhoever the ball goes to digs.\nThe setter penetrates from between 2 and 3 and sets to the attack zone.\nControlled attack in the chosen direction, no block.\nThe same happens on the other court, continuous rally.",
@@ -31,10 +31,10 @@
     "objective": "Warm up ball control: attack, dig and set in a continuous 1 vs 1 exchange across the net.",
     "players": 12,
     "space": "Full court",
-    "description": "Twelve players in six pairs, one player on each side of the net. Both players take turns attacking, digging and setting. The attack is a controlled hit with no jump, aimed at the partner. No scoring.",
-    "fixedRoles": "Pairs: A on one side of the net, B on the other.",
+    "description": "Twelve players in six pairs, side by side, one player beside each sideline; the ball travels parallel to the net. Both players take turns attacking, digging and setting. The attack is a controlled hit with no jump, aimed at the partner. No scoring.",
+    "fixedRoles": "Pairs: A beside one sideline, B beside the other.",
     "sequence": "A attacks to B (controlled hit, no jump).\nB digs to A.\nA sets to B.\nB attacks to A.\nA digs to B.\nB sets to A and the sequence repeats.",
-    "rotation": "No rotation: each pair stays in its lane.",
+    "rotation": "No rotation: each pair stays in its row.",
     "animationUrl": "assets/animations/pepper-traditional.html"
   },
   {
@@ -43,10 +43,10 @@
     "objective": "Warm up ball control and the full attack chain: dig, self set and attack, one player at a time.",
     "players": 12,
     "space": "Full court",
-    "description": "Twelve players in six pairs, one player on each side of the net. Each player makes three touches in a row (dig, set to self, attack) before the ball goes to the partner. The attack is a controlled hit with no jump. No scoring.",
-    "fixedRoles": "Pairs: A on one side of the net, B on the other.",
+    "description": "Twelve players in six pairs, side by side, one player beside each sideline; the ball travels parallel to the net. Each player makes three touches in a row (dig, set to self, attack) before the ball goes to the partner. The attack is a controlled hit with no jump. No scoring.",
+    "fixedRoles": "Pairs: A beside one sideline, B beside the other.",
     "sequence": "A attacks to B (controlled hit, no jump).\nB digs, sets to self and attacks to A.\nA digs, sets to self and attacks to B.\nThe sequence repeats.",
-    "rotation": "No rotation: each pair stays in its lane.",
+    "rotation": "No rotation: each pair stays in its row.",
     "animationUrl": "assets/animations/pepper-3-consecutive.html"
   },
   {
@@ -55,10 +55,10 @@
     "objective": "Warm up the attacker and the dig-and-set sequence with fixed roles.",
     "players": 12,
     "space": "Full court",
-    "description": "Twelve players in six pairs, one player on each side of the net. A only attacks; B digs and then sets back to A. The attack is a controlled hit with no jump. No scoring.",
-    "fixedRoles": "A attacks. B digs and sets.",
+    "description": "Twelve players in six pairs, side by side, one player beside each sideline; the ball travels parallel to the net. A only attacks; B digs and then sets back to A. The attack is a controlled hit with no jump. No scoring.",
+    "fixedRoles": "Pairs: A beside one sideline, B beside the other.",
     "sequence": "A attacks to B (controlled hit, no jump).\nB digs and sets back to A.\nA attacks again and the sequence repeats.",
-    "rotation": "No rotation: each pair stays in its lane.",
+    "rotation": "No rotation: each pair stays in its row.",
     "animationUrl": "assets/animations/pepper-short.html"
   },
   {
@@ -67,10 +67,10 @@
     "objective": "Warm up ball control with attack, dig and set, and the movement between sides, in groups of three.",
     "players": 12,
     "space": "Full court",
-    "description": "Twelve players in four groups of three, one group per lane. A and C start on one side of the net and B on the other. The player who attacks sets after the dig, then crosses to the other side. The attack is a controlled hit with no jump. No scoring.",
-    "fixedRoles": "Groups of three (A, B and C): A and C start on one side of the net, B on the other.",
-    "sequence": "A attacks to B (controlled hit, no jump).\nB digs to A.\nA sets for B and crosses to the other side.\nB attacks to C, C digs to B, B sets for C and crosses to the other side.\nC attacks to A, A digs to C, C sets for A and crosses to the other side.\nThe rotation repeats.",
-    "rotation": "The player who digs attacks next. After setting, the player crosses outside the net and waits behind the active player on the other side; whoever waited on the side they left steps up.",
+    "description": "Twelve players in four groups of three, one group per row across the court; the ball travels parallel to the net. A and C start by one sideline and B by the other. The player who attacks sets after the dig, then crosses to the other side. The attack is a controlled hit with no jump. No scoring.",
+    "fixedRoles": "Groups of three (A, B and C): A and C start by one sideline, B by the other.",
+    "sequence": "A attacks to B (controlled hit, no jump).\nB digs to A.\nA sets for B and crosses to the other sideline.\nB attacks to C, C digs to B, B sets for C and crosses to the other sideline.\nC attacks to A, A digs to C, C sets for A and crosses to the other sideline.\nThe rotation repeats.",
+    "rotation": "The player who digs attacks next. After setting, the player crosses to the other sideline and waits behind the active player on the other sideline; whoever waited on the side they left steps up.",
     "animationUrl": "assets/animations/pepper-3p-traditional.html"
   },
   {
@@ -79,10 +79,10 @@
     "objective": "Warm up the full attack chain (dig, self set, attack) and the movement between sides, in groups of three.",
     "players": 12,
     "space": "Full court",
-    "description": "Twelve players in four groups of three, one group per lane. A and C start on one side of the net and B on the other. A attacks and crosses to the other side; then each player in turn digs, sets to self, attacks and crosses. The attack is a controlled hit with no jump. No scoring.",
-    "fixedRoles": "Groups of three (A, B and C): A and C start on one side of the net, B on the other.",
-    "sequence": "A attacks to B (controlled hit, no jump) and crosses to the other side.\nB digs, sets to self, attacks to C and crosses to the other side.\nC digs, sets to self, attacks to A and crosses to the other side.\nA digs, sets to self, attacks and crosses to the other side, and the rotation repeats.",
-    "rotation": "After attacking, the player crosses outside the net and waits behind the active player on the other side; whoever waited on the side they left steps up.",
+    "description": "Twelve players in four groups of three, one group per row across the court; the ball travels parallel to the net. A and C start by one sideline and B by the other. A attacks and crosses to the other side; then each player in turn digs, sets to self, attacks and crosses. The attack is a controlled hit with no jump. No scoring.",
+    "fixedRoles": "Groups of three (A, B and C): A and C start by one sideline, B by the other.",
+    "sequence": "A attacks to B (controlled hit, no jump) and crosses to the other sideline.\nB digs, sets to self, attacks to C and crosses to the other sideline.\nC digs, sets to self, attacks to A and crosses to the other sideline.\nA digs, sets to self, attacks and crosses to the other sideline, and the rotation repeats.",
+    "rotation": "After attacking, the player crosses to the other sideline and waits behind the active player on the other sideline; whoever waited on the side they left steps up.",
     "animationUrl": "assets/animations/pepper-3p-consecutive.html"
   },
   {
@@ -95,7 +95,8 @@
     "fixedRoles": "Two hitters at 2 and 4, one controller at 6, a waiting line behind 6.",
     "sequence": "The player at 4 hits a controlled ball (no jump) to 6.\nThe player at 6 digs to herself.\nShe sets to the player at the other spot (2 or 4) and moves to that spot.\nThe player who hit leaves to the end of the waiting line.\nThe next player in line enters at 6 and the sequence repeats, alternating spots.",
     "rotation": "Hitter goes to the end of the line, controller takes the spot she set to, first in line enters at 6.",
-    "animationUrl": "assets/animations/control-y.html"
+    "animationUrl": "assets/animations/control-y.html",
+    "progressions": "Regression: the player who receives the set first sets to herself and then attacks.\nProgression: after the self set she tips (finta) to the player who just set, who stands close to her; that player digs the tip up and the attack continues to the new player coming in at 6."
   },
   {
     "id": "ball-control-x",
@@ -107,7 +108,8 @@
     "fixedRoles": "Players at the four spots (1, 5, 2, 4) and a waiting line of three.",
     "sequence": "A player at the front makes a controlled attack (no jump) to a back spot.\nThe back player digs high to the centre.\nThe player at the other back spot moves to the centre and sets to the next front spot, then moves there.\nThe sequence repeats, alternating sides, and a new player fills the spot that was vacated.",
     "rotation": "The setter takes the front spot she set to; a player from the line fills the back spot.",
-    "animationUrl": "assets/animations/control-x.html"
+    "animationUrl": "assets/animations/control-x.html",
+    "progressions": "Regression: the player who receives the set first sets to herself and then attacks.\nProgression: after the self set she tips (finta) to the player who just set, who stands close to her; that player digs the tip up and the attack continues to the new player coming in at the back spot."
   },
   {
     "id": "chaos",
@@ -115,11 +117,11 @@
     "objective": "Practise finger touches and fast transitions, with a continuous flow of players on both courts.",
     "players": 12,
     "space": "Full court",
-    "description": "Four players on each court and two waiting at the side of each court. The coach throws a free ball to one court. Each side makes three touches (fingers only) and sends the ball over the net. After every touch, that player goes to touch the cone at the side and a waiting player takes the place. No scoring.",
+    "description": "Four players on each court and two waiting at the side of each court. The coach throws a free ball to one court. Each side makes three touches and sends the ball over the net, and the touches depend on the variation. After every touch, that player goes to touch the cone at the side and joins the waiting line, and a waiting player takes the place. No scoring.",
     "fixedRoles": "4 players per court, 2 waiting at the side of each court, a coach.",
-    "sequence": "The coach throws a free ball to court A.\nEach side makes 3 touches with fingers only and sends the ball over the net.\nAfter every touch, the player goes to touch the cone and joins the waiting line.\nA waiting player immediately takes the vacated spot.\nThe ball keeps going from side to side.",
+    "sequence": "The coach throws a free ball to court A.\nEach side makes 3 touches and sends the ball over the net.\nAfter every touch, the player goes to touch the cone and joins the waiting line.\nA waiting player immediately takes the vacated spot.\nThe ball keeps going from side to side.",
     "rotation": "After each touch the player goes to the cone and to the end of the waiting line; the first waiting player takes the spot.",
-    "progressions": "Forearm only.\nForearm, finger and tip.\nForearm, finger and spike.",
+    "progressions": "Forearm only: the three touches are forearm passes.\nForearm, finger and tip: dig, finger set, and a tip over the net.\nForearm, finger and spike: dig, finger set and a spike.",
     "animationUrl": "assets/animations/chaos.html"
   },
   {
@@ -128,10 +130,10 @@
     "objective": "Practise serve, receive, set and attack in a circuit where the sides alternate.",
     "players": 12,
     "space": "Full court",
-    "description": "Six players on each court: a server, three passers, a setter and a hitter. One side serves, the other receives with a forearm pass, sets and attacks. Then the sides swap and the circuit repeats. No scoring.",
-    "fixedRoles": "Per court: a server, three passers, a setter and a hitter.",
-    "sequence": "The server serves to the other court.\nThe passers receive with a forearm pass to the setter.\nThe setter sets to the hitter.\nThe hitter attacks over the net.\nThe sides swap roles and the circuit repeats.",
-    "rotation": "Sides alternate; each court keeps its roles during the circuit.",
+    "description": "Two groups work at the same time, one on each half of the court. On each half, a line of servers stands at zone 1 and throws or serves to zone 5 of the opposite court, where a player receives and then attacks. A fixed setter on each half sets. Players rotate 5A → 1B → 5B → 1A. No scoring.",
+    "fixedRoles": "Per half: a line of servers at zone 1, a receiver and attacker at zone 5, and a fixed setter. Two setters in total.",
+    "sequence": "The first player in the line at zone 1 serves to zone 5 of the opposite court.\nThe player at 5 receives with a forearm pass to the setter.\nThe setter sets to zone 4.\nThe receiver attacks the set.\nThe attacker goes to the end of the line at zone 1 on the other side; the server takes the receiver's spot on the other half.",
+    "rotation": "Rotation 5A → 1B → 5B → 1A: the attacker goes to the line at 1 on the opposite side, the server goes to 5 on her own side of the court.",
     "progressions": "Serve: two-hand bounce throw; spike to the floor; float serve; spin serve; jump serve.\nAttack: no jump; jump and catch at the highest point; jump and tip.",
     "animationUrl": "assets/animations/side-out.html"
   }

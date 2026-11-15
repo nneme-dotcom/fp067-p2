@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Pepper · 3 consecutive touches with 3 players</title>
+<title>Pepper · 3 players, 3 touches</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap">
 <style>
@@ -34,6 +34,10 @@ h1{margin:4px 0 0;font:700 clamp(28px,4vw,40px)/1 var(--display);letter-spacing:
 .caption .sub:empty{display:none}
 .cams{position:absolute;right:12px;top:12px;display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end;max-width:50%}
 @media (max-width:560px){.cams{top:auto;bottom:12px;max-width:none}}
+.vars{position:absolute;left:12px;bottom:12px;display:flex;flex-direction:column;align-items:flex-start;gap:6px;max-width:calc(100% - 24px);z-index:5}
+.vrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.vlbl{font:600 11px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);min-width:44px}
+.layout.nosheet{grid-template-columns:minmax(0,1fr)}
 .chip{font:600 12px/1 var(--body);letter-spacing:.04em;padding:7px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--panel);border-color:var(--ink)}
 .chip:focus-visible,.btn:focus-visible,input:focus-visible{outline:2px solid var(--court);outline-offset:2px}
@@ -72,7 +76,7 @@ dt{color:var(--muted)} dd{margin:0}
   <header class="top">
     <div>
       <p class="eyebrow">Drill · Warm-up</p>
-      <h1>Pepper · 3 consecutive touches with 3 players</h1>
+      <h1>Pepper · 3 players, 3 touches</h1>
     </div>
     <div class="meta">12 players · 4 groups of 3 · continuous</div>
   </header>
@@ -85,6 +89,7 @@ dt{color:var(--muted)} dd{margin:0}
           <p class="main" id="capMain">Starting positions</p>
           <p class="sub" id="capSub"></p>
         </div>
+        <div class="vars" id="vars" role="group" aria-label="Variants"></div>
         <div class="cams" role="group" aria-label="Camera">
           <button class="chip" data-cam="iso" aria-pressed="true">Isometric</button>
           <button class="chip" data-cam="lat" aria-pressed="false">Side</button>
@@ -107,10 +112,10 @@ dt{color:var(--muted)} dd{margin:0}
 
     <aside class="panel">
       <h2>Drill sheet</h2>
-      <div><h3>Players</h3><div class="legend"><div><span class="dot" style="background:var(--pale)"></span>A, B and C · one group of three</div></div></div>
-      <div><h3>Sequence</h3><ol><li>A attacks to B and crosses to the other side.</li><li>B digs, sets to self, attacks to C and crosses.</li><li>C digs, sets to self, attacks to A and crosses.</li><li>A digs, sets to self, attacks and crosses, and the rotation repeats.</li></ol></div>
-      <div><h3>Set-up</h3><dl><dt>Groups</dt><dd>4 groups of 3, one per lane</dd><dt>Start</dt><dd>A and C on one side of the net, B on the other</dd><dt>Pace</dt><dd>Continuous, each player makes 3 touches in a row then crosses</dd><dt>Scoring</dt><dd>None</dd></dl></div>
-      <p class="note">All four groups follow the same sequence. The ring and ball path follow one group. Drag to rotate the view, scroll or pinch to zoom.</p>
+      <div><h3>Players</h3><div class="legend"><div><span class="dot" style="background:var(--pale)"></span>A, B, C · groups of 3</div><div><span class="dot" style="background:var(--pale)"></span>4 groups = 12 players</div></div></div>
+      <div><h3>Sequence</h3><ol><li>A and C start on one side of the court, B on the other. A attacks to B and goes to the other side.</li><li>B digs, sets to self and attacks to C, then goes to the other side.</li><li>C digs, sets to self and attacks to A, then goes to the other side.</li><li>A digs, sets to self, attacks, and the cycle repeats.</li></ol></div>
+      <div><h3>Set-up</h3><dl><dt>Groups</dt><dd>4 groups of 3, one row each</dd><dt>Sides</dt><dd>A and C on one side, B on the other</dd><dt>Rotation</dt><dd>After attacking, the player crosses to the other side</dd><dt>Scoring</dt><dd>None</dd></dl></div>
+      <p class="note">All four groups follow the same sequence. The ring and ball path follow group 2. Players cross to the other side after their action. Drag to rotate the view, scroll or pinch to zoom.</p>
     </aside>
   </main>
 </div>
@@ -313,122 +318,187 @@ const ahead=new THREE.Line(aheadGeo,new THREE.LineDashedMaterial({color:'#ffffff
 const ring=new THREE.Mesh(new THREE.RingGeometry(0.42,0.56,40),basic('#ffffff',0.9));
 ring.rotation.x=-Math.PI/2;ring.position.y=0.012;scene.add(ring);
 
-/* ---------- Drill data ---------- */
-const MODE='cons',NSTEP=6;
-const DUR={hit:1.5,dig:1.1,set:0.95},HGT={hit:1.3,dig:1.6,set:1.2},ATT={hit:[.75,2.25],dig:[.6,.65],set:[.4,2.1]};
-const INIT_SUB='Four groups of three. A and C on one side of the net, B on the other. A starts with the ball.';
-const TXT=c=>c.kind==='dig'?[`${c.p} digs, ball up for self`,'Platform contact, high to themselves']:c.kind==='set'?[`${c.p} sets to self`,'Hands set, ball in front of the hitting arm']:[`${c.p} attacks`,'Controlled hit, no jump · then crosses to the other side'];
-/* ---------- Trio engine: 4 groups of 3 (A, B, C), one lane each ---------- */
-const NL=4,FEAT=1,XA=2.4,XW=4.5,XC=3.45,T0=2.4,RUN=4.2;
-const ZL=l=>-3.375+2.25*l;
-const OFF=[.2,0,.3,.1];
-const ORDER=['A','B','C'];
+const VAR='self';
+/* ---------- Pepper with 3 players per group (4 groups, A and C on one side, B on the other) ---------- */
+/* ---------- Script helpers: keys for players, flights for the ball ---------- */
 const d2=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
-const DEF={hit:[.35,2.25],dig:[.6,.65],set:[.25,2.1]};
-const CORE={hit:[[-.22,'load'],[0,'hit'],[.2,'follow']],dig:[[-.12,'dig'],[.06,'dig'],[.26,'digFollow']],set:[[-.22,'setLoad'],[.04,'setPush'],[.2,'setPush']]};
-const faceFor=s=>s<0?Math.PI/2:-Math.PI/2;
-let tracks,ballSegs,events,TOTAL;
+const ang=(a,b)=>Math.atan2(b.x-a.x,b.z-a.z);
+const NET_FACE={A:Math.PI/2,B:-Math.PI/2};
+const CORE={hit:[[-.22,'load'],[0,'hit'],[.2,'follow']],dig:[[-.12,'dig'],[.06,'dig'],[.26,'digFollow']],
+  set:[[-.22,'setLoad'],[.04,'setPush'],[.2,'setPush']],throw:[[-.3,'cload'],[0,'chit'],[.3,'cfollow']]};
+let tracks,ballSegs,events,TOTAL,CUR,TK;
 const extras=[];
-const pid=(p,l)=>p+(l+1);
-
-function stepContacts(i){
-  const X=ORDER[i%3],Y=ORDER[(i+1)%3];
-  if(MODE==='trad')return[{p:X,kind:'hit',X,Y},{p:Y,kind:'dig',X,Y},{p:X,kind:'set',X,Y}];
-  return i===0?[{p:X,kind:'hit',X,Y}]:[{p:X,kind:'dig',X,Y},{p:X,kind:'set',X,Y},{p:X,kind:'hit',X,Y}];
+const mir=(s,p)=>s==='B'?{x:-p.x,y:p.y,z:-p.z}:p;
+function begin(){TK={};tracks={};ballSegs=[];events=[];CUR=ballSegs;}
+const K=(id,t,p,pose,o={})=>{(TK[id]||(TK[id]=[])).push({t,x:p.x,z:p.z,y:o.y||0,pose,walk:!!o.walk,face:o.face});};
+const START=(id,p,face)=>K(id,0,p,'ready',{face});
+const DO=(id,T,kind,p,face)=>CORE[kind].forEach(([dt,pose])=>K(id,T+dt,p,pose,{face}));
+const HOLD=(id,t,p,face)=>K(id,t,p,'ready',{face});
+function WALK(id,t0,pts,speed=3.4){
+  const out=[{t:t0,x:pts[0].x,z:pts[0].z}];let t=t0;K(id,t0,pts[0],'ready');
+  for(let i=1;i<pts.length;i++){t+=d2(pts[i-1],pts[i])/speed;K(id,t,pts[i],'jog',{walk:true});out.push({t,x:pts[i].x,z:pts[i].z});}
+  return out;
 }
-function simLane(l,o){
-  const z=ZL(l),zE=z>0?5.9:-5.9;
-  const P={A:{side:-1,slot:'a',arr:0},C:{side:-1,slot:'w',arr:0},B:{side:1,slot:'a',arr:0}};
-  const K={A:[],B:[],C:[]};
-  const spot=p=>({x:p.side*(p.slot==='a'?XA:XW),z});
-  const key=(id,t,pos,pose,opt={})=>K[id].push({t,x:pos.x,z:pos.z,pose,walk:!!opt.walk,face:opt.face,type:opt.type||''});
-  for(const id of ORDER){key(id,0,spot(P[id]),'ready',{face:faceFor(P[id].side)});}
-  const contacts=[];let t=T0;
-  for(let i=0;i<=NSTEP;i++){
-    const cs=stepContacts(i),real=i<NSTEP;
-    for(let k=0;k<cs.length;k++){
-      const c=cs[k];
-      if(!real&&k>0)break;
-      c.side=P[c.p].side;c.t=o+t;c.dur=DUR[c.kind];c.h=HGT[c.kind];c.at=ATT[c.kind];c.step=i;
-      contacts.push(c);
-      if(!real)break;
-      const pos=spot(P[c.p]),f=faceFor(c.side);
-      CORE[c.kind].forEach(([dt,pose],q,arr)=>key(c.p,c.t+dt,pos,pose,{face:f,type:q===0?'cf':q===arr.length-1?'cl':''}));
-      t+=c.dur;
-    }
-    if(!real)break;
-    // the attacker crosses to the other side after its last touch
-    const X=cs[0].X,last=contacts[contacts.length-1];
-    const td=last.t+0.8,px=P[X],s=px.side,from=spot(px);
-    const pts=[{x:s*XC,z},{x:s*XC,z:zE},{x:-s*XC,z:zE},{x:-s*XC,z},{x:-s*XW,z}];
-    key(X,td,from,'ready');
-    let tt=td,prev=from;
-    pts.forEach((q,n)=>{tt+=d2(prev,q)/RUN;prev=q;key(X,tt,q,n===pts.length-1?'ready':'jog',{walk:true,face:n===pts.length-1?faceFor(-s):undefined});});
-    px.side=-s;px.slot='w';px.arr=tt;
-    // whoever waited on the side that was left steps up
-    const Z=ORDER.find(id=>id!==X&&P[id].side===s&&P[id].slot==='w');
-    if(Z){const pz=P[Z],w=spot(pz),st=Math.max(td+0.3,pz.arr);
-      key(Z,st,w,'ready');pz.slot='a';const a=spot(pz);
-      key(Z,st+d2(w,a)/3.5,a,'ready',{walk:true,face:faceFor(s)});}
-  }
-  // rest poses before and after each action
-  for(const id of ORDER){
-    K[id].sort((a,b)=>a.t-b.t);
-    const out=[];
-    K[id].forEach((k,i)=>{
-      const prev=K[id][i-1],next=K[id][i+1];
-      if(k.type==='cf'&&prev&&k.t-prev.t>=0.9)out.push({...k,t:k.t-0.4,pose:'ready',type:''});
-      out.push(k);
-      if(k.type==='cl'&&next&&next.t-k.t>=0.9)out.push({...k,t:k.t+0.45,pose:'ready',type:''});
-    });
-    out.sort((a,b)=>a.t-b.t);
-    K[id]=out.filter((k,i)=>i===0||k.t>out[i-1].t+0.01);
-  }
-  return{K,contacts,z};
+const END=w=>w[w.length-1].t;
+const FLY=(t0,p0,t1,p1,h)=>CUR.push({t0,t1,p0,p1,h});
+const EV=(t,kind,actor,main,sub)=>events.push({t,kind,actor,main,sub});
+function SPIKE(id,T,P){ // P={open,jump,air,land}
+  K(id,T-0.9,P.open,'ready');
+  K(id,T-0.62,{x:P.open.x+(P.jump.x-P.open.x)*.45,z:P.open.z+(P.jump.z-P.open.z)*.45},'jog');
+  K(id,T-0.36,P.jump,'approach');K(id,T-0.3,P.jump,'approach');
+  K(id,T-0.2,{x:(P.jump.x+P.air.x)/2,z:(P.jump.z+P.air.z)/2},'takeoff',{y:0.22});
+  K(id,T-0.07,P.air,'load',{y:0.58});K(id,T,P.air,'hit',{y:0.6});K(id,T+0.17,P.air,'follow',{y:0.42});
+  K(id,T+0.4,P.land,'land');K(id,T+0.85,P.land,'stand');
 }
-function cp(c,z){const s=c.side,dir=-s,k=c.at||DEF[c.kind];return{x:s*XA+dir*k[0],y:k[1],z};}
-function build(){
-  tracks={};events=[];ballSegs=[];
-  const lanes=[];
-  for(let l=0;l<NL;l++){
-    const o=OFF[l],r=simLane(l,o);
-    for(const id of ORDER)tracks[pid(id,l)]=r.K[id];
-    const cs=r.contacts,segs=[];
-    segs.push({t0:cs[0].t-1.1,t1:cs[0].t,p0:{x:-XA+0.35,y:1.3,z:r.z},p1:cp(cs[0],r.z),h:0.9});
-    for(let j=0;j<cs.length-1;j++)segs.push({t0:cs[j].t,t1:cs[j+1].t,p0:cp(cs[j],r.z),p1:cp(cs[j+1],r.z),h:cs[j].h});
-    lanes.push(segs);
-    if(l===FEAT){
-      cs.slice(0,-1).forEach(c=>{const [m,s]=TXT(c);events.push({t:c.t,kind:c.kind,actor:pid(c.p,l),main:m,sub:s});});
-      TOTAL=cs[cs.length-1].t+0.6;
-      events.push({t:cs[cs.length-1].t,kind:'end',actor:null,main:'End of the sample',sub:'The rotation keeps going until the coach stops it.'});
+function finish(total){
+  tracks={};
+  for(const id in TK){
+    const ks=TK[id].sort((a,b)=>a.t-b.t),out=[];
+    for(const k of ks){if(out.length&&k.t<=out[out.length-1].t+0.01)continue;out.push(k);}
+    const res=[];
+    for(let i=0;i<out.length;i++){
+      const k=out[i],n=out[i+1];res.push(k);
+      if(n&&n.t-k.t>1.3&&!n.walk&&d2(n,k)<0.02&&!n.y&&!k.y){
+        res.push({...k,t:k.t+0.45,pose:'ready',walk:false});
+        res.push({...n,t:n.t-0.45,pose:'ready',walk:false,face:n.face!==undefined?n.face:k.face});
+      }
     }
+    let d=0;res.forEach((k,i)=>{if(i)d+=d2(res[i-1],k);k.d=d;});
+    tracks[id]=res;
   }
-  ballSegs=lanes[FEAT];
-  extras.forEach((x,i)=>{x.segs=lanes[i<FEAT?i:i+1];});
-  for(const id in tracks){const tr=tracks[id];let d=0;tr.forEach((k,i)=>{if(i)d+=d2(tr[i-1],k);k.d=d;k.y=0;});}
-  events.sort((a,b)=>a.t-b.t);
-  buildTicks();
+  TOTAL=total;events.sort((a,b)=>a.t-b.t);buildTicks();
 }
 function segPos(segs,t){
-  if(t<=segs[0].t0)return segs[0].p0;
+  if(!segs||!segs.length||t<segs[0].t0)return null;
   for(const g of segs){if(t>=g.t0&&t<=g.t1)return arc(g,(t-g.t0)/(g.t1-g.t0));}
   return segs[segs.length-1].p1;
 }
 function updateExtras(t){
-  for(const x of extras){const p=segPos(x.segs,t);x.mesh.position.set(p.x,p.y,p.z);x.shadow.position.set(p.x,0.007,p.z);
+  for(const x of extras){const p=segPos(x.segs,t);x.mesh.visible=x.shadow.visible=!!p;if(!p)continue;
+    x.mesh.position.set(p.x,p.y,p.z);x.shadow.position.set(p.x,0.007,p.z);
     const hs=Math.max(0.35,1-p.y*0.18);x.shadow.scale.setScalar(hs);}
 }
-function drillFloor(){}
-function start(){
-  for(let l=0;l<NL;l++)for(const id of ORDER)addActor(pid(id,l),C.pale,pid(id,l),'#2D7DB2','#ffffff');
-  for(let l=0;l<NL-1;l++){
-    const m=new THREE.Mesh(new THREE.SphereGeometry(0.11,24,16),new THREE.MeshStandardMaterial({map:ballTex,roughness:.6}));scene.add(m);
-    const sh=new THREE.Mesh(new THREE.CircleGeometry(0.13,20),basic('#0b1a2a',0.25));sh.rotation.x=-Math.PI/2;scene.add(sh);
-    extras.push({mesh:m,shadow:sh,segs:null});
+function newBall(){
+  const m=new THREE.Mesh(new THREE.SphereGeometry(0.11,24,16),new THREE.MeshStandardMaterial({map:ballTex,roughness:.6}));scene.add(m);
+  const sh=new THREE.Mesh(new THREE.CircleGeometry(0.13,20),basic('#0b1a2a',0.25));sh.rotation.x=-Math.PI/2;scene.add(sh);
+  const x={mesh:m,shadow:sh,segs:null};extras.push(x);return x;
+}
+function cone(x,z){
+  const g=new THREE.Group();
+  const c=cyl(0.02,0.17,0.4,mat('#FFD23F'),16);c.position.y=0.2;g.add(c);
+  const b=box(0.4,0.03,0.4,mat('#FFD23F'));b.position.y=0.015;g.add(b);
+  const band=cyl(0.075,0.1,0.07,mat('#ffffff'),16);band.position.y=0.17;g.add(band);
+  g.position.set(x,0,z);scene.add(g);
+}
+function pickVariant(id){
+  VAR=id;document.querySelectorAll('[data-var]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.var===id));
+  rebuild();
+}
+function rebuild(){build();lastEvIdx=-2;seek(0);setPlaying(true);}
+function initVariants(){
+  if(typeof VGROUPS!=='undefined'){
+    $('vars').innerHTML=VGROUPS.map(g=>`<div class="vrow"><span class="vlbl">${g.label}</span>${g.opts.map(o=>`<button class="chip" data-vg="${g.key}" data-vo="${o[0]}" aria-pressed="${VSEL[g.key]===o[0]}">${o[1]}</button>`).join('')}</div>`).join('');
+    document.querySelectorAll('[data-vg]').forEach(b=>b.onclick=()=>{VSEL[b.dataset.vg]=b.dataset.vo;
+      document.querySelectorAll('[data-vg="'+b.dataset.vg+'"]').forEach(x=>x.setAttribute('aria-pressed',x===b));rebuild();});
+    return;
   }
-  build();resize();setCam('iso',true);update(0,0,true);
+  if(typeof VARIANTS==='undefined')return;
+  $('vars').innerHTML='<div class="vrow">'+VARIANTS.map(v=>`<button class="chip" data-var="${v.id}" aria-pressed="${v.id===VAR}">${v.label}</button>`).join('')+'</div>';
+  document.querySelectorAll('[data-var]').forEach(b=>b.onclick=()=>pickVariant(b.dataset.var));
+}
+function startScript(nExtras){
+  for(const a of ACTORS)addActor(a.id,a.color||C.pale,a.tag||'',a.bg||'#2D7DB2',a.fg||'#ffffff',a.opts);
+  for(let i=0;i<nExtras;i++)newBall();
+  if(typeof drillSetup==='function')drillSetup();
+  build();initVariants();resize();setCam('iso',true);update(0,0,true);
   requestAnimationFrame(n=>{lastNow=n;loop(n);});
 }
+function start(){startScript(typeof NEXTRA==='number'?NEXTRA:0);}
+
+const INIT_SUB='Four groups of 3. A and C start on one sideline, B on the other. A starts with the ball.';
+const LANES=[-3.375,-1.125,1.125,3.375],FEAT=1,OFF=[.25,0,.4,.12],T0=2.4;
+const ORDER=['a','b','c'];
+const ACTORS=[];LANES.forEach((z,l)=>ORDER.forEach(n=>ACTORS.push({id:n+l,tag:n.toUpperCase()})));
+const NEXTRA=LANES.length-1;
+const L=n=>n.toUpperCase();
+const DIR=s=>s==='A'?1:-1;
+function cpOf(p,s,kind){
+  const dx=VAR==='trad'?{hit:.35,dig:.6,set:.25}:{hit:.75,dig:.6,set:.4};
+  const y={hit:2.25,dig:.65,set:2.1};
+  return {x:p.x+DIR(s)*dx[kind],y:y[kind],z:p.z};
+}
+function lane(l,z,o,feat){
+  const id=n=>n+l,spot=(s,r)=>({x:(s==='A'?-1:1)*(r==='f'?2.4:4.6),z});
+  const side={a:'A',b:'B',c:'A'},front={A:'a',B:'b'},back={A:'c',B:null};
+  const opp=s=>s==='A'?'B':'A';
+  START(id('a'),spot('A','f'),NET_FACE.A);START(id('c'),spot('A','b'),NET_FACE.A);START(id('b'),spot('B','f'),NET_FACE.B);
+  const cross=(X,t,sx)=>{ // X goes from the front of side sx to the back of the other side
+    const sy=opp(sx),dx=sx==='A'?-1:1,pa=spot(sx,'f');
+    const w=WALK(id(X),t,[pa,{x:dx*.9,z:z+.75},{x:-dx*.9,z:z+.75},{x:-dx*3.4,z:z+.75},spot(sy,'b')],3.6);
+    HOLD(id(X),END(w)+0.3,spot(sy,'b'),NET_FACE[sy]);
+  };
+  const step=(Z,t,sx)=>{const w=WALK(id(Z),t,[spot(sx,'b'),spot(sx,'f')],2.4);HOLD(id(Z),END(w)+0.3,spot(sx,'f'),NET_FACE[sx]);};
+  const N=VAR==='trad'?3:4,PER=VAR==='trad'?4.5:3.55;
+  for(let i=0;i<N;i++){
+    const X=ORDER[i%3],Y=ORDER[(i+1)%3],sx=side[X],sy=opp(sx);
+    if(front[sy]!==Y)throw new Error('bad rotation '+i);
+    const T=o+T0+i*PER,pX=spot(sx,'f'),pY=spot(sy,'f'),Z=back[sx];
+    if(i===0){K(id(X),T-1.05,pX,'toss',{face:NET_FACE[sx]});
+      FLY(T-1.1,{x:pX.x+DIR(sx)*.35,y:1.3,z},T,cpOf(pX,sx,'hit'),0.9);}
+    DO(id(X),T,'hit',pX,NET_FACE[sx]);
+    FLY(T,cpOf(pX,sx,'hit'),T+1.5,cpOf(pY,sy,'dig'),1.3);
+    if(feat)EV(T,'hit',id(X),`${L(X)} attacks to ${L(Y)}`,VAR==='trad'?'Controlled hit, no jump':'Controlled hit, no jump · then crosses to the other side');
+    DO(id(Y),T+1.5,'dig',pY,NET_FACE[sy]);
+    if(VAR==='trad'){
+      FLY(T+1.5,cpOf(pY,sy,'dig'),T+3.0,cpOf(pX,sx,'set'),2.6);
+      DO(id(X),T+3.0,'set',pX,NET_FACE[sx]);
+      FLY(T+3.0,cpOf(pX,sx,'set'),T+4.5,cpOf(pY,sy,'hit'),1.9);
+      if(feat){EV(T+1.5,'dig',id(Y),`${L(Y)} digs to ${L(X)}`,'Platform contact, ball back to the partner');
+        EV(T+3.0,'set',id(X),`${L(X)} sets to ${L(Y)}`,`Then ${L(X)} goes to the other side`);}
+      cross(X,T+3.35,sx);
+      if(Z)step(Z,T+3.6,sx);
+    }else{
+      FLY(T+1.5,cpOf(pY,sy,'dig'),T+2.6,cpOf(pY,sy,'set'),1.6);
+      DO(id(Y),T+2.6,'set',pY,NET_FACE[sy]);
+      FLY(T+2.6,cpOf(pY,sy,'set'),T+3.55,cpOf(pY,sy,'hit'),1.2);
+      if(feat){EV(T+1.5,'dig',id(Y),`${L(Y)} digs, ball up for self`,'Platform contact, high to themselves');
+        EV(T+2.6,'set',id(Y),`${L(Y)} sets to self`,'Hands set, ball in front of the hitting arm');}
+      cross(X,T+0.35,sx);
+      if(Z)step(Z,T+0.6,sx);
+    }
+    // update who is where
+    side[X]=sy;back[sy]=X;front[sx]=Z;back[sx]=null;
+  }
+  // last contact of the sample
+  const last=ORDER[N%3],sl=side[last],T=o+T0+N*PER;
+  const hitter=last;
+  DO(id(hitter),T,'hit',spot(sl,'f'),NET_FACE[sl]);
+  if(feat)EV(T,'hit',id(hitter),`${L(hitter)} attacks`,'The cycle starts again from this side');
+}
+function build(){
+  begin();const laneSegs=[];
+  LANES.forEach((z,l)=>{CUR=[];lane(l,z,OFF[l],l===FEAT);laneSegs.push(CUR);});
+  ballSegs=laneSegs[FEAT];
+  extras.forEach((x,i)=>{x.segs=laneSegs[i<FEAT?i:i+1];});
+  const N=VAR==='trad'?3:4,PER=VAR==='trad'?4.5:3.55;
+  const T=T0+N*PER;events.push({t:T,kind:'end',actor:null,main:'End of the sample',sub:'The cycle repeats until the coach stops it.'});
+  finish(T+1.0);
+}
+function drillFloor(){}
+
+
+/* Side-to-side layout: rows across the court, ball travels parallel to the net (x and z swapped) */
+function rotateAll(SC){
+  const rp=p=>{const x=p.x,z=p.z;p.x=SC*z;p.z=x;};
+  const rf=f=>f==null?f:Math.atan2(SC*Math.cos(f),Math.sin(f));
+  for(const id in tracks){const tr=tracks[id];tr.forEach(k=>{rp(k);k.face=rf(k.face);});
+    let d=0;tr.forEach((k,i)=>{if(i)d+=d2(tr[i-1],k);k.d=d;});}
+  const seen=new Set();
+  [ballSegs,...extras.map(x=>x.segs)].forEach(a=>{if(a)a.forEach(g=>{seen.add(g.p0);seen.add(g.p1);});});
+  seen.forEach(rp);
+}
+
+{const _b=build;build=function(){_b();rotateAll(2.2);};}
 
 
 /* ---------- Muestreo ---------- */

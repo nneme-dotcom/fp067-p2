@@ -34,6 +34,10 @@ h1{margin:4px 0 0;font:700 clamp(28px,4vw,40px)/1 var(--display);letter-spacing:
 .caption .sub:empty{display:none}
 .cams{position:absolute;right:12px;top:12px;display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end;max-width:50%}
 @media (max-width:560px){.cams{top:auto;bottom:12px;max-width:none}}
+.vars{position:absolute;left:12px;bottom:12px;display:flex;flex-direction:column;align-items:flex-start;gap:6px;max-width:calc(100% - 24px);z-index:5}
+.vrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.vlbl{font:600 11px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);min-width:44px}
+.layout.nosheet{grid-template-columns:minmax(0,1fr)}
 .chip{font:600 12px/1 var(--body);letter-spacing:.04em;padding:7px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--panel);border-color:var(--ink)}
 .chip:focus-visible,.btn:focus-visible,input:focus-visible{outline:2px solid var(--court);outline-offset:2px}
@@ -74,7 +78,7 @@ dt{color:var(--muted)} dd{margin:0}
       <p class="eyebrow">Drill · Warm-up</p>
       <h1>Pepper · Traditional</h1>
     </div>
-    <div class="meta">12 players · 6 pairs across the net · continuous</div>
+    <div class="meta">12 players · 6 pairs side to side · continuous</div>
   </header>
 
   <main class="layout">
@@ -85,6 +89,7 @@ dt{color:var(--muted)} dd{margin:0}
           <p class="main" id="capMain">Starting positions</p>
           <p class="sub" id="capSub"></p>
         </div>
+        <div class="vars" id="vars" role="group" aria-label="Variants"></div>
         <div class="cams" role="group" aria-label="Camera">
           <button class="chip" data-cam="iso" aria-pressed="true">Isometric</button>
           <button class="chip" data-cam="lat" aria-pressed="false">Side</button>
@@ -128,8 +133,8 @@ dt{color:var(--muted)} dd{margin:0}
       <div>
         <h3>Set-up</h3>
         <dl>
-          <dt>Pairs</dt><dd>6 pairs, one player on each side of the net</dd>
-          <dt>Pace</dt><dd>Continuous, same sequence in every lane</dd>
+          <dt>Pairs</dt><dd>6 pairs, one player on each side of the court</dd>
+          <dt>Pace</dt><dd>Continuous, same sequence in every row</dd>
           <dt>Scoring</dt><dd>None</dd>
         </dl>
       </div>
@@ -337,7 +342,7 @@ const ring=new THREE.Mesh(new THREE.RingGeometry(0.42,0.56,40),basic('#ffffff',0
 ring.rotation.x=-Math.PI/2;ring.position.y=0.012;scene.add(ring);
 
 /* ---------- Drill data ---------- */
-const INIT_SUB='Six pairs, one player on each side of the net. A starts with the ball.';
+const INIT_SUB='Six pairs, one player on each side of the court. A starts with the ball.';
 const CYCLE=[
  {who:0,kind:'hit',dur:1.5,h:1.3,main:'A attacks to B',sub:'Controlled hit, no jump · contact 1 of 6'},
  {who:1,kind:'dig',dur:1.5,h:2.6,main:'B digs to A',sub:'Platform contact, ball to the partner · contact 2 of 6'},
@@ -346,7 +351,7 @@ const CYCLE=[
  {who:0,kind:'dig',dur:1.5,h:2.6,main:'A digs to B',sub:'Platform contact, ball to the partner · contact 5 of 6'},
  {who:1,kind:'set',dur:1.5,h:1.9,main:'B sets to A',sub:'Hands set, then A attacks again · contact 6 of 6'}
 ];
-/* ---------- Pepper engine (6 lanes, one player each side of the net) ---------- */
+/* ---------- Pepper engine (6 lanes, one player each side of the court) ---------- */
 const NL=6,FEAT=2,XA=-2.4,XB=2.4,T0=2.4,NCYC=2;
 const ZL=l=>-3.75+1.5*l;
 const OFF=[.18,.07,0,.25,.12,.3];
@@ -427,6 +432,19 @@ function start(){
   requestAnimationFrame(n=>{lastNow=n;loop(n);});
 }
 
+
+/* Side-to-side layout: rows across the court, ball travels parallel to the net (x and z swapped) */
+function rotateAll(SC){
+  const rp=p=>{const x=p.x,z=p.z;p.x=SC*z;p.z=x;};
+  const rf=f=>f==null?f:Math.atan2(SC*Math.cos(f),Math.sin(f));
+  for(const id in tracks){const tr=tracks[id];tr.forEach(k=>{rp(k);k.face=rf(k.face);});
+    let d=0;tr.forEach((k,i)=>{if(i)d+=d2(tr[i-1],k);k.d=d;});}
+  const seen=new Set();
+  [ballSegs,...extras.map(x=>x.segs)].forEach(a=>{if(a)a.forEach(g=>{seen.add(g.p0);seen.add(g.p1);});});
+  seen.forEach(rp);
+}
+
+{const _b=build;build=function(){_b();rotateAll(2.0);};}
 
 
 /* ---------- Muestreo ---------- */

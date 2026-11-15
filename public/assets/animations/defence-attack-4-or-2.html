@@ -34,6 +34,8 @@ h1{margin:4px 0 0;font:700 clamp(28px,4vw,40px)/1 var(--display);letter-spacing:
 .caption .sub:empty{display:none}
 .cams{position:absolute;right:12px;top:12px;display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end;max-width:50%}
 @media (max-width:560px){.cams{top:auto;bottom:12px;max-width:none}}
+.vars{position:absolute;left:12px;bottom:12px;display:flex;flex-wrap:wrap;gap:6px;max-width:calc(100% - 24px);z-index:5}
+.layout.nosheet{grid-template-columns:minmax(0,1fr)}
 .chip{font:600 12px/1 var(--body);letter-spacing:.04em;padding:7px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--panel);border-color:var(--ink)}
 .chip:focus-visible,.btn:focus-visible,input:focus-visible{outline:2px solid var(--court);outline-offset:2px}
@@ -79,7 +81,7 @@ dt{color:var(--muted)} dd{margin:0}
     <div class="meta"><span id="metaMode">Attack from 4 · cross-court</span> · 12 players · full court · continuous rally · no block</div>
   </header>
 
-  <main class="layout">
+  <main class="layout nosheet">
     <section class="stage-card">
       <div class="stage" id="stage">
         <div class="caption" aria-live="polite">
@@ -87,6 +89,7 @@ dt{color:var(--muted)} dd{margin:0}
           <p class="main" id="capMain">Starting positions</p>
           <p class="sub" id="capSub"></p>
         </div>
+        <div class="vars" id="vars" role="group" aria-label="Variants"></div>
         <div class="cams" role="group" aria-label="Camera">
           <button class="chip" data-cam="iso" aria-pressed="true">Isometric</button>
           <button class="chip" data-cam="lat" aria-pressed="false">Side</button>
@@ -107,48 +110,7 @@ dt{color:var(--muted)} dd{margin:0}
       </div>
     </section>
 
-    <aside class="panel">
-      <h2>Drill sheet</h2>
-      <div class="cfg">
-        <h3>Set-up</h3>
-        <div class="group" role="group" aria-label="Attack zone">
-          <span class="lbl">Attack</span>
-          <button class="chip" data-mode="4" aria-pressed="true">From 4</button>
-          <button class="chip" data-mode="2" aria-pressed="false">From 2</button>
-        </div>
-        <div class="group" role="group" aria-label="Attack direction">
-          <span class="lbl">Direction</span>
-          <button class="chip" data-dir="diag" aria-pressed="true">Cross-court</button>
-          <button class="chip" data-dir="line" aria-pressed="false">Down the line</button>
-        </div>
-      </div>
-      <div>
-        <h3>Players</h3>
-        <div class="legend">
-          <div><span class="dot" style="background:var(--pale)"></span>Rotating (1–8)</div>
-          <div><span class="dot" style="background:var(--red)"></span>Setter · between 2 and 3</div>
-          <div><span class="dot" style="background:var(--gold)"></span>Libero · zone 5</div>
-          <div><span class="dot" style="background:var(--coach)"></span>Coach</div>
-        </div>
-      </div>
-      <div>
-        <h3>Sequence</h3>
-        <ol id="seqList"></ol>
-      </div>
-      <div>
-        <h3>Rotation after each attack</h3>
-        <dl id="rotList"></dl>
-      </div>
-      <div>
-        <h3>Space</h3>
-        <dl>
-          <dt>Waiting</dt><dd>Outside the court, behind zone 6 · 1 per court</dd>
-          <dt>Rules</dt><dd>No block and no scoring for now</dd>
-        </dl>
-      </div>
-      <button class="chip reseed" id="reseed">New sequence of diggers</button>
-      <p class="note" id="noteDef"></p>
-    </aside>
+    
   </main>
 </div>
 
@@ -356,7 +318,16 @@ ring.rotation.x=-Math.PI/2;ring.position.y=0.012;scene.add(ring);
 /* ---------- Datos del ejercicio (coordenadas del campo A; B es espejo) ---------- */
 const S=(s,p)=>s?{x:-p.x,y:p.y,z:-p.z}:{x:p.x,y:p.y,z:p.z};
 // bases de defensa por zona
-const ZP={'1':{x:-7.0,z:3.2},'2':{x:-3.4,z:3.3},'4':{x:-3.4,z:-3.3},'5':{x:-7.0,z:-3.2},'6':{x:-7.6,z:0.2}};
+const ZP0={'1':{x:-7.0,z:3.2},'2':{x:-3.4,z:3.3},'4':{x:-3.4,z:-3.3},'5':{x:-7.0,z:-3.2},'6':{x:-7.6,z:0.2}};
+// Defensive formation by attack zone and direction (court A frame, the opposing court is the mirror)
+const FORM={
+  '4:diag':{'4':{x:-4.3,z:-2.6},'5':{x:-7.0,z:-3.2},'6':{x:-7.4,z:-1.6},'1':{x:-5.2,z:3.3}},
+  '4:line':{'1':{x:-6.8,z:3.6},'6':{x:-7.4,z:1.6},'4':{x:-3.2,z:-0.1},'5':{x:-7.0,z:-3.2}},
+  '2:diag':{'2':{x:-4.3,z:2.6},'1':{x:-7.0,z:3.2},'6':{x:-7.4,z:1.6},'5':{x:-5.2,z:-3.3}},
+  '2:line':{'5':{x:-6.8,z:-3.6},'6':{x:-7.4,z:-1.6},'2':{x:-3.2,z:0.1},'1':{x:-7.0,z:3.2}}
+};
+let ZP={...ZP0,...FORM['4:diag']};
+const setFormation=()=>{ZP={...ZP0,...FORM[MODE+':'+DIR]};};
 const R23={x:-1.2,z:1.6}, SP={x:-0.6,z:0.7}, SETB={x:-0.6,y:2.15,z:0.45};
 // configuración por zona de ataque: recorrido espera → entry → mid → atk
 const MODES={
@@ -492,30 +463,9 @@ function build(seed){
   buildTicks();
 }
 
-/* ---------- Ficha según configuración ---------- */
-function renderPanel(){
-  const M=MODES[MODE],set=M.sets[DIR],dir=DIRN[DIR];
-  const target=MODE==='4'?(DIR==='diag'?'5':'1'):(DIR==='diag'?'1':'5');
-  const zones=set.map(z=>z==='5'?'the libero at 5':'the player at '+z);
-  const list=zones.length>2?zones.slice(0,-1).join(', ')+' or '+zones[zones.length-1]:zones.join(' or ');
-  $('seqList').innerHTML=[
-    'The coach attacks onto court A from outside court B (only to start the rally).',
-    `${list.charAt(0).toUpperCase()+list.slice(1)} digs, depending on where the ball goes.`,
-    `The setter leaves from between 2 and 3, penetrates and sets to zone ${M.atk} ${MODE==='2'?'with her back to the target':'facing the target'}.`,
-    `Controlled attack ${dir.toLowerCase()} from ${M.atk} to the opposing zone ${target}, no block.`,
-    'The rally continues the same way on the other court.'
-  ].map(x=>`<li>${x}</li>`).join('');
-  $('rotList').innerHTML=[
-    [M.atk,'Leaves outside the net, by the post on her side, to the other court\'s waiting line'],
-    [M.mid,`Moves to ${M.atk}`],
-    [M.entry,`Moves to ${M.mid}`],
-    ['Waiting',`The first in line comes in at ${M.entry}`]
-  ].map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('')+
-  `<dt>Path</dt><dd>Waiting → ${M.entry} → ${M.mid} → ${M.atk} → other court's waiting line${MODE==='2'?' · zone 4 empty':''}</dd>`;
-  $('noteDef').textContent=`The order of who digs (${set.join(', ')}) is random. Drag to rotate the view, scroll or pinch to zoom.`;
-  $('metaMode').textContent=`Attack from ${M.atk} · ${dir.toLowerCase()}`;
-}
-
+/* ---------- Variants ---------- */
+const VARS=[['4','diag','From 4 · cross-court'],['4','line','From 4 · down the line'],['2','diag','From 2 · cross-court'],['2','line','From 2 · down the line']];
+function renderPanel(){const M=MODES[MODE];if($('metaMode'))$('metaMode').textContent=`Attack from ${M.atk} · ${DIRN[DIR].toLowerCase()}`;}
 /* ---------- Muestreo ---------- */
 const ease=u=>u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
 function sample(tr,t){
@@ -617,12 +567,10 @@ document.querySelectorAll('[data-tog]').forEach(b=>b.onclick=()=>{const on=b.get
   if(b.dataset.tog==='zones')zoneGroup.forEach(m=>m.visible=on);
   if(b.dataset.tog==='trail')showTrail=on;
   if(b.dataset.tog==='tags')for(const id in actors)actors[id].tag.visible=on;});
-function restart(){build(seed);lastEvIdx=-2;seek(0);setPlaying(true);}
-document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{MODE=b.dataset.mode;
-  document.querySelectorAll('[data-mode]').forEach(x=>x.setAttribute('aria-pressed',x===b));restart();});
-document.querySelectorAll('[data-dir]').forEach(b=>b.onclick=()=>{DIR=b.dataset.dir;
-  document.querySelectorAll('[data-dir]').forEach(x=>x.setAttribute('aria-pressed',x===b));restart();});
-$('reseed').onclick=()=>{seed=(seed*7919+13)%100000;build(seed);lastEvIdx=-2;seek(0);setPlaying(true);};
+function restart(){setFormation();build(seed);lastEvIdx=-2;seek(0);setPlaying(true);}
+$('vars').innerHTML=VARS.map(v=>`<button class="chip" data-var="${v[0]}:${v[1]}" aria-pressed="${v[0]===MODE&&v[1]===DIR}">${v[2]}</button>`).join('');
+document.querySelectorAll('[data-var]').forEach(b=>b.onclick=()=>{[MODE,DIR]=b.dataset.var.split(':');setFormation();
+  document.querySelectorAll('[data-var]').forEach(x=>x.setAttribute('aria-pressed',x===b));restart();});
 document.addEventListener('keydown',e=>{
   if(e.target.tagName==='INPUT')return;
   if(e.code==='Space'){e.preventDefault();$('play').click();}
