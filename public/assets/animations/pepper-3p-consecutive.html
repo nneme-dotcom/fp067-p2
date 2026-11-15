@@ -70,7 +70,27 @@ dt{color:var(--muted)} dd{margin:0}
 .note{font-size:13px;color:var(--muted);margin:0}
 .reseed{align-self:flex-start}
 @media (prefers-reduced-motion: reduce){*{scroll-behavior:auto}}
+.compact body{background:var(--stage);margin:0}
+.compact .app{max-width:none;height:100vh;padding:0;gap:0}
+.compact .top{display:none}
+.compact .layout{display:block;flex:1;min-height:0}
+.compact .stage-card{height:100%;display:flex;flex-direction:column;border:0;border-radius:0}
+.compact .stage{flex:1;height:auto;min-height:0}
+.compact .caption{left:6px;top:36px;max-width:min(300px,72%);padding:5px 8px;transform:none}
+.compact .caption .step{font-size:9px}
+.compact .caption .main{margin-top:3px;font-size:14px}
+.compact .caption .sub{display:none}
+.compact .cams{right:6px;top:6px;bottom:auto;gap:3px;max-width:none}
+.compact .vars{left:6px;bottom:6px;gap:4px}
+.compact .vrow{gap:4px}
+.compact .chip{font-size:10px;padding:4px 7px}
+.compact .controls{padding:5px 8px;gap:4px}
+.compact .btn{height:28px;min-width:28px}
+.compact .btn.play{min-width:36px}
 </style>
+
+<script>/* ?compact in the address: the page is shown small, next to other drills */
+if(/[?&]compact\b/.test(location.search))document.documentElement.classList.add('compact');</script>
 
 <div class="app">
   <header class="top">
@@ -420,7 +440,7 @@ function startScript(nExtras){
   for(let i=0;i<nExtras;i++)newBall();
   if(typeof drillSetup==='function')drillSetup();
   build();initVariants();resize();setCam('iso',true);update(0,0,true);
-  resume();
+  ready=true;resume();
 }
 function start(){startScript(typeof NEXTRA==='number'?NEXTRA:0);}
 
@@ -661,9 +681,9 @@ function updateCaption(){
 
 /* The loop only works when it is needed: it stops while the animation is off screen or the tab is hidden,
    and while paused it draws only if the user is touching something (camera, buttons, window size). */
-let running=false,onScreen=true,wakeUntil=0;
+let running=false,onScreen=true,wakeUntil=0,ready=false; // ready: the drill is built and can be drawn
 const wake=()=>{wakeUntil=performance.now()+1200;};
-function resume(){if(running||!onScreen||document.hidden)return;running=true;wake();requestAnimationFrame(n=>{lastNow=n;loop(n);});}
+function resume(){if(!ready||running||!onScreen||document.hidden)return;running=true;wake();requestAnimationFrame(n=>{lastNow=n;loop(n);});}
 ['pointerdown','pointermove','wheel','keydown','input','click','touchstart','resize'].forEach(e=>addEventListener(e,wake,{passive:true}));
 document.addEventListener('visibilitychange',resume);
 if('IntersectionObserver' in window)new IntersectionObserver(en=>{onScreen=en[en.length-1].isIntersecting;resume();}).observe(document.documentElement);

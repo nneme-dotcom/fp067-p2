@@ -68,7 +68,7 @@ A drill points to its animation with the `animationUrl` field.
 
 ## Training
 
-Each row of the list has a button to add the drill to a training. The **Training** button at the top opens it: the chosen drills one after another, in the order they were chosen, each with its animation on the left and its drill sheet on the right. The selection is remembered in the browser (`localStorage`); it is not saved in Firebase.
+Each row of the list has a button to add the drill to a training. The **Training** button at the top opens it on the whole screen: the chosen drills in a grid, in the order they were chosen, each with its animation, objective and description. Four drills fit on a tablet at once. The selection is remembered in the browser (`localStorage`); it is not saved in Firebase.
 
 ## Where everything is
 

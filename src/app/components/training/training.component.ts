@@ -1,15 +1,14 @@
 import { Component, input, output } from '@angular/core';
 import { Drill } from '../../models/drill';
 import { AnimationComponent } from '../animation/animation.component';
-import { SheetComponent } from '../sheet/sheet.component';
 
 /**
- * The training: the drills chosen in the list, one after another,
- * each with its animation on the left and its sheet on the right.
+ * The training: the drills chosen in the list, in a grid that fills the screen.
+ * Four drills fit on a tablet; each one shows its animation, objective and description.
  */
 @Component({
   selector: 'app-training',
-  imports: [AnimationComponent, SheetComponent],
+  imports: [AnimationComponent],
   templateUrl: './training.component.html',
   styleUrl: './training.component.scss',
 })

@@ -1,35 +1,35 @@
-<app-header />
+@if (showTraining()) {
+  <!-- The training takes the whole screen, so four drills fit on a tablet -->
+  <app-training
+    [drills]="training()"
+    (closed)="showTraining.set(false)"
+    (removed)="toggleTraining($event)"
+    (cleared)="clearTraining()"
+  />
+} @else {
+  <app-header />
 
-<main class="container py-4">
-  @if (!configured) {
-    <p class="alert alert-warning" role="alert">
-      Firebase is not set up yet. Add your project settings to
-      <code>src/app/firebase.config.json</code>.
-    </p>
-  }
+  <main class="container py-4">
+    @if (!configured) {
+      <p class="alert alert-warning" role="alert">
+        Firebase is not set up yet. Add your project settings to
+        <code>src/app/firebase.config.json</code>.
+      </p>
+    }
 
-  <!-- The message for "saved", "deleted" or an error -->
-  @if (notice(); as n) {
-    <div
-      class="alert d-flex align-items-center justify-content-between gap-3"
-      [class.alert-success]="n.kind === 'success'"
-      [class.alert-danger]="n.kind === 'danger'"
-      [attr.role]="n.kind === 'danger' ? 'alert' : 'status'"
-    >
-      <span>{{ n.text }}</span>
-      <button type="button" class="btn-close" aria-label="Dismiss" (click)="dismissNotice()"></button>
-    </div>
-  }
+    <!-- The message for "saved", "deleted" or an error -->
+    @if (notice(); as n) {
+      <div
+        class="alert d-flex align-items-center justify-content-between gap-3"
+        [class.alert-success]="n.kind === 'success'"
+        [class.alert-danger]="n.kind === 'danger'"
+        [attr.role]="n.kind === 'danger' ? 'alert' : 'status'"
+      >
+        <span>{{ n.text }}</span>
+        <button type="button" class="btn-close" aria-label="Dismiss" (click)="dismissNotice()"></button>
+      </div>
+    }
 
-  @if (showTraining()) {
-    <!-- The training fills the whole width: one block per chosen drill -->
-    <app-training
-      [drills]="training()"
-      (closed)="showTraining.set(false)"
-      (removed)="toggleTraining($event)"
-      (cleared)="clearTraining()"
-    />
-  } @else {
     <div class="row g-4">
       <!-- Left: the list with the search box -->
       <div class="col-md-5">
@@ -66,5 +66,5 @@
         }
       </div>
     </div>
-  }
-</main>
+  </main>
+}

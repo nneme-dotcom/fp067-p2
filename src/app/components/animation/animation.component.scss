@@ -11,3 +11,12 @@ iframe {
   height: clamp(480px, 72vh, 740px);
   border: 0;
 }
+
+/* Compact: it fills the box it is put in */
+:host(.compact) {
+  display: block;
+  height: 100%;
+
+  .animation,
+  iframe { height: 100%; }
+}
