@@ -247,12 +247,14 @@ const POSES={
   throwLoad:pose({c:.22,lean:-.22,st:.18,lk:.35},[3.0,.2,1.35]),
   throwOut: pose({c:.28,lean:.4,st:.18,lk:.05},[1.25,.1,.15]),
   split:    pose({c:.28,lean:.3,st:.26,lk:.15},[.85,.26,1.1]),
+  digPre:   pose({c:.72,lean:.5,st:.34,lk:.2},[1.0,-.12,.55]),
   dig:      pose({c:.88,lean:.56,st:.36,lk:.25},[1.42,-.3,0]),
-  digFollow:pose({c:.62,lean:.42,st:.34,lk:.3},[1.62,-.3,0]),
-  setLoad:  pose({c:.38,lean:-.08,st:.16,lk:.5},[2.5,.55,1.7]),
-  setBackLoad:pose({c:.4,lean:-.05,st:.16,lk:.6},[2.6,.55,1.75]),
-  setBack:  pose({c:.06,lean:-.32,st:.14,lk:.75},[3.3,.3,.25]),
-  setPush:  pose({c:.05,lean:-.12,st:.14,lk:.45},[2.95,.35,.3]),
+  digFollow:pose({c:.66,lean:.5,st:.35,lk:.3},[1.5,-.3,0]),
+  setLoad:  pose({c:.38,lean:0,st:.16,lk:.5},[2.3,-.2,1.0]),
+  setBackLoad:pose({c:.4,lean:.1,st:.16,lk:.6},[2.5,-.2,1.05]),
+  setBack:  pose({c:.06,lean:-.3,st:.14,lk:.75},[2.65,-.1,.15]),
+  setPush:  pose({c:.05,lean:.05,st:.14,lk:.45},[3.05,-.1,0]),
+  stride:   pose({c:.36,lean:.42,st:.08,lk:.3},[.55,.12,.5]),
   approach: pose({c:.62,lean:.55,st:.12,lk:.35},[-1.05,.15,.25]),
   takeoff:  pose({c:.25,lean:.15,st:.1,lk:.45},[2.3,.1,.3]),
   load:     pose({c:.05,lean:-.22,tw:-.55,st:.08,lk:.55},[2.75,.15,.15],[2.2,.75,2.0]),
@@ -338,22 +340,32 @@ const FORM={
 };
 let ZP={...ZP0,...FORM['4:diag']};
 const setFormation=()=>{ZP={...ZP0,...FORM[MODE+':'+DIR]};};
-const R23={x:-1.2,z:1.6}, SP={x:-0.6,z:0.7}, SETB={x:-0.6,y:2.15,z:0.45};
+const R23={x:-1.2,z:1.6}, SP={x:-0.6,z:0.7};
 // configuración por zona de ataque: recorrido espera → entry → mid → atk
 const MODES={
   '4':{atk:'4',mid:'6',entry:'1',OPEN:{x:-4.5,z:-4.1},JUMP:{x:-1.8,z:-3.05},AIR:{x:-1.5,z:-3.05},LAND:{x:-1.25,z:-3.05},
-       HITB:{x:-1.2,y:2.72,z:-2.85},W:[{x:-1.0,z:-5.9},{x:1.0,z:-5.9},{x:9.4,z:-5.9}],
+       W:[{x:-1.0,z:-5.9},{x:1.0,z:-5.9},{x:9.4,z:-5.9}],
        sets:{diag:['4','5','6'],line:['1','6']}},
   '2':{atk:'2',mid:'1',entry:'6',OPEN:{x:-4.5,z:4.1},JUMP:{x:-1.8,z:3.05},AIR:{x:-1.5,z:3.05},LAND:{x:-1.25,z:3.05},
-       HITB:{x:-1.2,y:2.72,z:2.85},W:[{x:-1.0,z:5.9},{x:1.0,z:5.9},{x:9.4,z:5.9}],
+       W:[{x:-1.0,z:5.9},{x:1.0,z:5.9},{x:9.4,z:5.9}],
        sets:{diag:['1','2','6'],line:['5','6']}}
 };
 const DIRN={diag:'Cross-court',line:'Down-the-line'};
 let MODE='4',DIR='diag';
 const slot=i=>({x:-10.25-0.8*i,z:0});
-const COACH={x:4.6,z:6.4}, COACH_HAND={x:4.45,y:1.2,z:6.2}, COACH_HIT={x:4.35,y:2.3,z:6.05};
+const COACH={x:4.6,z:6.4}, COACH_HAND={x:4.45,y:1.2,z:6.2};
 const COACH_FACE=Math.atan2(-1,-0.55);
-const N=16, PER=3.15, T0=2.2;
+// flight times in seconds: attack → dig, dig → setter, set → attacker
+const FH=0.62, FD=1.5, FS=1.3;
+const N=16, PER=FH+FD+FS, T0=2.2;
+// a ball in the air follows gravity: how high it rises above the straight line depends only on the flight time
+const arcOf=tau=>9.81*tau*tau/8;
+// a point given from the player: lx to her left, y up, lz in front of her
+const from=(p,face,[lx,y,lz])=>({x:p.x+lz*Math.sin(face)+lx*Math.cos(face),y,z:p.z+lz*Math.cos(face)-lx*Math.sin(face)});
+// where the ball is met, measured on the figure: forearms, fingers above the forehead, hitting hand at full reach
+const AT_DIG=[0,0.8,0.56], AT_SET=[0,2.05,0.2], AT_SETBACK=[0,2.05,0.12], AT_HIT=[-0.22,2.62,0.58], AT_COACH=[-0.22,2.0,0.56];
+const COACH_HIT=from(COACH,COACH_FACE,AT_COACH);
+const wrapPi=a=>((a+Math.PI)%(2*Math.PI)+2*Math.PI)%(2*Math.PI)-Math.PI;
 const SIDE=['A','B'];
 const name=id=>id[0]==='r'?'#'+id.slice(1):id[0]==='L'?'the libero':id[0]==='S'?'the setter':'the coach';
 
@@ -369,12 +381,20 @@ function build(seed){
   const roles=[];
   while(roles.length<N){let z=set[Math.floor(R()*set.length)];if(roles.length&&z===roles[roles.length-1])z=set[(set.indexOf(z)+1)%set.length];roles.push(z);}
   const digPos=roles.map(r=>{const b=ZP[r],m=(r==='4'||r==='2')?.4:.7;return{x:b.x+(R()-.5)*m,z:b.z+(R()-.5)*m*1.6};});
-  const digBall=[];
+  // the attacker turns her shoulders half way to where she hits; the ball leaves from her hand
+  const netFace=s=>s?-Math.PI/2:Math.PI/2;
+  const hitFace=[],hitBall=[];
   for(let k=0;k<N;k++){
-    const s=k%2,p=S(s,digPos[k]);
-    const o=k===0?COACH_HIT:S(1-s,M.HITB);
-    const dx=o.x-p.x,dz=o.z-p.z,l=Math.hypot(dx,dz);
-    digBall.push({x:p.x+dx/l*0.74,y:0.62,z:p.z+dz/l*0.74});
+    const s=k%2,air=S(s,M.AIR);let f=netFace(s);
+    if(k<N-1){const t=S(1-s,digPos[k+1]);f+=0.5*wrapPi(Math.atan2(t.x-air.x,t.z-air.z)-f);}
+    hitFace.push(f);hitBall.push(from(air,f,AT_HIT));
+  }
+  // the digger faces between the ball coming in and her setter, so the platform sends it there
+  const digFace=[],digBall=[];
+  for(let k=0;k<N;k++){
+    const s=k%2,p=S(s,digPos[k]),o=k===0?COACH_HIT:hitBall[k-1],sp=S(s,SP);
+    const a=Math.atan2(o.x-p.x,o.z-p.z),f=a+0.35*wrapPi(Math.atan2(sp.x-p.x,sp.z-p.z)-a);
+    digFace.push(f);digBall.push(from(p,f,AT_DIG));
   }
   // en pista: atk (zona de ataque), mid, entry; q = fila de espera
   const st=[{atk:'r1',mid:'r2',entry:'r3',q:[{id:'r4',arr:0}]},{atk:'r5',mid:'r6',entry:'r7',q:[{id:'r8',arr:0}]}];
@@ -389,34 +409,39 @@ function build(seed){
   key('C',1.2,COACH,'chit',{face:COACH_FACE});key('C',1.42,COACH,'cfollow',{face:COACH_FACE});
   key('C',1.9,COACH,'stand',{face:COACH_FACE});
   ballSegs.push({t0:0.72,t1:1.2,p0:COACH_HAND,p1:COACH_HIT,h:0.45});
-  ballSegs.push({t0:1.2,t1:T0,p0:COACH_HIT,p1:digBall[0],h:1.4});
+  ballSegs.push({t0:1.2,t1:T0,p0:COACH_HIT,p1:digBall[0],h:arcOf(T0-1.2)});
   events.push({t:1.2,kind:'coach',actor:'C',main:'The coach attacks onto court A',sub:'From outside court B. Only to start the rally.'});
 
   for(let k=0;k<N;k++){
     const s=k%2,o=1-s,X=st[s];
-    const T=T0+k*PER,tSet=T+1.15,tHit=T+2.2,Tn=T+PER;
+    const T=T0+k*PER,tSet=T+FD,tHit=tSet+FS,Tn=T+PER,tOpp=k===0?1.2:T-FH; // tOpp: when the other side hits
     const r=roles[k];
     const who={[M.atk]:X.atk,[M.mid]:X.mid,[M.entry]:X.entry,'5':'L'+s};
     const def=who[r];
     const base=S(s,ZP[r]),dp=S(s,digPos[k]);
     // base position → defensive position: the players move when the other side sets (the first time, when the coach tosses)
-    const tSh=k===0?0.3:T-2.0;
+    const tSh=k===0?0.05:T-FH-FS;
     for(const z in who){
       const id=who[z],b0=S(s,ZP0[z]),f=S(s,ZP[z]),dd=d2(b0,f);
-      if(dd>0.05){key(id,tSh,b0,'ready');key(id,tSh+Math.min(1.05,Math.max(0.5,dd/3)),f,'ready');}
+      if(dd>0.05){key(id,tSh,b0,'ready');key(id,tSh+Math.min(k===0?0.95:1.05,Math.max(0.5,dd/3)),f,'ready');}
+      // everybody is still and makes a small split step when the attacker hits
+      key(id,tOpp-0.08,f,'ready');key(id,tOpp+0.07,f,'split',{y:0.06});key(id,tOpp+0.2,f,'ready');
       // and back to the base position while their own setter sets (the attacker goes to her approach instead)
       if(id!==X.atk){if(id!==def)key(id,T+0.5,f,'ready');key(id,T+1.6,b0,'ready');}
     }
     // defensa: espera → paso de ajuste → plataforma → acompañar
-    key(def,T-0.8,base,'ready');key(def,T-0.48,base,'split',{y:0.07});key(def,T-0.36,base,'ready');
-    key(def,T-0.1,dp,'dig');key(def,T+0.02,dp,'dig');key(def,T+0.22,dp,'digFollow');key(def,T+0.6,dp,'ready');
+    // dig: one step to the ball, feet set before the contact, the legs push and the arms hardly move
+    const fd=digFace[k];
+    key(def,T-0.2,dp,'digPre',{face:fd});key(def,T-0.06,dp,'dig',{face:fd});key(def,T+0.03,dp,'dig',{face:fd});
+    key(def,T+0.24,dp,'digFollow',{face:fd});key(def,T+0.6,dp,'ready');
     events.push({t:T,kind:'dig',actor:def,main:`${name(def)} digs at zone ${r}`,sub:`Court ${SIDE[s]} · the ball goes to the setter`});
     // armadora: siempre mirando a 4; con ataque por 2 coloca de espaldas
     const sid='S'+s,faceSet=(s?0:Math.PI),back=MODE==='2';
-    key(sid,T-0.2,S(s,R23),'ready');key(sid,tSet-0.4,S(s,SP),'ready');
-    key(sid,tSet-0.22,S(s,SP),back?'setBackLoad':'setLoad',{face:faceSet});key(sid,tSet-0.04,S(s,SP),back?'setBackLoad':'setLoad',{face:faceSet});
-    key(sid,tSet+0.12,S(s,SP),back?'setBack':'setPush',{face:faceSet});key(sid,tSet+0.3,S(s,SP),back?'setBack':'setPush',{face:faceSet});
-    key(sid,tSet+0.65,S(s,SP),'ready');key(sid,tHit+1.3,S(s,R23),'ready');
+    // she runs to the net when the dig goes up, stops, squares to zone 4 and waits for the ball with her hands up
+    key(sid,T+0.05,S(s,R23),'ready');key(sid,T+0.8,S(s,SP),'ready',{face:faceSet});key(sid,tSet-0.34,S(s,SP),'ready',{face:faceSet});
+    key(sid,tSet-0.12,S(s,SP),back?'setBackLoad':'setLoad',{face:faceSet});key(sid,tSet,S(s,SP),back?'setBackLoad':'setLoad',{face:faceSet});
+    key(sid,tSet+0.14,S(s,SP),back?'setBack':'setPush',{face:faceSet});key(sid,tSet+0.36,S(s,SP),back?'setBack':'setPush',{face:faceSet});
+    key(sid,tSet+0.7,S(s,SP),'ready');key(sid,tHit+0.3,S(s,SP),'ready');key(sid,tHit+1.3,S(s,R23),'ready');
     events.push({t:tSet,kind:'set',actor:sid,main:`The setter sets to zone ${M.atk}`,
       sub:`Court ${SIDE[s]} · ${back?'back to the target':'facing the target'} · for ${name(X.atk)}${k<N-1?` · court ${SIDE[o]} moves from base to defence`:''}`});
     // atacante
@@ -424,16 +449,18 @@ function build(seed){
     if(r!==M.atk)key(A,T-0.1,S(s,ZP[M.atk]),'ready');
     // she leaves her defensive spot as soon as the ball is up and opens out for the approach
     key(A,r===M.atk?T+0.64:T+0.2,r===M.atk?dp:S(s,ZP[M.atk]),'ready');
-    key(A,T+1.25,S(s,M.OPEN),'ready');key(A,tHit-0.9,S(s,M.OPEN),'ready');
-    const mid={x:M.OPEN.x+(M.JUMP.x-M.OPEN.x)*0.45,z:M.OPEN.z+(M.JUMP.z-M.OPEN.z)*0.45};
-    key(A,tHit-0.62,S(s,mid),'jog');
-    const j={t0:tHit-0.3,t1:tHit+0.4,h:0.62};
-    key(A,tHit-0.36,S(s,M.JUMP),'approach');key(A,tHit-0.3,S(s,M.JUMP),'approach',{j});
-    key(A,tHit-0.2,S(s,{x:(M.JUMP.x+M.AIR.x)/2,z:M.JUMP.z}),'takeoff',{y:0.3,j});
-    key(A,tHit-0.07,S(s,M.AIR),'load',{y:0.53,j});
-    key(A,tHit,S(s,M.AIR),'hit',{y:0.59,j});
-    key(A,tHit+0.17,S(s,M.AIR),'follow',{y:0.53,j});
-    key(A,tHit+0.4,S(s,M.LAND),'land',{j});key(A,tHit+0.62,S(s,M.LAND),'land');key(A,tHit+0.85,S(s,M.LAND),'stand');
+    key(A,T+1.4,S(s,M.OPEN),'ready');key(A,tHit-1.25,S(s,M.OPEN),'ready');
+    // approach: a short first step, a long fast one and the plant with both arms back
+    const run=q=>S(s,{x:M.OPEN.x+(M.JUMP.x-M.OPEN.x)*q,z:M.OPEN.z+(M.JUMP.z-M.OPEN.z)*q});
+    key(A,tHit-0.92,run(.22),'jog',{walk:true});key(A,tHit-0.6,run(.6),'stride',{walk:true});
+    key(A,tHit-0.36,S(s,M.JUMP),'approach',{walk:true});
+    const j={t0:tHit-0.3,t1:tHit+0.4,h:0.62},fh=hitFace[k],nf=netFace(s);
+    key(A,tHit-0.3,S(s,M.JUMP),'approach',{j,face:nf});
+    key(A,tHit-0.2,S(s,{x:M.JUMP.x+(M.AIR.x-M.JUMP.x)*.33,z:M.JUMP.z}),'takeoff',{y:0.3,j,face:nf});
+    key(A,tHit-0.07,S(s,{x:M.JUMP.x+(M.AIR.x-M.JUMP.x)*.77,z:M.JUMP.z}),'load',{y:0.53,j,face:fh});
+    key(A,tHit,S(s,M.AIR),'hit',{y:0.59,j,face:fh});
+    key(A,tHit+0.17,S(s,{x:M.AIR.x+(M.LAND.x-M.AIR.x)*.42,z:M.AIR.z}),'follow',{y:0.53,j,face:fh});
+    key(A,tHit+0.4,S(s,M.LAND),'land',{j,face:nf});key(A,tHit+0.62,S(s,M.LAND),'land',{face:nf});key(A,tHit+0.85,S(s,M.LAND),'stand');
     // cambio de campo por fuera de la red, por el poste de su lado
     let tt=tHit+0.8,prev=M.LAND;
     for(const w of M.W){tt+=d2(prev,w)/4.0;key(A,tt,S(s,w),'jog',{walk:true});prev=w;}
@@ -455,12 +482,12 @@ function build(seed){
       sub:`Next: ${name(A)} → waiting line ${SIDE[o]} · ${name(X.mid)} moves to ${M.atk} · ${name(X.entry)} moves to ${M.mid} · ${name(Q.id)} comes in at ${M.entry}`});
     X.atk=X.mid;X.mid=X.entry;X.entry=Q.id;
     // balón
-    const setB=S(s,SETB),hitB=S(s,M.HITB);
-    ballSegs.push({t0:T,t1:tSet,p0:digBall[k],p1:setB,h:3.1});
-    ballSegs.push({t0:tSet,t1:tHit,p0:setB,p1:hitB,h:1.5});
-    if(!last)ballSegs.push({t0:tHit,t1:Tn,p0:hitB,p1:digBall[k+1],h:1.35});
-    else{const z=ZP[set[0]],land=S(o,{x:z.x+0.8,y:0.11,z:z.z*0.7});ballSegs.push({t0:tHit,t1:tHit+0.95,p0:hitB,p1:land,h:1.3});
-      TOTAL=tHit+3.2;events.push({t:tHit+0.95,kind:'end',actor:null,main:'End of the sample sequence',sub:'It starts again from the beginning.'});}
+    const setB=from(S(s,SP),faceSet,back?AT_SETBACK:AT_SET),hitB=hitBall[k];
+    ballSegs.push({t0:T,t1:tSet,p0:digBall[k],p1:setB,h:arcOf(FD)});
+    ballSegs.push({t0:tSet,t1:tHit,p0:setB,p1:hitB,h:arcOf(FS)});
+    if(!last)ballSegs.push({t0:tHit,t1:Tn,p0:hitB,p1:digBall[k+1],h:arcOf(FH)});
+    else{const z=ZP[set[0]],land=S(o,{x:z.x+0.8,y:0.11,z:z.z*0.7});ballSegs.push({t0:tHit,t1:tHit+FH+0.1,p0:hitB,p1:land,h:arcOf(FH+0.1)});
+      TOTAL=tHit+3.2;events.push({t:tHit+FH+0.1,kind:'end',actor:null,main:'End of the sample sequence',sub:'It starts again from the beginning.'});}
   }
   // segunda pasada: filas de espera
   const init=[['r4'],['r8']];
