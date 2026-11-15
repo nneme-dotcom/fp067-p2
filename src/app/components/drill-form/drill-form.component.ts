@@ -6,7 +6,7 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { Drill, DrillData, SPACES, Space } from '../../models/drill';
+import { Drill, DrillData, DrillGroup, GROUPS, SPACES, Space } from '../../models/drill';
 
 /** Link with http(s) or a path inside assets/. Empty is also valid (they are optional). */
 const linkValidator: ValidatorFn = (control) => {
@@ -28,6 +28,7 @@ function buildForm() {
       Validators.max(40),
     ]),
     space: new FormControl<Space | ''>('', { nonNullable: true, validators: [Validators.required] }),
+    group: new FormControl<DrillGroup | ''>('', { nonNullable: true }),
     description: text(Validators.required, Validators.maxLength(1500)),
     fixedRoles: text(Validators.maxLength(600)),
     rotating: text(Validators.maxLength(600)),
@@ -72,6 +73,7 @@ export class DrillFormComponent {
   readonly cancelled = output<void>();
 
   protected readonly spaces = SPACES;
+  protected readonly groups = GROUPS;
   protected readonly form = buildForm();
 
   /** Set to true when saving with errors, to show the warning at the top. */
@@ -107,6 +109,7 @@ export class DrillFormComponent {
       objective: drill?.objective ?? '',
       players: drill?.players ?? null,
       space: drill?.space ?? '',
+      group: drill?.group ?? '',
       description: drill?.description ?? '',
       fixedRoles: drill?.fixedRoles ?? '',
       rotating: drill?.rotating ?? '',
@@ -146,6 +149,8 @@ export class DrillFormComponent {
       space: value.space as Space,
       description: value.description.trim(),
     };
+
+    if (value.group) data.group = value.group;
 
     // Firestore does not accept "undefined" values, so empty optional fields are left out
     for (const field of OPTIONAL_FIELDS) {

@@ -13,8 +13,9 @@ export class DetailComponent {
   /** The drill to show (the main component gives it to us). */
   readonly drill = input.required<Drill>();
 
-  /** Events for the main component: edit or close. */
+  /** Events for the main component: edit, delete or close. */
   readonly edit = output<void>();
+  readonly deleted = output<void>();
   readonly closed = output<void>();
 
   /** The steps of the sequence: each line of the text is one step. */

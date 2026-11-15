@@ -88,6 +88,17 @@
     </div>
 
     <div class="mb-3">
+      <label for="group" class="form-label">Group</label>
+      <select id="group" class="form-select" formControlName="group" aria-describedby="group-hint">
+        <option value="">No group (Other)</option>
+        @for (g of groups; track g) {
+          <option [value]="g">{{ g }}</option>
+        }
+      </select>
+      <div id="group-hint" class="form-text">Where the drill is shown in the list.</div>
+    </div>
+
+    <div class="mb-3">
       <label for="description" class="form-label">Description <span class="required" aria-hidden="true">*</span></label>
       <textarea
         id="description"

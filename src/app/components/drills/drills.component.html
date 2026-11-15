@@ -47,54 +47,64 @@
     } @else {
       <p class="count" aria-live="polite">{{ filtered.length }} / {{ all.length }} drills</p>
 
-      <ul class="drill-list list-unstyled mb-0 d-grid gap-2">
-        @for (drill of filtered; track drill.id; let i = $index) {
-          <!-- Each row appears a little after the previous one -->
-          <li class="drill-row" [style.--i]="i">
-            <button
-              type="button"
-              class="drill-item text-start"
-              [attr.data-drill-id]="drill.id"
-              [class.selected]="drill.id === selectedId()"
-              [attr.aria-pressed]="drill.id === selectedId()"
-              (click)="drillSelected.emit(drill)"
-            >
-              <span class="players-count" aria-hidden="true">{{ drill.players }}</span>
-              <span class="info">
-                <span class="name">{{ drill.name }}</span>
-                <span class="meta">
-                  <span class="badge space-badge">{{ drill.space }}</span>
-                  <span>{{ drill.players }} players</span>
-                </span>
-              </span>
-              <i class="bi bi-chevron-right chevron" aria-hidden="true"></i>
-            </button>
+      <!-- The drills come in groups: Pepper, Ball control and Other -->
+      @for (block of filtered | drillGroups; track block.name) {
+        <section class="drill-group" [attr.aria-label]="block.name">
+          <h3 class="group-title">
+            <span>{{ block.name }}</span>
+            <span class="group-count">{{ block.drills.length }}</span>
+          </h3>
 
-            <!-- The delete icon goes next to it, in its own button -->
-            <button
-              type="button"
-              class="btn-delete"
-              [attr.aria-label]="'Delete ' + drill.name"
-              (click)="drillDeleted.emit(drill)"
-            >
-              <i class="bi bi-trash3" aria-hidden="true"></i>
-            </button>
-          </li>
-        } @empty {
-          <li class="empty text-center py-4">
-            @if (all.length === 0) {
-              <i class="bi bi-journal-plus fs-3 d-block mb-2" aria-hidden="true"></i>
-              There are no drills yet. Add the first one with “New drill”.
-            } @else {
-              <i class="bi bi-funnel fs-3 d-block mb-2" aria-hidden="true"></i>
-              No drills match your filters.
-              <button type="button" class="btn btn-link btn-sm d-block mx-auto" (click)="clearFilters()">
-                Clear filters
-              </button>
+          <ul class="drill-list list-unstyled mb-0 d-grid gap-2">
+            @for (drill of block.drills; track drill.id; let i = $index) {
+              <!-- Each row appears a little after the previous one -->
+              <li class="drill-row" [style.--i]="i">
+                <button
+                  type="button"
+                  class="drill-item text-start"
+                  [attr.data-drill-id]="drill.id"
+                  [class.selected]="drill.id === selectedId()"
+                  [attr.aria-pressed]="drill.id === selectedId()"
+                  (click)="drillSelected.emit(drill)"
+                >
+                  <span class="players-count" aria-hidden="true">{{ drill.players }}</span>
+                  <span class="info">
+                    <span class="name">{{ drill.name }}</span>
+                    <span class="meta">
+                      <span class="badge space-badge">{{ drill.space }}</span>
+                      <span>{{ drill.players }} players</span>
+                    </span>
+                  </span>
+                  <i class="bi bi-chevron-right chevron" aria-hidden="true"></i>
+                </button>
+
+                <!-- The delete icon goes next to it: small, so it is not pressed by mistake -->
+                <button
+                  type="button"
+                  class="btn-delete"
+                  [attr.aria-label]="'Delete ' + drill.name"
+                  (click)="drillDeleted.emit(drill)"
+                >
+                  <i class="bi bi-trash3" aria-hidden="true"></i>
+                </button>
+              </li>
             }
-          </li>
-        }
-      </ul>
+          </ul>
+        </section>
+      } @empty {
+        <p class="empty text-center py-4 mb-0">
+          @if (all.length === 0) {
+            <i class="bi bi-journal-plus fs-3 d-block mb-2" aria-hidden="true"></i>
+            There are no drills yet. Add the first one with “New drill”.
+          } @else {
+            <i class="bi bi-funnel fs-3 d-block mb-2" aria-hidden="true"></i>
+            No drills match your filters.
+            <button type="button" class="btn btn-link btn-sm d-block mx-auto" (click)="clearFilters()">
+              Clear filters
+            </button>
+          }
+        </p>
+      }
     }
   </div>
 </section>

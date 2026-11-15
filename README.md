@@ -44,8 +44,8 @@ While `firebase.config.json` still has the example values, the app shows a messa
 
 | What the product asks for | How it is done |
 |---|---|
-| **The database** | Collection `drills` in Firestore. Each drill has `name`, `objective`, `players`, `space` and `description`, and optionally `fixedRoles`, `rotating`, `sequence`, `rotation`, `progressions`, `animationUrl`, `image` and `video`. |
-| **The list** (`DrillsComponent`) | Reads the drills live. Each row has its delete icon (it asks for confirmation) and the **New drill** button opens the form. It has a search box and a filter by space. |
+| **The database** | Collection `drills` in Firestore. Each drill has `name`, `objective`, `players`, `space` and `description`, and optionally `group`, `fixedRoles`, `rotating`, `sequence`, `rotation`, `progressions`, `animationUrl`, `image` and `video`. |
+| **The list** (`DrillsComponent`) | Reads the drills live. The drills are shown in groups (Pepper, Ball control and Other). Each row has its small delete icon (it asks for confirmation; the drill sheet also has a small delete button at the end) and the **New drill** button opens the form. It has a search box and a filter by space. |
 | **The detail** (`DetailComponent`) | Shows all the data. The **Edit** button opens the form with the data filled in. If the drill has a video, the player is shown, and if it has an animation, it is shown inside the page (an `iframe`). |
 | **The form** (`DrillFormComponent`) | The same form is used to create and to edit. Required fields show a message if they are missing, and the links are checked. After saving, a message is shown and the app goes back to the list to pick another drill. |
 

@@ -3,7 +3,7 @@
 // Each drill is saved with its id, so running the command again does not create duplicates.
 import { readFile } from 'node:fs/promises';
 import { initializeApp } from 'firebase/app';
-import { doc, getFirestore, setDoc } from 'firebase/firestore';
+import { deleteDoc, doc, getFirestore, setDoc } from 'firebase/firestore';
 
 const read = async (path) => JSON.parse(await readFile(new URL(path, import.meta.url), 'utf-8'));
 
@@ -23,5 +23,13 @@ for (const { id, ...data } of drills) {
 }
 
 console.log(`${drills.length} drills saved.`);
+
+// Example drills that are no longer in the library: they are removed from the database too
+const REMOVED = ['defence-6-cross-court-4'];
+
+for (const id of REMOVED) {
+  await deleteDoc(doc(db, 'drills', id));
+  console.log(`✗ ${id} removed`);
+}
 // Firestore keeps the connection open, so we exit by hand
 process.exit(0);

@@ -41,7 +41,7 @@
       } @else if (mode() === 'edit' && selected(); as drill) {
         <app-drill-form [drill]="drill" [saving]="saving()" (saved)="onSave($event)" (cancelled)="onCancelled()" />
       } @else if (selected(); as drill) {
-        <app-detail [drill]="drill" (edit)="mode.set('edit')" (closed)="onClosed()" />
+        <app-detail [drill]="drill" (edit)="mode.set('edit')" (deleted)="onDelete(drill)" (closed)="onClosed()" />
       } @else {
         <!-- We do not show it on mobile: there the list already fills the screen -->
         <div class="card empty-state h-100 d-none d-md-flex">

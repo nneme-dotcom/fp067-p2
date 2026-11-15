@@ -2,10 +2,11 @@ import { Component, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Drill, SPACES, Space } from '../../models/drill';
 import { DrillFilterPipe } from '../../pipes/drill-filter.pipe';
+import { DrillGroupsPipe } from '../../pipes/drill-groups.pipe';
 
 @Component({
   selector: 'app-drills',
-  imports: [FormsModule, DrillFilterPipe],
+  imports: [FormsModule, DrillFilterPipe, DrillGroupsPipe],
   templateUrl: './drills.component.html',
   styleUrl: './drills.component.scss',
 })
