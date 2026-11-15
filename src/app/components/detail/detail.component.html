@@ -17,61 +17,9 @@
   </div>
 </article>
 
-<!-- The drill data -->
-<section class="card shadow-sm detail-body" aria-label="Drill data">
-  <dl class="fields mb-0">
-    <div class="field">
-      <dt>Objective</dt>
-      <dd>{{ d.objective }}</dd>
-    </div>
-
-    <div class="field">
-      <dt>Description</dt>
-      <dd class="text">{{ d.description }}</dd>
-    </div>
-
-    @if (d.fixedRoles) {
-      <div class="field">
-        <dt>Fixed roles</dt>
-        <dd class="text">{{ d.fixedRoles }}</dd>
-      </div>
-    }
-
-    @if (d.rotating) {
-      <div class="field">
-        <dt>Rotating players</dt>
-        <dd class="text">{{ d.rotating }}</dd>
-      </div>
-    }
-
-    @if (steps().length) {
-      <div class="field">
-        <dt>Sequence</dt>
-        <dd>
-          <ol class="steps mb-0">
-            @for (step of steps(); track $index) {
-              <li>{{ step }}</li>
-            }
-          </ol>
-        </dd>
-      </div>
-    }
-
-    @if (d.rotation) {
-      <div class="field">
-        <dt>Rotation after each action</dt>
-        <dd class="text">{{ d.rotation }}</dd>
-      </div>
-    }
-
-    @if (d.progressions) {
-      <div class="field">
-        <dt>Progressions and variants</dt>
-        <dd class="text">{{ d.progressions }}</dd>
-      </div>
-    }
-  </dl>
-</section>
+@if (d.animationUrl) {
+  <app-animation [src]="d.animationUrl" [label]="'3D animation of ' + d.name" />
+}
 
 <!-- Image, video and animation: only the ones the drill has are shown -->
 @if (d.image && brokenImage() !== d.image) {
@@ -88,6 +36,57 @@
   <app-media [src]="d.video" [label]="'Video of ' + d.name" />
 }
 
-@if (d.animationUrl) {
-  <app-animation [src]="d.animationUrl" [label]="'3D animation of ' + d.name" />
-}
+<!-- Drill sheet: objective, description and the rest of the data in one card -->
+<section class="sheet" aria-label="Drill sheet">
+  <h3 class="sheet-title">Drill sheet</h3>
+
+  <div class="sheet-block">
+    <h4>Objective</h4>
+    <p>{{ d.objective }}</p>
+  </div>
+
+  <div class="sheet-block">
+    <h4>Description</h4>
+    <p class="text">{{ d.description }}</p>
+  </div>
+
+  <div class="sheet-block">
+    <h4>Set-up</h4>
+    <dl class="setup">
+      <dt>Players</dt>
+      <dd>{{ d.players }}</dd>
+      <dt>Space</dt>
+      <dd>{{ d.space }}</dd>
+      @if (d.fixedRoles) {
+        <dt>Fixed roles</dt>
+        <dd class="text">{{ d.fixedRoles }}</dd>
+      }
+      @if (d.rotating) {
+        <dt>Rotating players</dt>
+        <dd class="text">{{ d.rotating }}</dd>
+      }
+      @if (d.rotation) {
+        <dt>Rotation</dt>
+        <dd class="text">{{ d.rotation }}</dd>
+      }
+    </dl>
+  </div>
+
+  @if (steps().length) {
+    <div class="sheet-block">
+      <h4>Sequence</h4>
+      <ol class="steps">
+        @for (step of steps(); track $index) {
+          <li>{{ step }}</li>
+        }
+      </ol>
+    </div>
+  }
+
+  @if (d.progressions) {
+    <div class="sheet-block">
+      <h4>Progressions and variants</h4>
+      <p class="text">{{ d.progressions }}</p>
+    </div>
+  }
+</section>

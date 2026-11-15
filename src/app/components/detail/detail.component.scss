@@ -69,46 +69,81 @@
   }
 }
 
-.detail-body {
-  padding: 0.5rem 1.25rem;
+/* The drill sheet: same look as the sheet that used to be inside the animation */
+.sheet {
+  --sh-panel: #ffffff;
+  --sh-ink: #15202b;
+  --sh-muted: #5a6a79;
+  --sh-line: #d3dde6;
+  --sh-accent: #ee7a35;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem 1.15rem;
+  background: var(--sh-panel);
+  border: 1px solid var(--sh-line);
+  border-radius: 14px;
+  color: var(--sh-ink);
 }
 
-.field {
-  padding: 0.85rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+@media (prefers-color-scheme: dark) {
+  .sheet {
+    --sh-panel: #151f29;
+    --sh-ink: #e7edf2;
+    --sh-muted: #93a2b0;
+    --sh-line: #26323e;
+  }
+}
 
-  &:last-child { border-bottom: 0; }
+.sheet-title {
+  margin: 0;
+  font-family: var(--eagles-font-display);
+  font-size: 1.35rem;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
 
-  dt {
-    margin-bottom: 0.25rem;
+.sheet-block {
+  h4 {
+    margin: 0 0 0.4rem;
     font-size: 0.7rem;
-    font-weight: 500;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--eagles-text-muted);
+    color: var(--sh-muted);
   }
 
-  dd {
-    margin: 0;
-    color: var(--eagles-text);
-  }
+  p { margin: 0; font-size: 0.92rem; }
+}
 
-  /* Keeps the line breaks that were typed in the form */
-  .text {
-    white-space: pre-line;
-    color: var(--eagles-text-soft);
-  }
+/* Keeps the line breaks that were typed in the form */
+.text { white-space: pre-line; }
+
+.setup {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.3rem 0.9rem;
+  margin: 0;
+  font-size: 0.92rem;
+
+  dt { font-weight: 400; color: var(--sh-muted); }
+  dd { margin: 0; }
 }
 
 .steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin: 0;
   padding-left: 1.25rem;
-  color: var(--eagles-text-soft);
+  font-size: 0.92rem;
 
-  li { padding-left: 0.25rem; }
-  li + li { margin-top: 0.35rem; }
   li::marker {
-    font-weight: 600;
-    color: var(--eagles-lime);
+    font-weight: 700;
+    color: var(--sh-accent);
   }
 }
 

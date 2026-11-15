@@ -7,7 +7,7 @@
 iframe {
   display: block;
   width: 100%;
-  /* Tall enough for the 3D scene and the drill sheet when the page is narrow */
-  height: clamp(520px, 80vh, 780px);
+  /* Tall enough for the 3D scene, the variant buttons and the controls */
+  height: clamp(480px, 72vh, 740px);
   border: 0;
 }

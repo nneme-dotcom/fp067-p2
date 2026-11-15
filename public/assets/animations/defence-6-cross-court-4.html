@@ -34,6 +34,7 @@ h1{margin:4px 0 0;font:700 clamp(28px,4vw,40px)/1 var(--display);letter-spacing:
 .caption .sub:empty{display:none}
 .cams{position:absolute;right:12px;top:12px;display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end;max-width:50%}
 @media (max-width:560px){.cams{top:auto;bottom:12px;max-width:none}}
+.layout.nosheet{grid-template-columns:minmax(0,1fr)}
 .chip{font:600 12px/1 var(--body);letter-spacing:.04em;padding:7px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--panel);border-color:var(--ink)}
 .chip:focus-visible,.btn:focus-visible,input:focus-visible{outline:2px solid var(--court);outline-offset:2px}
@@ -77,7 +78,7 @@ dt{color:var(--muted)} dd{margin:0}
     <div class="meta">12 players · full court · continuous rally · no block</div>
   </header>
 
-  <main class="layout">
+  <main class="layout nosheet">
     <section class="stage-card">
       <div class="stage" id="stage">
         <div class="caption" aria-live="polite">
@@ -105,45 +106,7 @@ dt{color:var(--muted)} dd{margin:0}
       </div>
     </section>
 
-    <aside class="panel">
-      <h2>Drill sheet</h2>
-      <div>
-        <h3>Players</h3>
-        <div class="legend">
-          <div><span class="dot" style="background:var(--pale)"></span>Rotating (1–8)</div>
-          <div><span class="dot" style="background:var(--red)"></span>Setter · zone 2</div>
-          <div><span class="dot" style="background:var(--gold)"></span>Libero · zone 5</div>
-          <div><span class="dot" style="background:var(--coach)"></span>Coach</div>
-        </div>
-      </div>
-      <div>
-        <h3>Sequence</h3>
-        <ol>
-          <li>The coach attacks onto court A from outside court B (only to start the rally).</li>
-          <li>The player at 4, the libero at 5 or the player at 6 digs, depending on where the ball goes.</li>
-          <li>The setter sets to zone 4.</li>
-          <li>Controlled cross-court attack from 4, no block.</li>
-          <li>The rally continues the same way on the other court.</li>
-        </ol>
-      </div>
-      <div>
-        <h3>Rotation after each attack</h3>
-        <dl>
-          <dt>4</dt><dd>Leaves outside the net to the other court's waiting line</dd>
-          <dt>6</dt><dd>Moves to 4 (defends near the 3 m line)</dd>
-          <dt>Waiting</dt><dd>The first in line comes in at 6</dd>
-        </dl>
-      </div>
-      <div>
-        <h3>Space</h3>
-        <dl>
-          <dt>Waiting</dt><dd>Outside the court, behind zone 6</dd>
-          <dt>Rules</dt><dd>No scoring for now</dd>
-        </dl>
-      </div>
-      <button class="chip reseed" id="reseed">New sequence of diggers</button>
-      <p class="note">The order of who digs (4, 5 or 6) is random. Drag to rotate the view, scroll or pinch to zoom.</p>
-    </aside>
+    
   </main>
 </div>
 
@@ -574,7 +537,7 @@ document.querySelectorAll('[data-tog]').forEach(b=>b.onclick=()=>{const on=b.get
   if(b.dataset.tog==='zones')zoneGroup.forEach(m=>m.visible=on);
   if(b.dataset.tog==='trail')showTrail=on;
   if(b.dataset.tog==='tags')for(const id in actors)actors[id].tag.visible=on;});
-$('reseed').onclick=()=>{seed=(seed*7919+13)%100000;build(seed);lastEvIdx=-2;seek(0);setPlaying(true);};
+if($('reseed'))$('reseed').onclick=()=>{seed=(seed*7919+13)%100000;build(seed);lastEvIdx=-2;seek(0);setPlaying(true);};
 document.addEventListener('keydown',e=>{
   if(e.target.tagName==='INPUT')return;
   if(e.code==='Space'){e.preventDefault();$('play').click();}
