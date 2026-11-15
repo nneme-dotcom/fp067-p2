@@ -84,5 +84,55 @@
     "sequence": "A attacks to B (controlled hit, no jump) and crosses to the other side.\nB digs, sets to self, attacks to C and crosses to the other side.\nC digs, sets to self, attacks to A and crosses to the other side.\nA digs, sets to self, attacks and crosses to the other side, and the rotation repeats.",
     "rotation": "After attacking, the player crosses outside the net and waits behind the active player on the other side; whoever waited on the side they left steps up.",
     "animationUrl": "assets/animations/pepper-3p-consecutive.html"
+  },
+  {
+    "id": "ball-control-y",
+    "name": "Ball control · Y",
+    "objective": "Practise the self dig, the set and the controlled attack in a continuous flow with a waiting line.",
+    "players": 6,
+    "space": "Half court",
+    "description": "Players at positions 2 and 4 and a controller at 6, with three more waiting in line behind 6. The player at 4 starts with the ball and makes a controlled hit (no jump) to 6. The controller digs to herself, sets to the other spot and moves there, while a waiting player enters at 6. No scoring.",
+    "fixedRoles": "Two hitters at 2 and 4, one controller at 6, a waiting line behind 6.",
+    "sequence": "The player at 4 hits a controlled ball (no jump) to 6.\nThe player at 6 digs to herself.\nShe sets to the player at the other spot (2 or 4) and moves to that spot.\nThe player who hit leaves to the end of the waiting line.\nThe next player in line enters at 6 and the sequence repeats, alternating spots.",
+    "rotation": "Hitter goes to the end of the line, controller takes the spot she set to, first in line enters at 6.",
+    "animationUrl": "assets/animations/control-y.html"
+  },
+  {
+    "id": "ball-control-x",
+    "name": "Ball control · X",
+    "objective": "Practise the high dig, the set and the controlled attack with movement between back and front spots.",
+    "players": 7,
+    "space": "Half court",
+    "description": "Four spots on one court: 1 and 5 at the back, 2 and 4 at the front, with a waiting line of three. The ball is attacked from the front to the back, dug high to the centre, set to the next front spot and attacked again, alternating sides. No scoring.",
+    "fixedRoles": "Players at the four spots (1, 5, 2, 4) and a waiting line of three.",
+    "sequence": "A player at the front makes a controlled attack (no jump) to a back spot.\nThe back player digs high to the centre.\nThe player at the other back spot moves to the centre and sets to the next front spot, then moves there.\nThe sequence repeats, alternating sides, and a new player fills the spot that was vacated.",
+    "rotation": "The setter takes the front spot she set to; a player from the line fills the back spot.",
+    "animationUrl": "assets/animations/control-x.html"
+  },
+  {
+    "id": "chaos",
+    "name": "Chaos",
+    "objective": "Practise finger touches and fast transitions, with a continuous flow of players on both courts.",
+    "players": 12,
+    "space": "Full court",
+    "description": "Four players on each court and two waiting at the side of each court. The coach throws a free ball to one court. Each side makes three touches (fingers only) and sends the ball over the net. After every touch, that player goes to touch the cone at the side and a waiting player takes the place. No scoring.",
+    "fixedRoles": "4 players per court, 2 waiting at the side of each court, a coach.",
+    "sequence": "The coach throws a free ball to court A.\nEach side makes 3 touches with fingers only and sends the ball over the net.\nAfter every touch, the player goes to touch the cone and joins the waiting line.\nA waiting player immediately takes the vacated spot.\nThe ball keeps going from side to side.",
+    "rotation": "After each touch the player goes to the cone and to the end of the waiting line; the first waiting player takes the spot.",
+    "progressions": "Forearm only.\nForearm, finger and tip.\nForearm, finger and spike.",
+    "animationUrl": "assets/animations/chaos.html"
+  },
+  {
+    "id": "side-out-circuit",
+    "name": "Side-out circuit",
+    "objective": "Practise serve, receive, set and attack in a circuit where the sides alternate.",
+    "players": 12,
+    "space": "Full court",
+    "description": "Six players on each court: a server, three passers, a setter and a hitter. One side serves, the other receives with a forearm pass, sets and attacks. Then the sides swap and the circuit repeats. No scoring.",
+    "fixedRoles": "Per court: a server, three passers, a setter and a hitter.",
+    "sequence": "The server serves to the other court.\nThe passers receive with a forearm pass to the setter.\nThe setter sets to the hitter.\nThe hitter attacks over the net.\nThe sides swap roles and the circuit repeats.",
+    "rotation": "Sides alternate; each court keeps its roles during the circuit.",
+    "progressions": "Serve: two-hand bounce throw; spike to the floor; float serve; spin serve; jump serve.\nAttack: no jump; jump and catch at the highest point; jump and tip.",
+    "animationUrl": "assets/animations/side-out.html"
   }
 ]
