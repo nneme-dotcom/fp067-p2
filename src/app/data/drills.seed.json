@@ -35,7 +35,6 @@
     "fixedRoles": "Pairs: A on one side of the net, B on the other.",
     "sequence": "A attacks to B (controlled hit, no jump).\nB digs to A.\nA sets to B.\nB attacks to A.\nA digs to B.\nB sets to A and the sequence repeats.",
     "rotation": "No rotation: each pair stays in its lane.",
-    "progressions": "Version with 3 players: after attacking, the player moves to the other line.",
     "animationUrl": "assets/animations/pepper-traditional.html"
   },
   {
@@ -48,7 +47,6 @@
     "fixedRoles": "Pairs: A on one side of the net, B on the other.",
     "sequence": "A attacks to B (controlled hit, no jump).\nB digs, sets to self and attacks to A.\nA digs, sets to self and attacks to B.\nThe sequence repeats.",
     "rotation": "No rotation: each pair stays in its lane.",
-    "progressions": "Version with 3 players: after attacking, the player moves to the other line.",
     "animationUrl": "assets/animations/pepper-3-consecutive.html"
   },
   {
@@ -62,5 +60,29 @@
     "sequence": "A attacks to B (controlled hit, no jump).\nB digs and sets back to A.\nA attacks again and the sequence repeats.",
     "rotation": "No rotation: each pair stays in its lane.",
     "animationUrl": "assets/animations/pepper-short.html"
+  },
+  {
+    "id": "pepper-3p-traditional",
+    "name": "Pepper · Traditional with 3 players",
+    "objective": "Warm up ball control with attack, dig and set, and the movement between sides, in groups of three.",
+    "players": 12,
+    "space": "Full court",
+    "description": "Twelve players in four groups of three, one group per lane. A and C start on one side of the net and B on the other. The player who attacks sets after the dig, then crosses to the other side. The attack is a controlled hit with no jump. No scoring.",
+    "fixedRoles": "Groups of three (A, B and C): A and C start on one side of the net, B on the other.",
+    "sequence": "A attacks to B (controlled hit, no jump).\nB digs to A.\nA sets for B and crosses to the other side.\nB attacks to C, C digs to B, B sets for C and crosses to the other side.\nC attacks to A, A digs to C, C sets for A and crosses to the other side.\nThe rotation repeats.",
+    "rotation": "The player who digs attacks next. After setting, the player crosses outside the net and waits behind the active player on the other side; whoever waited on the side they left steps up.",
+    "animationUrl": "assets/animations/pepper-3p-traditional.html"
+  },
+  {
+    "id": "pepper-3p-consecutive",
+    "name": "Pepper · 3 consecutive touches with 3 players",
+    "objective": "Warm up the full attack chain (dig, self set, attack) and the movement between sides, in groups of three.",
+    "players": 12,
+    "space": "Full court",
+    "description": "Twelve players in four groups of three, one group per lane. A and C start on one side of the net and B on the other. A attacks and crosses to the other side; then each player in turn digs, sets to self, attacks and crosses. The attack is a controlled hit with no jump. No scoring.",
+    "fixedRoles": "Groups of three (A, B and C): A and C start on one side of the net, B on the other.",
+    "sequence": "A attacks to B (controlled hit, no jump) and crosses to the other side.\nB digs, sets to self, attacks to C and crosses to the other side.\nC digs, sets to self, attacks to A and crosses to the other side.\nA digs, sets to self, attacks and crosses to the other side, and the rotation repeats.",
+    "rotation": "After attacking, the player crosses outside the net and waits behind the active player on the other side; whoever waited on the side they left steps up.",
+    "animationUrl": "assets/animations/pepper-3p-consecutive.html"
   }
 ]
