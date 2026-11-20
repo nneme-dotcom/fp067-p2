@@ -71,6 +71,7 @@ The 3D animations are HTML files in `public/assets/animations/`:
 - `pepper-3p-consecutive`
 - `control-y`
 - `control-x`
+- `cross-court-diagonals`
 - `chaos`
 - `side-out`
 

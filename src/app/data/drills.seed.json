@@ -93,6 +93,20 @@
     "progressions": "Regression: the player who receives the set first sets to herself and then attacks; the player who set goes straight to that spot and stands behind the attacker.\nProgression: after the self set she tips (finta) to the player who just set, who stands close to her; that player digs the tip up and the attack continues to the new player coming in at 6."
   },
   {
+    "id": "cross-court-diagonals",
+    "name": "Cross-court diagonals 4→1 and 2→5",
+    "objective": "Practise defence, covering and transition in a continuous rally of controlled hits in cross-court diagonals between zones 4–1 and 2–5.",
+    "players": 6,
+    "space": "Half court",
+    "description": "Two trios work on one half of the court with a continuous rally and controlled hits (down balls). Trio A goes back and forth between zones 4 and 5, and trio B between zones 1 and 2. The ball does not cross the net. A player from trio A starts with a self-toss at 4 and hits cross-court to 1. Each trio defends, sets and hits in turn while the other trio goes back to its defensive position. If the ball falls, the rally restarts from 4. No scoring.",
+    "group": "Ball control",
+    "fixedRoles": "None. Inside each trio the roles of digger, setter and hitter are free, as long as the hitter is never the same player who hit the previous ball of her trio.",
+    "sequence": "From zone 4, one player of trio A tosses the ball to herself and hits cross-court to 1 with a controlled hit.\nTrio B at 1: one player digs with her forearms, another sets overhead to 2 and the third moves to 2.\nWhile the set is made, trio A goes down from 4 to 5 and takes its defensive position.\nAfter the set, the digger and the setter of B go up to cover on the 3 m line.\nThe player at 2 hits cross-court to 5 with a controlled hit.\nTrio A at 5: one digs, one sets to 4 and the third goes to 4. While the set is made, trio B goes back from 2 to 1.\nAfter the set, the two players of A go up to cover on the 3 m line, close to 4.\nThe player at 4 hits cross-court to 1. Back to step 2.",
+    "rotation": "The hitter is never the same player who hit the previous ball of her trio. The digger and the setter are free between the other two.",
+    "animationUrl": "assets/animations/cross-court-diagonals.html",
+    "rotating": "The six players, in two trios: A (zones 4 and 5) and B (zones 1 and 2)."
+  },
+  {
     "id": "ball-control-x",
     "name": "Ball control · X",
     "objective": "Practise the high dig, the set and the controlled attack with movement between back and front spots.",
